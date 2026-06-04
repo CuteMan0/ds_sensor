@@ -13,7 +13,6 @@
 #include "led_drive.h"
 
 #define VIN 0.19f
-#define AVG_G 0.56f // 整流转平均值增益系数
 
 // sw for range
 sbit _C = P1 ^ 6;
@@ -48,6 +47,10 @@ sbit IN2 = P4 ^ 0;
 #define Q_2MS Q_val[1]
 #define Q_0P2MS Q_val[2]
 
+#define G_20MS G_val[0]
+#define G_2MS G_val[1]
+#define G_0P2MS G_val[2]
+
 typedef struct
 {
     u16 q20;
@@ -75,19 +78,24 @@ u16 range_change_val[10] = {
 volatile float offset_vol = 0.0f; // 减法器偏移量
 float offset_val[5] = {
     0.30f,
-    0.88f,
-    1.4f,
+    0.896f,
+    1.433f,
     1.896f,
     2.43f};
 
 volatile float res_fb = 0.82f; // 反馈电阻 kohm
 static float Q_val[3] =
     {
-        1.0f,
-        1.0f,
-        1.0f}; // Q值
+        1.039f,
+        1.039f,
+        1.039f}; // Q值
 
-u8 flag_backup = 0;                         // 校准延迟处理变量
+static float G_val[3] =
+    {
+        0.56f,
+        0.39f,
+        0.35f}; // G值
+
 static volatile u8 calibration_pending = 0; // 校准标志
 static volatile u8 led_flash = 0;           // LED闪烁标志
 
@@ -113,9 +121,7 @@ void ec_init(void)
 
     REF_R0; // 设置基准为GND
     Set_EC_Range(EC_RANGE_20MS);
-    EEPROM_read_n(0,
-                  (u8 *)&cal,
-                  sizeof(cal));
+    EEPROM_read_n(0, (u8 *)&cal, sizeof(cal));
     if (cal.q20 != 0xFFFF)
         Q_20MS = cal.q20 / 1000.0f;
 
@@ -129,34 +135,33 @@ void ec_init(void)
 void ec_read(float *ec_val)
 {
     float adc_vol = 0.0f;
-    float q;
+    float q, gain;
     *ec_val = 0.0f;
 
     if (2 == flag_key) // 长按，开始EEPROM备份
     {
-        flag_key = 0;
-#define K 12.85f                                               // mS/cm
+        flag_key = 0;                                          // mS/cm
         adc_vol = (adc_get(&adc0) / 5.0f + offset_vol) / 2.0f; // 信号电压
         switch (ec_range)
         {
         case EC_RANGE_20MS:
 
             Q_20MS =
-                (12.85f * res_fb * VIN * AVG_G) / adc_vol;
+                (12.85f * res_fb * VIN * G_20MS) / adc_vol;
 
             break;
 
         case EC_RANGE_2MS:
 
             Q_2MS =
-                (1.413f * res_fb * VIN * AVG_G) / adc_vol;
+                (1.413f * res_fb * VIN * G_2MS) / adc_vol;
 
             break;
 
         case EC_RANGE_0P2MS:
 
             Q_0P2MS =
-                (0.1465f * res_fb * VIN * AVG_G) / adc_vol;
+                (0.1465f * res_fb * VIN * G_0P2MS) / adc_vol;
 
             break;
         }
@@ -168,8 +173,9 @@ void ec_read(float *ec_val)
     EC_Range_Manager();
 
     adc_vol = (adc_get(&adc0) / 5.0f + offset_vol) / 2.0f;
-    q = Q_val[ec_range];                            // 根据量程选择Q值
-    *ec_val = adc_vol * q / (res_fb * VIN * AVG_G); // k = Q/(R*|Vin|)*Vout,Vin = Vp * 2/pi
+    q = Q_val[ec_range];                           // 根据量程选择Q值
+    gain = G_val[ec_range];                        // 根据量程选择增益
+    *ec_val = adc_vol * q / (res_fb * VIN * gain); // k = Q/(R*|Vin|)*Vout,Vin = Vp * 2/pi
 }
 
 void ProcessCalibration(void)
@@ -184,9 +190,10 @@ void ProcessCalibration(void)
         cal.q2 = (u16)(Q_2MS * 1000);
         cal.q02 = (u16)(Q_0P2MS * 1000);
 
-        EEPROM_write_n(0,
-                       (u8 *)&cal,
-                       sizeof(cal));
+        EA = 0;
+        EEPROM_write_n(0, (u8 *)&cal, sizeof(cal));
+        EA = 1;
+
         led_flash = 1;
     }
 }

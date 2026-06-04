@@ -20,7 +20,9 @@ float dat_for_printf;
 
 void task_calibration_save(void)
 {
+#if DS_SENSOR == 133 || DS_SENSOR == 132
     ProcessCalibration();
+#endif
 }
 
 void task_key_scan()
@@ -30,7 +32,7 @@ void task_key_scan()
 
 void task_led_blink(void)
 {
-#if DS_SENSOR == 133
+#if DS_SENSOR == 133 || DS_SENSOR == 132
     EC_Led_Task();
 #endif
 }
@@ -75,9 +77,9 @@ void main(void)
     task_scheduler_init();
     task_register(task_sensor, 50, 3);
     task_register(task_printf, 300, 4);
-    task_register(task_calibration_save, 1000, 5);
-    task_register(task_key_scan, 20, 1);
-    task_register(task_led_blink, 10, 1);
+    task_register(task_calibration_save, 1000, 1);
+    task_register(task_key_scan, 20, 2);
+    task_register(task_led_blink, 10, 2);
 
     while (1)
     {

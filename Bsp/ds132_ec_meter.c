@@ -13,7 +13,7 @@
 #include "led_drive.h"
 
 #define VIN 0.19f
-#define AVG_G 0.56f // 整流转平均值增益系数
+#define G_20MS 0.56f // 整流转平均值增益系数
 
 // sw for range
 sbit _C = P1 ^ 6;
@@ -55,9 +55,8 @@ static volatile float Q = 1.0f;   // 电导池常数
 volatile float res_fb = 0.82f;    // 反馈电阻 kohm
 volatile float offset_vol = 0.0f; // 减法器偏移量
 
-u8 flag_backup = 0;
-// 校准延迟处理变量
-static volatile u8 calibration_pending = 0;
+static volatile u8 calibration_pending = 0; // 校准延迟处理变量
+static volatile u8 led_flash = 0;           // LED闪烁标志
 
 ADC_Handle_t adc0;
 ADC_Handle_t adc1;
@@ -93,46 +92,76 @@ void ec_read(float *ec_val)
     float adc_vol = 0.0f;
     *ec_val = 0.0f;
 
-    if (1 == flag_key) // 开始EEPROM备份
+    if (2 == flag_key) // 长按，开始EEPROM备份
     {
-        flag_key = 0;
-#define K 12.85f                                  // mS/cm
-        adc_vol = adc_get(&adc1) / 2;             // 获取最初处理的信号电压
-        Q = (K * res_fb * VIN * AVG_G) / adc_vol; // new Q value
-
-        // LED指示
-        DIS_LED_Just_One_Enable(2);
-    }
-    else if (2 == flag_key) // 长按：恢复出厂设置
-    {
-        flag_key = 0;
-
-        // 恢复出厂Q点
-        Q = 1.0f;
+        flag_key = 0;                                          // mS/cm
+        adc_vol = (adc_get(&adc0) / 5.0f + offset_vol) / 2.0f; // 信号电压
+        Q = (12.85f * res_fb * VIN * G_20MS) / adc_vol;
         calibration_pending = 1;
-
-        // LED指示恢复
-        delay_ms(100);
-        DIS_LED_Just_One_Enable(3);
     }
 
     Auto_Switcher(); // 自动切换量程
 
     adc_vol = (adc_get(&adc0) / 5.0f + offset_vol) / 2.0f;
-    *ec_val = adc_vol * Q / (res_fb * VIN * AVG_G); // k = Q/(R*|Vin|)*Vout
+    *ec_val = adc_vol * Q / (res_fb * VIN * G_20MS); // k = Q/(R*|Vin|)*Vout
 }
 
 void ProcessCalibration(void)
 {
-    u8 tmp[2];
+    u16 tmp = 0xff;
+
     if (calibration_pending)
     {
         calibration_pending = 0;
 
-        // 写入EEPROM（这里过于耗时，在低频任务中执行）
-        tmp[0] = (u16)(Q * 1000) >> 8;
-        tmp[1] = (u16)(Q * 1000);
-        EEPROM_write_n(0, tmp, sizeof(tmp));
+        tmp = (u16)(Q * 1000);
+
+        EEPROM_write_n(0,
+                       (u8 *)&tmp,
+                       sizeof(tmp));
+        led_flash = 1;
+    }
+}
+
+void EC_Led_Task(void)
+{
+    static u8 cnt = 0;
+    static bit on = 0;
+    static u8 flash_cnt = 0;
+
+    if (!led_flash)
+        return;
+
+    cnt++;
+
+    if (cnt >= 10)
+    {
+        cnt = 0;
+
+        on = !on;
+
+        if (on)
+        {
+
+            DIS_LED_Just_One_Enable(1);
+        }
+        else
+        {
+            DIS_LED_ALL_off();
+        }
+    }
+
+    if (cnt == 0)
+    {
+        flash_cnt++;
+
+        if (flash_cnt >= 6)
+        {
+            flash_cnt = 0;
+            led_flash = 0;
+
+            DIS_LED_Just_One_Enable(1);
+        }
     }
 }
 

@@ -32,7 +32,5 @@ extern void DIS_LED_ALL_off(void);
 extern void DIS_LED_Enable(unsigned char LED_num);
 extern void DIS_LED_Disable(unsigned char LED_num);
 extern void DIS_LED_Just_One_Enable(unsigned char LED_num);
-extern void DIS_LED_Test(void);
-extern void LED_flashing_slowly(unsigned char LED_number, unsigned char Times);
-extern void LED_flashing_rapidly(unsigned char LED_number, unsigned char Times);
+extern void DIS_LED_TOGGLE(unsigned char LED_num);
 #endif

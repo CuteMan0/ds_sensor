@@ -20,57 +20,56 @@ void KEY_GPIO_init(void)
     P3_PULL_UP_ENABLE(GPIO_Pin_2); // P3.2上拉使能
 }
 
-
 void Scan_Key(void)
 {
     u8 current_key = (0 == HOME_key) ? 0 : 1;
-    
-    switch(key_state)
+
+    switch (key_state)
     {
-        case 0:  // 空闲
-            if (0 == current_key)
+    case 0: // 空闲
+        if (0 == current_key)
+        {
+            key_state = 1;
+            key_press_time = 0;
+            long_press_triggered = 0;
+        }
+        break;
+
+    case 1: // 消抖
+        if (0 == current_key)
+        {
+            key_press_time++;
+            if (key_press_time >= 2) // 消抖完成（40ms）
             {
-                key_state = 1;
-                key_press_time = 0;
-                long_press_triggered = 0;
+                key_state = 2;
             }
-            break;
-            
-        case 1:  // 消抖
-            if (0 == current_key)
+        }
+        else
+        {
+            key_state = 0;
+        }
+        break;
+
+    case 2: // 按键按下，等待释放或长按
+        if (0 == current_key)
+        {
+            key_press_time++;
+
+            // 长按检测（例如 1000ms）
+            if (!long_press_triggered && key_press_time >= 50) // 50 * 20ms = 1000ms
             {
-                key_press_time++;
-                if (key_press_time >= 2)  // 消抖完成（40ms）
-                {
-                    key_state = 2;
-                }
+                long_press_triggered = 1;
+                flag_key = 2; // 长按，
             }
-            else
+        }
+        else // 按键释放
+        {
+            if (!long_press_triggered)
             {
-                key_state = 0;
+                flag_key = 1; // 短按，校准
             }
-            break;
-            
-        case 2:  // 按键按下，等待释放或长按
-            if (0 == current_key)
-            {
-                key_press_time++;
-                
-                // 长按检测（例如 1000ms）
-                if (!long_press_triggered && key_press_time >= 50)  // 50 * 20ms = 1000ms
-                {
-                    long_press_triggered = 1;
-                    flag_key = 2;  // 长按，
-                }
-            }
-            else  // 按键释放
-            {
-                if (!long_press_triggered)
-                {
-                    flag_key = 1;  // 短按，校准
-                }
-                key_state = 0;
-            }
-            break;
+            key_state = 0;
+        }
+        break;
     }
 }

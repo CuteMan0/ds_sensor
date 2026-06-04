@@ -28,6 +28,13 @@ void task_key_scan()
     Scan_Key();
 }
 
+void task_led_blink(void)
+{
+#if DS_SENSOR == 133
+    EC_Led_Task();
+#endif
+}
+
 void task_sensor(void)
 {
     ds_update(&dat_for_printf); // 传感器数据更新
@@ -66,9 +73,11 @@ void main(void)
     ds_init(); // 传感器初始化
     avg_filter_init(&filter, buffer, NUM_BUF_AVG);
     task_scheduler_init();
-    task_register(task_sensor, 50, 1);
-    task_register(task_printf, 300, 1);
+    task_register(task_sensor, 50, 3);
+    task_register(task_printf, 300, 4);
+    task_register(task_calibration_save, 1000, 5);
     task_register(task_key_scan, 20, 1);
+    task_register(task_led_blink, 10, 1);
 
     while (1)
     {

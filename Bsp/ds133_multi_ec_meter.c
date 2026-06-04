@@ -44,6 +44,22 @@ sbit IN2 = P4 ^ 0;
 #define COM_NO1 CTL(1, 0)
 #define COM_NO2 CTL(1, 1)
 
+#define Q_20MS Q_val[0]
+#define Q_2MS Q_val[1]
+#define Q_0P2MS Q_val[2]
+
+typedef struct
+{
+    u16 q20;
+    u16 q2;
+    u16 q02;
+} EC_Cal_t;
+
+EC_Cal_t cal; // 校准值
+
+static EC_Range_t ec_range = EC_RANGE_20MS;
+static u16 range0_cnt = 0;
+static u16 range5_cnt = 0;
 u16 range_change_val[10] = {
     807,
     1179,
@@ -56,6 +72,7 @@ u16 range_change_val[10] = {
     2469,
     3152};
 
+volatile float offset_vol = 0.0f; // 减法器偏移量
 float offset_val[5] = {
     0.30f,
     0.88f,
@@ -63,13 +80,16 @@ float offset_val[5] = {
     1.896f,
     2.43f};
 
-static volatile float Q = 1.0f;   // 电导池常数
-volatile float res_fb = 0.82f;    // 反馈电阻 kohm
-volatile float offset_vol = 0.0f; // 减法器偏移量
+volatile float res_fb = 0.82f; // 反馈电阻 kohm
+static float Q_val[3] =
+    {
+        1.0f,
+        1.0f,
+        1.0f}; // Q值
 
-u8 flag_backup = 0;
-// 校准延迟处理变量
-static volatile u8 calibration_pending = 0;
+u8 flag_backup = 0;                         // 校准延迟处理变量
+static volatile u8 calibration_pending = 0; // 校准标志
+static volatile u8 led_flash = 0;           // LED闪烁标志
 
 ADC_Handle_t adc0;
 ADC_Handle_t adc1;
@@ -81,8 +101,6 @@ static void Scan_Key(void);
 
 void ec_init(void)
 {
-    u8 tmp[2];
-
     adc_init(&adc0, 0, 3.3f);
     adc_init(&adc1, 1, 3.3f);
 
@@ -95,44 +113,148 @@ void ec_init(void)
 
     REF_R0; // 设置基准为GND
     Set_EC_Range(EC_RANGE_20MS);
-    EEPROM_read_n(0, tmp, sizeof(tmp));
-    if (tmp[0] != 0xff && tmp[1] != 0xff)
-    {
-        Q = (float)((u16)(tmp[0] << 8) + tmp[1]) / 1000;
-    }
+    EEPROM_read_n(0,
+                  (u8 *)&cal,
+                  sizeof(cal));
+    if (cal.q20 != 0xFFFF)
+        Q_20MS = cal.q20 / 1000.0f;
+
+    if (cal.q2 != 0xFFFF)
+        Q_2MS = cal.q2 / 1000.0f;
+
+    if (cal.q02 != 0xFFFF)
+        Q_0P2MS = cal.q02 / 1000.0f;
 }
 
 void ec_read(float *ec_val)
 {
     float adc_vol = 0.0f;
+    float q;
     *ec_val = 0.0f;
 
-    if (1 == flag_key) // 开始EEPROM备份
+    if (2 == flag_key) // 长按，开始EEPROM备份
     {
         flag_key = 0;
-#define K 12.85f                                  // mS/cm
-        adc_vol = adc_get(&adc1) / 2;             // 获取最初处理的信号电压
-        Q = (K * res_fb * VIN * AVG_G) / adc_vol; // new Q value
+#define K 12.85f                                               // mS/cm
+        adc_vol = (adc_get(&adc0) / 5.0f + offset_vol) / 2.0f; // 信号电压
+        switch (ec_range)
+        {
+        case EC_RANGE_20MS:
+
+            Q_20MS =
+                (12.85f * res_fb * VIN * AVG_G) / adc_vol;
+
+            break;
+
+        case EC_RANGE_2MS:
+
+            Q_2MS =
+                (1.413f * res_fb * VIN * AVG_G) / adc_vol;
+
+            break;
+
+        case EC_RANGE_0P2MS:
+
+            Q_0P2MS =
+                (0.1465f * res_fb * VIN * AVG_G) / adc_vol;
+
+            break;
+        }
+
+        calibration_pending = 1;
     }
 
     Auto_Switcher(); // 自动切换量程
     EC_Range_Manager();
 
     adc_vol = (adc_get(&adc0) / 5.0f + offset_vol) / 2.0f;
-    *ec_val = adc_vol * Q / (res_fb * VIN * AVG_G); // k = Q/(R*|Vin|)*Vout,Vin = Vp * 2/pi
+    q = Q_val[ec_range];                            // 根据量程选择Q值
+    *ec_val = adc_vol * q / (res_fb * VIN * AVG_G); // k = Q/(R*|Vin|)*Vout,Vin = Vp * 2/pi
 }
 
 void ProcessCalibration(void)
 {
-    u8 tmp[2];
+    EC_Cal_t cal;
+
     if (calibration_pending)
     {
         calibration_pending = 0;
 
-        // 写入EEPROM（这里过于耗时，在低频任务中执行）
-        tmp[0] = (u16)(Q * 1000) >> 8;
-        tmp[1] = (u16)(Q * 1000);
-        EEPROM_write_n(0, tmp, sizeof(tmp));
+        cal.q20 = (u16)(Q_20MS * 1000);
+        cal.q2 = (u16)(Q_2MS * 1000);
+        cal.q02 = (u16)(Q_0P2MS * 1000);
+
+        EEPROM_write_n(0,
+                       (u8 *)&cal,
+                       sizeof(cal));
+        led_flash = 1;
+    }
+}
+
+void EC_Led_Task(void)
+{
+    static u8 cnt = 0;
+    static bit on = 0;
+    static u8 flash_cnt = 0;
+
+    if (!led_flash)
+        return;
+
+    cnt++;
+
+    if (cnt >= 10)
+    {
+        cnt = 0;
+
+        on = !on;
+
+        if (on)
+        {
+            switch (ec_range)
+            {
+            case EC_RANGE_20MS:
+                DIS_LED_Just_One_Enable(1);
+                break;
+
+            case EC_RANGE_2MS:
+                DIS_LED_Just_One_Enable(2);
+                break;
+
+            case EC_RANGE_0P2MS:
+                DIS_LED_Just_One_Enable(3);
+                break;
+            }
+        }
+        else
+        {
+            DIS_LED_ALL_off();
+        }
+    }
+
+    if (cnt == 0)
+    {
+        flash_cnt++;
+
+        if (flash_cnt >= 6)
+        {
+            flash_cnt = 0;
+            led_flash = 0;
+
+            switch (ec_range)
+            {
+            case EC_RANGE_20MS:
+                DIS_LED_Just_One_Enable(1);
+                break;
+
+            case EC_RANGE_2MS:
+                DIS_LED_Just_One_Enable(2);
+                break;
+
+            case EC_RANGE_0P2MS:
+                DIS_LED_Just_One_Enable(3);
+                break;
+            }
+        }
     }
 }
 
@@ -144,10 +266,6 @@ void Range_2(void); // 6.4-10.4
 void Range_3(void); // 9.6-13.6
 void Range_4(void); // 12.8-16.8
 void Range_5(void); // 16.0-20.0
-
-static EC_Range_t ec_range = EC_RANGE_20MS;
-static u16 range0_cnt = 0;
-static u16 range5_cnt = 0;
 
 static eEvent eCurrentEvent = EVT_NO_EVENT;
 static pfState pfCurrentState = Range_0;
@@ -235,6 +353,7 @@ static void Auto_Switcher(void)
         pfCurrentState();
     }
 }
+
 static void EC_Range_Manager(void)
 {
     switch (ec_range)
@@ -308,6 +427,7 @@ static void EC_Range_Manager(void)
         break;
     }
 }
+
 #define K2ADC(X) (u16)(res_fb * VIN * (X) / Q * 1240.9f)
 void Range_0(void)
 {
@@ -405,13 +525,3 @@ void Range_5(void)
 }
 
 #endif
-
-/*
-首先0-20ms/cm测量,res = 820,com_no2
-当进入0-4量程
-且测量信号<1.8ms/cm，res = 8.2k,com_no1
-当进入0-0.4量程
-且测量信号<0.18ms/cm，res = 82k,com_no0
-
-程序架构是0-20，0-2，0-0.2三个大量程，每个量程内划分5个模拟量程进行精细化采样（Auto_Switcher已实现）。现在需要加入三个大量程的切换逻辑。
-*/

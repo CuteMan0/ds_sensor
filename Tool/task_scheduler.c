@@ -93,3 +93,24 @@ void task_scheduler_run(void)
         ready_list[i]->func();
     }
 }
+
+u8 task_delay(u32 *t_next, u32 delay_ms)
+{
+    u32 now;
+
+    EA = 0;
+    now = sys_tick_ms;
+    EA = 1;
+
+    if (*t_next == 0)
+    {
+        *t_next = now + delay_ms;
+        return 1; // 第一次调用，开始计时
+    }
+
+    if ((int32)(now - *t_next) < 0) // 还没到
+        return 1;
+
+    *t_next = now + delay_ms; // 重新计时
+    return 0;
+}

@@ -12,16 +12,16 @@ void task_scheduler_init(void)
 {
     scheduler.task_count = 0;
     sys_tick_ms = 0;
-    
-    //1ms@24.000MHz
-    TM0PS = 0x00;			//Set timer clock prescaler
-	AUXR |= 0x80;			//imer clock is 1T mode
-	TMOD &= 0xF0;			//Set timer work mode
-	TL0 = 0x40;				//Initial timer value
-	TH0 = 0xA2;				//Initial timer value
-	TF0 = 0;				//Clear TF0 flag
-	TR0 = 1;				//Timer0 start run
-	ET0 = 1;				//Enable timer0 interrupt
+
+    // 1ms@24.000MHz
+    TM0PS = 0x00; // Set timer clock prescaler
+    AUXR |= 0x80; // imer clock is 1T mode
+    TMOD &= 0xF0; // Set timer work mode
+    TL0 = 0x40;   // Initial timer value
+    TH0 = 0xA2;   // Initial timer value
+    TF0 = 0;      // Clear TF0 flag
+    TR0 = 1;      // Timer0 start run
+    ET0 = 1;      // Enable timer0 interrupt
 }
 
 //------------------------------------------------------------
@@ -57,13 +57,17 @@ void task_scheduler_tick_isr(void)
 void task_scheduler_run(void)
 {
     u8 i, j;
-    Task_t* ready_list[MAX_TASKS];
+    Task_t *ready_list[MAX_TASKS];
     u8 ready_count = 0;
-    u32 now = sys_tick_ms;
+    u32 now;
+
+    EA = 0;
+    now = sys_tick_ms;
+    EA = 1;
 
     for (i = 0; i < scheduler.task_count; i++)
     {
-        Task_t* t = &scheduler.tasks[i];
+        Task_t *t = &scheduler.tasks[i];
         if (now - t->last_tick >= t->period_ms)
         {
             t->last_tick += t->period_ms;

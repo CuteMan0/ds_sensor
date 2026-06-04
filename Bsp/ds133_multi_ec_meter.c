@@ -1,7 +1,7 @@
-/*Â§öÈáèÁ®ãÁîµÂØºÁéá‰º†ÊÑüÂô® 0-20mS/cm„ÄÅ0-2mS/cm„ÄÅ0-0.2mS/cm*/
-#include "ds132_ec_meter.h"
+/*∂‡¡ø≥ÃµÁµº¬ ¥´∏–∆˜ 0-20mS/cm°¢0-2mS/cm°¢0-0.2mS/cm*/
+#include "ds133_multi_ec_meter.h"
 
-#if DS_SENSOR == 132
+#if DS_SENSOR == 133
 
 #include "stc32g.h"
 #include "STC32G_Delay.h"
@@ -13,24 +13,36 @@
 #include "led_drive.h"
 
 #define VIN 0.19f
-#define AVG_G 0.56f // Êï¥ÊµÅËΩ¨Âπ≥ÂùáÂÄºÂ¢ûÁõäÁ≥ªÊï∞
+#define AVG_G 0.56f // ’˚¡˜◊™∆Ωæ˘÷µ‘ˆ“Êœµ ˝
 
 // sw for range
 sbit _C = P1 ^ 6;
 sbit _B = P2 ^ 5;
 sbit _A = P2 ^ 4;
+// sw for Rs
+sbit IN1 = P4 ^ 1;
+sbit IN2 = P4 ^ 0;
 
 #define SEL(x, y, z) \
     _C = (x);        \
     _B = (y);        \
     _A = (z)
 
-#define REF_R0 SEL(0, 0, 0)
-#define REF_R1 SEL(1, 1, 1)
-#define REF_R2 SEL(1, 1, 0)
-#define REF_R3 SEL(1, 0, 0)
-#define REF_R4 SEL(1, 0, 1)
-#define REF_R5 SEL(0, 1, 0)
+#define CTL(x, y) \
+    IN2 = (x);    \
+    IN1 = (y)
+
+#define REF_R0 SEL(0, 0, 0) // X0    0V
+#define REF_R1 SEL(1, 1, 1) // X7  0.299V
+#define REF_R2 SEL(1, 1, 0) // X6 0.888V
+#define REF_R3 SEL(1, 0, 0) // X4  1.418V
+#define REF_R4 SEL(1, 0, 1) // X5  1.6455V “Ï≥£÷µ
+#define REF_R5 SEL(0, 1, 0) // X2  2.507V
+
+#define COM_OFF CTL(0, 0)
+#define COM_NO0 CTL(0, 1)
+#define COM_NO1 CTL(1, 0)
+#define COM_NO2 CTL(1, 1)
 
 u16 range_change_val[10] = {
     807,
@@ -51,18 +63,20 @@ float offset_val[5] = {
     1.896f,
     2.43f};
 
-static volatile float Q = 1.0f;   // ÁîµÂØºÊ±†Â∏∏Êï∞
-volatile float res_fb = 0.82f;    // ÂèçÈ¶àÁîµÈòª kohm
-volatile float offset_vol = 0.0f; // ÂáèÊ≥ïÂô®ÂÅèÁßªÈáè
+static volatile float Q = 1.0f;   // µÁµº≥ÿ≥£ ˝
+volatile float res_fb = 0.82f;    // ∑¥¿°µÁ◊Ë kohm
+volatile float offset_vol = 0.0f; // ºı∑®∆˜∆´“∆¡ø
 
 u8 flag_backup = 0;
-// Ê†°ÂáÜÂª∂ËøüÂ§ÑÁêÜÂèòÈáè
+// –£◊º—”≥Ÿ¥¶¿Ì±‰¡ø
 static volatile u8 calibration_pending = 0;
 
 ADC_Handle_t adc0;
 ADC_Handle_t adc1;
 
+static void Set_EC_Range(EC_Range_t range);
 static void Auto_Switcher(void);
+static void EC_Range_Manager(void);
 static void Scan_Key(void);
 
 void ec_init(void)
@@ -72,15 +86,15 @@ void ec_init(void)
     adc_init(&adc0, 0, 3.3f);
     adc_init(&adc1, 1, 3.3f);
 
-    P1_MODE_OUT_PP(GPIO_Pin_6); // P1.6ËÆæÁΩÆ‰∏∫Êé®ÊåΩËæìÂá∫(ÂàáÊç¢ÈáèÁ®ã)
-    P2_MODE_OUT_PP(GPIO_Pin_4); // P2.4ËÆæÁΩÆ‰∏∫Êé®ÊåΩËæìÂá∫(ÂàáÊç¢ÈáèÁ®ã)
-    P2_MODE_OUT_PP(GPIO_Pin_5); // P2.5ËÆæÁΩÆ‰∏∫Êé®ÊåΩËæìÂá∫(ÂàáÊç¢ÈáèÁ®ã)
+    P1_MODE_OUT_PP(GPIO_Pin_6); // P1.6…Ë÷√Œ™Õ∆ÕÏ ‰≥ˆ(«–ªª¡ø≥Ã)
+    P2_MODE_OUT_PP(GPIO_Pin_4); // P2.4…Ë÷√Œ™Õ∆ÕÏ ‰≥ˆ(«–ªª¡ø≥Ã)
+    P2_MODE_OUT_PP(GPIO_Pin_5); // P2.5…Ë÷√Œ™Õ∆ÕÏ ‰≥ˆ(«–ªª¡ø≥Ã)
 
-    P4_MODE_OUT_PP(GPIO_Pin_1); // P4.1ËÆæÁΩÆ‰∏∫Êé®ÊåΩËæìÂá∫(ËÆæÁΩÆÈááÊ†∑ÁîµÈòª)
-    P4_MODE_OUT_PP(GPIO_Pin_0); // P4.0ËÆæÁΩÆ‰∏∫Êé®ÊåΩËæìÂá∫(ËÆæÁΩÆÈááÊ†∑ÁîµÈòª)
+    P4_MODE_OUT_PP(GPIO_Pin_1); // P4.1…Ë÷√Œ™Õ∆ÕÏ ‰≥ˆ(…Ë÷√≤…—˘µÁ◊Ë)
+    P4_MODE_OUT_PP(GPIO_Pin_0); // P4.0…Ë÷√Œ™Õ∆ÕÏ ‰≥ˆ(…Ë÷√≤…—˘µÁ◊Ë)
 
-    REF_R0; // ËÆæÁΩÆÂü∫ÂáÜ‰∏∫GND
-
+    REF_R0; // …Ë÷√ª˘◊ºŒ™GND
+    Set_EC_Range(EC_RANGE_20MS);
     EEPROM_read_n(0, tmp, sizeof(tmp));
     if (tmp[0] != 0xff && tmp[1] != 0xff)
     {
@@ -93,33 +107,19 @@ void ec_read(float *ec_val)
     float adc_vol = 0.0f;
     *ec_val = 0.0f;
 
-    if (1 == flag_key) // ÂºÄÂßãEEPROMÂ§á‰ªΩ
+    if (1 == flag_key) // ø™ ºEEPROM±∏∑›
     {
         flag_key = 0;
 #define K 12.85f                                  // mS/cm
-        adc_vol = adc_get(&adc1) / 2;             // Ëé∑ÂèñÊúÄÂàùÂ§ÑÁêÜÁöÑ‰ø°Âè∑ÁîµÂéã
+        adc_vol = adc_get(&adc1) / 2;             // ªÒ»°◊Ó≥ı¥¶¿Ìµƒ–≈∫≈µÁ—π
         Q = (K * res_fb * VIN * AVG_G) / adc_vol; // new Q value
-
-        // LEDÊåáÁ§∫
-        DIS_LED_Just_One_Enable(2);
-    }
-    else if (2 == flag_key) // ÈïøÊåâÔºöÊÅ¢Â§çÂá∫ÂéÇËÆæÁΩÆ
-    {
-        flag_key = 0;
-
-        // ÊÅ¢Â§çÂá∫ÂéÇQÁÇπ
-        Q = 1.0f;
-        calibration_pending = 1;
-
-        // LEDÊåáÁ§∫ÊÅ¢Â§ç
-        delay_ms(100);
-        DIS_LED_Just_One_Enable(3);
     }
 
-    Auto_Switcher(); // Ëá™Âä®ÂàáÊç¢ÈáèÁ®ã
+    Auto_Switcher(); // ◊‘∂Ø«–ªª¡ø≥Ã
+    EC_Range_Manager();
 
     adc_vol = (adc_get(&adc0) / 5.0f + offset_vol) / 2.0f;
-    *ec_val = adc_vol * Q / (res_fb * VIN * AVG_G); // k = Q/(R*|Vin|)*Vout
+    *ec_val = adc_vol * Q / (res_fb * VIN * AVG_G); // k = Q/(R*|Vin|)*Vout,Vin = Vp * 2/pi
 }
 
 void ProcessCalibration(void)
@@ -129,7 +129,7 @@ void ProcessCalibration(void)
     {
         calibration_pending = 0;
 
-        // ÂÜôÂÖ•EEPROMÔºàËøôÈáåËøá‰∫éËÄóÊó∂ÔºåÂú®‰ΩéÈ¢ë‰ªªÂä°‰∏≠ÊâßË°åÔºâ
+        // –¥»ÎEEPROM£®’‚¿Ôπ˝”⁄∫ƒ ±£¨‘⁄µÕ∆µ»ŒŒÒ÷–÷¥––£©
         tmp[0] = (u16)(Q * 1000) >> 8;
         tmp[1] = (u16)(Q * 1000);
         EEPROM_write_n(0, tmp, sizeof(tmp));
@@ -144,6 +144,10 @@ void Range_2(void); // 6.4-10.4
 void Range_3(void); // 9.6-13.6
 void Range_4(void); // 12.8-16.8
 void Range_5(void); // 16.0-20.0
+
+static EC_Range_t ec_range = EC_RANGE_20MS;
+static u16 range0_cnt = 0;
+static u16 range5_cnt = 0;
 
 static eEvent eCurrentEvent = EVT_NO_EVENT;
 static pfState pfCurrentState = Range_0;
@@ -165,6 +169,47 @@ StmRow_t stm[10] = {
     {Range_4, EVT_UnderRange, Range_3},
 
     {Range_5, EVT_UnderRange, Range_4}};
+
+static void Set_EC_Range(EC_Range_t range)
+{
+    ec_range = range;
+
+    switch (range)
+    {
+    case EC_RANGE_20MS:
+
+        COM_NO2;
+        res_fb = 0.82f;
+        DIS_LED_Just_One_Enable(1);
+        break;
+
+    case EC_RANGE_2MS:
+
+        COM_NO1;
+        res_fb = 8.2f;
+        DIS_LED_Just_One_Enable(2);
+        break;
+
+    case EC_RANGE_0P2MS:
+
+        COM_NO0;
+        res_fb = 82.0f;
+        DIS_LED_Just_One_Enable(3);
+        break;
+    }
+
+    range0_cnt = 0;
+    range5_cnt = 0;
+
+    /* ÷ÿ–¬¥”◊Ó–°∆´÷√ø™ º */
+    pfCurrentState = Range_0;
+    eCurrentEvent = EVT_NO_EVENT;
+
+    REF_R0;
+    offset_vol = 0.0f;
+
+    delay_ms(1);
+}
 
 static void Auto_Switcher(void)
 {
@@ -190,7 +235,79 @@ static void Auto_Switcher(void)
         pfCurrentState();
     }
 }
+static void EC_Range_Manager(void)
+{
+    switch (ec_range)
+    {
+    case EC_RANGE_20MS:
 
+        if (pfCurrentState == Range_0)
+        {
+            range0_cnt++;
+
+            if (range0_cnt >= RANGE_SWITCH_CNT)
+            {
+                Set_EC_Range(EC_RANGE_2MS);
+            }
+        }
+        else
+        {
+            range0_cnt = 0;
+        }
+
+        break;
+
+    case EC_RANGE_2MS:
+
+        if (pfCurrentState == Range_0)
+        {
+            range0_cnt++;
+
+            if (range0_cnt >= RANGE_SWITCH_CNT)
+            {
+                Set_EC_Range(EC_RANGE_0P2MS);
+            }
+        }
+        else
+        {
+            range0_cnt = 0;
+        }
+
+        if (pfCurrentState == Range_5)
+        {
+            range5_cnt++;
+
+            if (range5_cnt >= RANGE_SWITCH_CNT)
+            {
+                Set_EC_Range(EC_RANGE_20MS);
+            }
+        }
+        else
+        {
+            range5_cnt = 0;
+        }
+
+        break;
+
+    case EC_RANGE_0P2MS:
+
+        if (pfCurrentState == Range_5)
+        {
+            range5_cnt++;
+
+            if (range5_cnt >= RANGE_SWITCH_CNT)
+            {
+                Set_EC_Range(EC_RANGE_2MS);
+            }
+        }
+        else
+        {
+            range5_cnt = 0;
+        }
+
+        break;
+    }
+}
 #define K2ADC(X) (u16)(res_fb * VIN * (X) / Q * 1240.9f)
 void Range_0(void)
 {
@@ -288,3 +405,13 @@ void Range_5(void)
 }
 
 #endif
+
+/*
+ ◊œ»0-20ms/cm≤‚¡ø,res = 820,com_no2
+µ±Ω¯»Î0-4¡ø≥Ã
+«“≤‚¡ø–≈∫≈<1.8ms/cm£¨res = 8.2k,com_no1
+µ±Ω¯»Î0-0.4¡ø≥Ã
+«“≤‚¡ø–≈∫≈<0.18ms/cm£¨res = 82k,com_no0
+
+≥Ã–Úº‹ππ «0-20£¨0-2£¨0-0.2»˝∏ˆ¥Û¡ø≥Ã£¨√ø∏ˆ¡ø≥Ãƒ⁄ªÆ∑÷5∏ˆƒ£ƒ‚¡ø≥ÃΩ¯––æ´œ∏ªØ≤…—˘£®Auto_Switcher“— µœ÷£©°£œ÷‘⁄–Ë“™º”»Î»˝∏ˆ¥Û¡ø≥Ãµƒ«–ªª¬ﬂº≠°£
+*/

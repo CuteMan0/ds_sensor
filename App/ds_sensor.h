@@ -1,7 +1,7 @@
 #ifndef __DS_SENSOR_H
 #define __DS_SENSOR_H
 
-#define DS_SENSOR 138
+#define DS_SENSOR 133
 
 #if DS_SENSOR == 112
 #include "bsp_mlx90614.h"
@@ -17,6 +17,12 @@
 
 #if DS_SENSOR == 132
 #include "ds132_ec_meter.h"
+#define ds_init() ec_init()
+#define ds_update(x) ec_read(x)
+#endif
+
+#if DS_SENSOR == 133
+#include "ds133_multi_ec_meter.h"
 #define ds_init() ec_init()
 #define ds_update(x) ec_read(x)
 #endif
@@ -44,6 +50,5 @@
 #define ds_init() O2_Init()
 #define ds_update(x) O2_Read(x)
 #endif
-
 
 #endif

@@ -1,3 +1,4 @@
+/*红外温度传感器 */
 #include "bsp_mlx90614.h"
 
 #if DS_SENSOR == 112

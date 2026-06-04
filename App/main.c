@@ -42,6 +42,8 @@ void task_printf(void)
     printf("ph:%.2f\n", avg_filter_update(&filter, dat_for_printf));
 #elif DS_SENSOR == 132
     printf("EC:%.4f\n", avg_filter_update(&filter, dat_for_printf));
+#elif DS_SENSOR == 133
+    printf("EC:%.4f\n", avg_filter_update(&filter, dat_for_printf));
 #elif DS_SENSOR == 135
     printf("tur:%.3f\n", avg_filter_update(&filter, dat_for_printf));
 #elif DS_SENSOR == 136

@@ -1,1 +1,0 @@
-"USER\DS131pH.c" XSMALL INTR2 BROWSE INCDIR(.\USER;.\Library) DEBUG PRINT(.\Listings\DS131pH.lst) TABS (2) OBJECT(.\Objects\DS131pH.obj)

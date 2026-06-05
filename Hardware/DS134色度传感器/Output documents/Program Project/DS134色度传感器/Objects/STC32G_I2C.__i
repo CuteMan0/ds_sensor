@@ -1,1 +1,0 @@
-"Library\STC32G_I2C.c" XSMALL INTR2 BROWSE INCDIR(.\USER;.\Library) DEBUG PRINT(.\Listings\STC32G_I2C.lst) OBJECT(.\Objects\STC32G_I2C.obj)

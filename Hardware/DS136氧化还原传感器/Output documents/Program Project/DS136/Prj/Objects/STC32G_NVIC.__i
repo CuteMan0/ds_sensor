@@ -1,1 +1,0 @@
-"..\Driver\Library\STC32G_NVIC.c" XSMALL INTR2 BROWSE INCDIR(..\App;..\Driver;..\Driver\Library;..\Driver\Tool) DEBUG PRINT(.\Listings\STC32G_NVIC.lst) OBJECT(.\Objects\STC32G_NVIC.obj)

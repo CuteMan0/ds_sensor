@@ -1,1 +1,0 @@
-"..\Driver\Tool\lowpass_filter.c" XSMALL INTR2 BROWSE INCDIR(..\App;..\Driver;..\Driver\Library;..\Driver\Tool) DEBUG PRINT(.\Listings\lowpass_filter.lst) OBJECT(.\Objects\lowpass_filter.obj)

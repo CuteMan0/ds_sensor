@@ -1,1 +1,0 @@
-"Library\STC32G_SPI_Isr.c" XSMALL INTR2 BROWSE INCDIR(.\USER;.\Library) DEBUG PRINT(.\Listings\STC32G_SPI_Isr.lst) TABS (2) OBJECT(.\Objects\STC32G_SPI_Isr.obj)

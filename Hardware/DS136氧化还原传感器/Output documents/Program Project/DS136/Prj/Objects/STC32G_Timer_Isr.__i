@@ -1,1 +1,0 @@
-"..\Driver\Library\STC32G_Timer_Isr.c" XSMALL INTR2 BROWSE INCDIR(..\App;..\Driver;..\Driver\Library;..\Driver\Tool) DEBUG PRINT(.\Listings\STC32G_Timer_Isr.lst) OBJECT(.\Objects\STC32G_Timer_Isr.obj)

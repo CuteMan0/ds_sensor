@@ -1,0 +1,92 @@
+C251 COMPILER V5.60.0,  main                                                               19/05/26  11:10:48  PAGE 1   
+
+
+C251 COMPILER V5.60.0, COMPILATION OF MODULE main
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE USER\main.c XSMALL INTR2 BROWSE INCDIR(.\USER;.\Library) DEBUG PRINT(.
+                    -\Listings\main.lst) OBJECT(.\Objects\main.obj) 
+
+stmt  level    source
+
+    1          // 测试工作频率为 24 MHz
+    2          #include <string.h>
+    3          //------------------------------STC函数库文件--------------------------
+    4          #include "stc32g.h"
+    5          #include "stc32_stc8_usb.h"
+    6          #include "STC32G_GPIO.h"
+    7          #include "STC32G_NVIC.h"
+    8          #include "STC32G_Delay.h"
+    9          #include "STC32G_Switch.h"
+   10          //------------------------------用户文件------------------------------
+   11          #include "USB_CDC_drive.h"
+   12          #include "COMMON_drive.h"
+   13          #include "SYS_drive.h"
+   14          #include "KEY_drive.h"
+   15          #include "LED_drive.h"
+   16          #include "DS134_Color_drive.h"
+   17          
+   18          extern unsigned long Adj_num;
+   19          extern unsigned char Transmission_mode_flag;
+   20          
+   21          char test[200] = {0};
+   22          
+   23          float dat[3];
+   24          
+   25          void main(void)
+   26          {
+   27   1          WTST = 0;  // 设置程序指令延时参数，赋值为0可将CPU执行指令的速度设置为最快
+   28   1          EAXFR = 1; // 扩展寄存器(XFR)访问使能
+   29   1          CKCON = 0; // 提高访问XRAM速度
+   30   1      
+   31   1          // 基础功能初始化
+   32   1      //    DIS_LED_init();
+   33   1      //    DIS_LED_ALL_off();
+   34   1          
+   35   1      //    KEY_GPIO_init(); 
+   36   1          USB_CDC_Initialization(); // USB初始化
+   37   1      
+   38   1          //传感器初始化
+   39   1          DS134_Init();
+   40   1          
+   41   1          EA = 1; // 开总中断
+   42   1      
+   43   1          while (DeviceState != DEVSTATE_CONFIGURED)
+   44   1                          ; // 等待 USB 完成配置
+   45   1          while (1)
+   46   1          {
+   47   2              DS134_GetRGB(dat);
+   48   2              sprintf(test,"Red:%.2f%,Green:%.2f%,Blue:%.2f%\n",
+   49   2              dat[0],dat[1],dat[2]);
+   50   2              USB_SendData(&test,strlen(test));
+*** WARNING C98 IN LINE 50 OF USER\main.c: parameter 1: pointer to different objects
+*** WARNING C91 IN LINE 50 OF USER\main.c: '&': pointer to different objects
+   51   2                  
+   52   2              delay_ms(500);
+   53   2          }
+   54   1      }
+
+
+C251 COMPILER V5.60.0,  main                                                               19/05/26  11:10:48  PAGE 2   
+
+Module Information          Static   Overlayable
+------------------------------------------------
+  code size            =        93     ------
+  ecode size           =    ------     ------
+  data size            =    ------     ------
+  idata size           =    ------     ------
+  pdata size           =    ------     ------
+  xdata size           =    ------     ------
+  xdata-const size     =    ------     ------
+  edata size           =       212     ------
+  bit size             =    ------     ------
+  ebit size            =    ------     ------
+  bitaddressable size  =    ------     ------
+  ebitaddressable size =    ------     ------
+  far data size        =    ------     ------
+  huge data size       =    ------     ------
+  const size           =    ------     ------
+  hconst size          =       238     ------
+End of Module Information.
+
+
+C251 COMPILATION COMPLETE.  2 WARNING(S),  0 ERROR(S)

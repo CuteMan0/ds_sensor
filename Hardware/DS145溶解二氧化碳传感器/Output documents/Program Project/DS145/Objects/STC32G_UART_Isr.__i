@@ -1,0 +1,1 @@
+"Library\STC32G_UART_Isr.c" XSMALL INTR2 BROWSE INCDIR(.\USER;.\Library) DEBUG PRINT(.\Listings\STC32G_UART_Isr.lst) TABS (2) OBJECT(.\Objects\STC32G_UART_Isr.obj)

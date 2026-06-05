@@ -1,0 +1,120 @@
+C251 COMPILER V5.60.0,  task                                                               04/11/25  10:43:30  PAGE 1   
+
+
+C251 COMPILER V5.60.0, COMPILATION OF MODULE task
+OBJECT MODULE PLACED IN .\Objects\task.obj
+COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE ..\Driver\Tool\task.c XSMALL INTR2 BROWSE INCDIR(..\App;..\Driver;..\D
+                    -river\Library;..\Driver\Tool) DEBUG PRINT(.\Listings\task.lst) OBJECT(.\Objects\task.obj) 
+
+stmt  level    source
+
+    1          #include "task_scheduler.h"
+*** ERROR C318 IN LINE 1 OF ..\Driver\Tool\task.c: can't open file 'task_scheduler.h'
+    2          
+    3          static TaskScheduler_t scheduler;
+*** WARNING C34 IN LINE 3 OF ..\Driver\Tool\task.c: 'scheduler': missing declaration specifiers
+*** ERROR C42 IN LINE 3 OF ..\Driver\Tool\task.c: 'scheduler': not in formal parameter list
+    4          static volatile u32 sys_tick_ms = 0;
+*** ERROR C29 IN LINE 4 OF ..\Driver\Tool\task.c: formal/parameter has illegal storage class
+*** ERROR C33 IN LINE 4 OF ..\Driver\Tool\task.c: 'u32': invalid storage class
+*** ERROR C25 IN LINE 4 OF ..\Driver\Tool\task.c: syntax error near 'sys_tick_ms'
+    5          static TIM_Handle_t tim0;
+*** ERROR C29 IN LINE 5 OF ..\Driver\Tool\task.c: formal/parameter has illegal storage class
+*** ERROR C33 IN LINE 5 OF ..\Driver\Tool\task.c: 'TIM_Handle_t': invalid storage class
+*** ERROR C25 IN LINE 5 OF ..\Driver\Tool\task.c: syntax error near 'tim0'
+*** ERROR C33 IN LINE 5 OF ..\Driver\Tool\task.c: 'tim0': invalid storage class
+    6          //------------------------------------------------------------
+    7          // 初始化任务调度器
+    8          //------------------------------------------------------------
+    9          void task_scheduler_init(void)// TIM_Handle_t *htim
+   10          {
+*** ERROR C42 IN LINE 10 OF ..\Driver\Tool\task.c: 'task_scheduler_init': not in formal parameter list
+*** ERROR C25 IN LINE 10 OF ..\Driver\Tool\task.c: syntax error near '{'
+   11              scheduler.task_count = 0;
+   12              scheduler.htim = &tim0;
+   13              sys_tick_ms = 0;
+   14          
+   15          //    tim_init(htim);
+   16          //    tim_clr(htim);
+   17          //    tim_start(htim);
+   18          //    tim_intr(htim);
+   19          
+   20              // 默认 TIM0 设置
+   21              tim0.id = 0;
+   22              tim0.clk_mode = 1;   // 1T 模式
+   23              tim0.psr = 0;
+   24              tim0.arr = 24000;    // 1ms tick at 24MHz
+   25              tim0.ticks = 0;
+   26              
+   27              tim_init(&tim0);
+   28              tim_clr(&tim0);
+   29              tim_start(&tim0);
+   30              tim_intr(&tim0);
+   31          }
+   32          
+   33          //------------------------------------------------------------
+   34          // 注册一个周期任务
+   35          //------------------------------------------------------------
+   36          u8 task_register(TaskFunc_t func, u32 period_ms, u8 priority)
+   37          {
+   38              u8 id = scheduler.task_count;
+   39              if (id >= MAX_TASKS)
+   40                  return 0xFF;
+   41          
+   42              scheduler.tasks[id].id = id;
+   43              scheduler.tasks[id].priority = priority;
+   44              scheduler.tasks[id].period_ms = period_ms;
+   45              scheduler.tasks[id].last_tick = 0;
+   46              scheduler.tasks[id].func = func;
+C251 COMPILER V5.60.0,  task                                                               04/11/25  10:43:30  PAGE 2   
+
+   47          
+   48              scheduler.task_count++;
+   49              return id;
+   50          }
+   51          
+   52          //------------------------------------------------------------
+   53          // 中断调用，系统时基更新
+   54          //------------------------------------------------------------
+   55          void task_scheduler_tick_isr(void)
+   56          {
+   57              sys_tick_ms++;
+   58          }
+   59          
+   60          //------------------------------------------------------------
+   61          // 主循环中调用，调度任务执行
+   62          //------------------------------------------------------------
+   63          void task_scheduler_run(void)
+   64          {
+   65              u8 i, j;
+   66              Task_t *ready_list[MAX_TASKS];
+*** ERROR C67 IN LINE 66 OF ..\Driver\Tool\task.c: 'MAX_TASKS': undefined identifier
+*** ERROR C42 IN LINE 66 OF ..\Driver\Tool\task.c: 'ready_list': not in formal parameter list
+   67              u8 ready_count = 0;
+*** WARNING C34 IN LINE 67 OF ..\Driver\Tool\task.c: 'u8': missing declaration specifiers
+*** ERROR C42 IN LINE 67 OF ..\Driver\Tool\task.c: 'u8': not in formal parameter list
+*** ERROR C25 IN LINE 67 OF ..\Driver\Tool\task.c: syntax error near 'ready_count'
+*** ERROR C142 IN LINE 67 OF ..\Driver\Tool\task.c: illegal initialization
+   68              u32 now = sys_tick_ms;
+*** WARNING C34 IN LINE 68 OF ..\Driver\Tool\task.c: 'u32': missing declaration specifiers
+*** ERROR C42 IN LINE 68 OF ..\Driver\Tool\task.c: 'u32': not in formal parameter list
+*** ERROR C25 IN LINE 68 OF ..\Driver\Tool\task.c: syntax error near 'now'
+*** ERROR C142 IN LINE 68 OF ..\Driver\Tool\task.c: illegal initialization
+   69          
+   70              for (i = 0; i < scheduler.task_count; i++)
+*** ERROR C25 IN LINE 70 OF ..\Driver\Tool\task.c: syntax error near 'for'
+*** ERROR C25 IN LINE 70 OF ..\Driver\Tool\task.c: syntax error near '='
+*** ERROR C25 IN LINE 70 OF ..\Driver\Tool\task.c: syntax error near '<'
+*** ERROR C25 IN LINE 70 OF ..\Driver\Tool\task.c: syntax error near '.'
+*** WARNING C34 IN LINE 70 OF ..\Driver\Tool\task.c: 'task_count': missing declaration specifiers
+*** ERROR C25 IN LINE 70 OF ..\Driver\Tool\task.c: syntax error near '++'
+   71              {
+   72                  Task_t *t = &scheduler.tasks[i];
+*** ERROR C142 IN LINE 72 OF ..\Driver\Tool\task.c: illegal initialization
+*** ERROR C67 IN LINE 72 OF ..\Driver\Tool\task.c: 'scheduler': undefined identifier
+*** ERROR C67 IN LINE 72 OF ..\Driver\Tool\task.c: 'i': undefined identifier
+   73                  if (now - t->last_tick >= t->period_ms)
+*** ERROR C25 IN LINE 73 OF ..\Driver\Tool\task.c: syntax error near 'if'
+*** ERROR C7 IN LINE 73 OF ..\Driver\Tool\task.c: compilation aborted
+
+C251 COMPILATION COMPLETE.  4 WARNING(S),  29 ERROR(S)

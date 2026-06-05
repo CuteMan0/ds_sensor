@@ -1,0 +1,19 @@
+Change Component DesignItemId : Designator=R3 Old DesignItemId=Chip 30K 1/16W ¡À1£¥ 0603 New DesignItemId=Chip 1.5K 1/16W ¡À1£¥ 0603
+Change Component DesignItemId : Designator=R6 Old DesignItemId=Chip 30K 1/16W ¡À1£¥ 0603 New DesignItemId=Chip 1.5K 1/16W ¡À1£¥ 0603
+Change Component DesignItemId : Designator=R5 Old DesignItemId=Chip 30K 1/16W ¡À1£¥ 0603 New DesignItemId=Chip 1K 1/16W ¡À1£¥ 0603
+Change Component DesignItemId : Designator=R7 Old DesignItemId=Chip 30K 1/16W ¡À1£¥ 0603 New DesignItemId=Chip 1K 1/16W ¡À1£¥ 0603
+Change Component DesignItemId : Designator=C2 Old DesignItemId=MLCC 100nF 50V ¡À10£¥ 0603 New DesignItemId=MLCC 3.3uF 50V ¡À10£¥ 0603
+Change Component DesignItemId : Designator=C3 Old DesignItemId=MLCC 100nF 50V ¡À10£¥ 0603 New DesignItemId=MLCC 3.3uF 50V ¡À10£¥ 0603
+Change Component DesignItemId : Designator=C4 Old DesignItemId=MLCC 100nF 50V ¡À10£¥ 0603 New DesignItemId=MLCC 3.3uF 50V ¡À10£¥ 0603
+Change Component Footprint: Designator=U4 Old Footprint=SO-8 New Footprint=SOIC-8-208
+Change Component Comment : Designator=U4 Old Comment=CA3140 New Comment=
+Change Component Comment : Designator=R2 Old Comment=Chip 22R 1/16W ¡À1£¥ 0603 New Comment=
+Change Component Comment : Designator=C9 Old Comment=MLCC 2.2nF 50V ¡À10£¥ 0603 New Comment=
+Change Component Comment : Designator=C2 Old Comment=SMDCAP00013 New Comment=MLCC 3.3uF 50V ¡À10£¥ 0603
+Change Component Comment : Designator=C3 Old Comment=SMDCAP00013 New Comment=MLCC 3.3uF 50V ¡À10£¥ 0603
+Change Component Comment : Designator=C4 Old Comment=SMDCAP00013 New Comment=MLCC 3.3uF 50V ¡À10£¥ 0603
+Change Component Comment : Designator=R5 Old Comment=SMDRES00060 New Comment=SMDRES00034
+Change Component Comment : Designator=R7 Old Comment=SMDRES00060 New Comment=SMDRES00034
+Change Component Comment : Designator=R3 Old Comment=SMDRES00060 New Comment=SMDRES00039
+Change Component Comment : Designator=R6 Old Comment=SMDRES00060 New Comment=SMDRES00039
+Added Room: Name=DS131-1.0-BpH´«¸ÐÆ÷

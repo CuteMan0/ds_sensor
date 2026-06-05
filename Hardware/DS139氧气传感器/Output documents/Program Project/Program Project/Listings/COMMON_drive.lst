@@ -1,0 +1,71 @@
+C251 COMPILER V5.60.0,  COMMON_drive                                                       26/05/26  14:30:01  PAGE 1   
+
+
+C251 COMPILER V5.60.0, COMPILATION OF MODULE COMMON_drive
+OBJECT MODULE PLACED IN .\Objects\COMMON_drive.obj
+COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE USER\COMMON_drive.c XSMALL INTR2 BROWSE INCDIR(.\USER;.\Library) DEBUG
+                    - PRINT(.\Listings\COMMON_drive.lst) OBJECT(.\Objects\COMMON_drive.obj) 
+
+stmt  level    source
+
+    1          #include "config.h"
+    2          
+    3          #include "STC32G_GPIO.h"
+    4          #include "STC32G_NVIC.h"
+    5          #include "STC32G_Delay.h"
+    6          #include "STC32G_Switch.h"
+    7          #include "LED_drive.h"
+    8          #include "COMMON_drive.h"
+    9          #include "stc32_stc8_usb.h"
+   10          
+   11          
+   12          
+   13          //========================================================================
+   14          // 函数: void Wireless_transmission_USB_USB(void)
+   15          // 描述: USB_USB有线传输模式.
+   16          // 参数: none.
+   17          // 返回: none.
+   18          // 版本: V1.0, 2024-07-01
+   19          void Wireless_transmission_USB_USB(void)
+   20          {
+   21   1              
+   22   1                      if (bUsbOutReady)       //当硬件接收完成上位机通过串口助手发送数据后会自动将 bUsbOutReady 置 1
+   23   1                                                                                                      //接收的数据字节数保存在 OutNumber 变量中
+   24   1                                                                                                      //接收的数据保存在 UsbOutBuffer 缓冲区
+   25   1                      {               
+   26   2                                      USB_SendData(UsbOutBuffer,OutNumber); //使用 USB_SendData 库函数可向上位机发送数据
+   27   2                                                                                                                                                                                              //这里的测试代码为将 接收数据原样返回                           
+   28   2                                      usb_OUT_done();         //处理完成接收的数据后  //调用 usb_OUT_done 准备 接收 下一笔数据
+   29   2                      }       
+   30   1      }
+   31          
+   32          
+   33          
+   34          
+   35          
+   36          
+   37          
+
+
+Module Information          Static   Overlayable
+------------------------------------------------
+  code size            =        24     ------
+  ecode size           =    ------     ------
+  data size            =    ------     ------
+  idata size           =    ------     ------
+  pdata size           =    ------     ------
+  xdata size           =    ------     ------
+  xdata-const size     =    ------     ------
+  edata size           =    ------     ------
+  bit size             =    ------     ------
+  ebit size            =    ------     ------
+  bitaddressable size  =    ------     ------
+  ebitaddressable size =    ------     ------
+  far data size        =    ------     ------
+  huge data size       =    ------     ------
+  const size           =    ------     ------
+  hconst size          =    ------     ------
+End of Module Information.
+
+
+C251 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

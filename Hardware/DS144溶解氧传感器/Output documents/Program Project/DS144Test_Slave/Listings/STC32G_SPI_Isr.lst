@@ -1,0 +1,51 @@
+C251 COMPILER V5.60.0,  STC32G_SPI_Isr                                                     08/05/25  18:16:57  PAGE 1   
+
+
+C251 COMPILER V5.60.0, COMPILATION OF MODULE STC32G_SPI_Isr
+OBJECT MODULE PLACED IN .\Objects\STC32G_SPI_Isr.obj
+COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE Library\STC32G_SPI_Isr.c XSMALL INTR2 BROWSE INCDIR(.\USER;.\Library) 
+                    -DEBUG PRINT(.\Listings\STC32G_SPI_Isr.lst) TABS(2) OBJECT(.\Objects\STC32G_SPI_Isr.obj) 
+
+stmt  level    source
+
+    1          #include  "STC32G_SPI.h"
+    2          #include "COMMON_drive.h"
+    3          #include "LED_drive.h"
+    4          #include  "UART_drive.h"
+*** ERROR C318 IN LINE 4 OF Library\STC32G_SPI_Isr.c: can't open file 'UART_drive.h'
+    5          #include  "STC32G_UART.h"
+    6          
+    7          //========================================================================
+    8          //                               本地变量声明
+    9          //========================================================================
+   10          
+   11          u8  SPI_RxCnt;
+   12          
+   13          //========================================================================
+   14          // 函数: SPI_ISR_Handler
+   15          // 描述: SPI中断函数.
+   16          // 参数: none.
+   17          // 返回: none.
+   18          // 版本: V1.0, 2020-09-23
+   19          //========================================================================
+   20          void SPI_ISR_Handler() interrupt SPI_VECTOR
+   21          {   
+   22   1          BELL =~BELL;  //测试用      
+   23   1          if(MSTR)  //主机模式
+   24   1          {
+   25   2              B_SPI_Busy = 0;   //主机模式，发送完成后发送忙标志清零  
+   26   2          }
+   27   1          else              //从机模式
+   28   1          {   
+   29   2              if(SPI_RxCnt >= SPI_BUF_LENTH)  
+   30   2              {     
+   31   3                  SPI_RxCnt = 0;
+   32   3              }
+   33   2              SPI_RxBuffer[SPI_RxCnt++] = SPDAT;
+   34   2              SPI_RxTimerOut = 5;         
+   35   2          }
+   36   1          SPI_ClearFlag();  //清0 SPIF和WCOL标志
+   37   1      }
+   38          
+
+C251 COMPILATION COMPLETE.  0 WARNING(S),  1 ERROR(S)

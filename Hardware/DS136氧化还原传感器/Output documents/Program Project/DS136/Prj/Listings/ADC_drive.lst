@@ -1,0 +1,88 @@
+C251 COMPILER V5.60.0,  ADC_drive                                                          19/05/26  14:35:42  PAGE 1   
+
+
+C251 COMPILER V5.60.0, COMPILATION OF MODULE ADC_drive
+OBJECT MODULE PLACED IN .\Objects\ADC_drive.obj
+COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE ..\Driver\ADC_drive.c XSMALL INTR2 BROWSE INCDIR(..\App;..\Driver;..\D
+                    -river\Library;..\Driver\Tool) DEBUG PRINT(.\Listings\ADC_drive.lst) OBJECT(.\Objects\ADC_drive.obj) 
+
+stmt  level    source
+
+    1          #include "ADC_drive.h"
+    2          
+    3          #include "STC32G_ADC.h"
+    4          #include "STC32G_GPIO.h"
+    5          
+    6          void adc_init(ADC_Handle_t* hadc, u8 channel, float vref)
+    7          {  
+    8   1          ADC_InitTypeDef ADC_InitSruct;
+    9   1      
+   10   1          if (!hadc)
+   11   1                      return;
+   12   1          
+   13   1          switch (channel)
+   14   1          {
+   15   2              case 0: P1_MODE_IN_HIZ(1 << 0); break;
+   16   2              case 1: P1_MODE_IN_HIZ(1 << 1); break;
+   17   2              case 2: P1_MODE_IN_HIZ(1 << 2); break;
+   18   2              case 3: P1_MODE_IN_HIZ(1 << 3); break;
+   19   2              case 4: P1_MODE_IN_HIZ(1 << 4); break;
+   20   2              case 5: P1_MODE_IN_HIZ(1 << 5); break;
+   21   2              case 6: P1_MODE_IN_HIZ(1 << 6); break;
+   22   2              case 7: P1_MODE_IN_HIZ(1 << 7); break;
+   23   2              default:
+   24   2                  return;
+   25   2          }
+   26   1      
+   27   1          ADC_InitSruct.ADC_SMPduty = 31;
+   28   1          ADC_InitSruct.ADC_Speed = ADC_SPEED_2X16T;
+   29   1          ADC_InitSruct.ADC_AdjResult = ADC_LEFT_JUSTIFIED;
+   30   1          ADC_InitSruct.ADC_CsSetup = 0;
+   31   1          ADC_InitSruct.ADC_CsHold = 1;
+   32   1      
+   33   1          ADC_Inilize(&ADC_InitSruct);
+   34   1          ADC_PowerControl(ENABLE);
+   35   1          
+   36   1          hadc->raw = 0;
+   37   1          hadc->voltage = 0.0f;
+   38   1          hadc->vref = vref;
+   39   1          hadc->channel = channel;
+   40   1      }
+   41          
+   42          float adc_get(ADC_Handle_t* hadc)
+   43          {
+   44   1          if (!hadc)
+   45   1                      return;
+   46   1          
+   47   1          hadc->raw = Get_ADCResult(hadc->channel);
+   48   1          hadc->voltage = (float)hadc->raw * hadc->vref / MAX_ADC_RES;
+   49   1          return hadc->voltage;
+   50   1      }
+*** WARNING C180 IN LINE 50 OF ..\Driver\ADC_drive.c: 'adc_get': not every path returns a value
+*** WARNING C180 IN LINE 50 OF ..\Driver\ADC_drive.c: 'adc_get': not every path returns a value
+
+
+Module Information          Static   Overlayable
+------------------------------------------------
+  code size            =       273     ------
+  ecode size           =    ------     ------
+  data size            =    ------     ------
+C251 COMPILER V5.60.0,  ADC_drive                                                          19/05/26  14:35:42  PAGE 2   
+
+  idata size           =    ------     ------
+  pdata size           =    ------     ------
+  xdata size           =    ------     ------
+  xdata-const size     =    ------     ------
+  edata size           =    ------         10
+  bit size             =    ------     ------
+  ebit size            =    ------     ------
+  bitaddressable size  =    ------     ------
+  ebitaddressable size =    ------     ------
+  far data size        =    ------     ------
+  huge data size       =    ------     ------
+  const size           =    ------     ------
+  hconst size          =    ------     ------
+End of Module Information.
+
+
+C251 COMPILATION COMPLETE.  2 WARNING(S),  0 ERROR(S)

@@ -1,0 +1,144 @@
+C251 COMPILER V5.60.0,  USB_CDC_drive                                                      19/05/26  11:10:49  PAGE 1   
+
+
+C251 COMPILER V5.60.0, COMPILATION OF MODULE USB_CDC_drive
+OBJECT MODULE PLACED IN .\Objects\USB_CDC_drive.obj
+COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE USER\USB_CDC_drive.c XSMALL INTR2 BROWSE INCDIR(.\USER;.\Library) DEBU
+                    -G PRINT(.\Listings\USB_CDC_drive.lst) OBJECT(.\Objects\USB_CDC_drive.obj) 
+
+stmt  level    source
+
+    1          #include "STC32G_GPIO.h"
+    2          #include "stc32g.h"
+    3          #include "STC32G_Delay.h"
+    4          #include "stc32_stc8_usb.h"
+    5          #include "USB_CDC_drive.h"
+    6          
+    7          char *USER_DEVICEDESC =NULL;                            //设备描述
+    8          char *USER_PRODUCTDESC = NULL;                  //产品描述
+    9          char *USER_STCISPCMD = "@STCISP#";      //不停电自动 ISP 下载命令
+   10          
+   11          
+   12          //========================================================================
+   13          // 函数: void USB_CDC_GPIO_config(void)
+   14          // 描述: P3.0/P3.1 和 USB 的 D +-/ 共用 PIN 脚，配置I/O脚.
+   15          // 参数: none.
+   16          // 返回: none.
+   17          // 版本: V1.0, 2024-06-26
+   18          void USB_CDC_GPIO_config(void)
+   19          {       
+   20   1              P3_MODE_IN_HIZ(GPIO_Pin_0|GPIO_Pin_1)   //需要将 P3.0/P3.1设置为高阻输入模式
+   21   1      }
+   22          
+   23          //========================================================================
+   24          // 函数: void USB_CDC_Initialization(void)
+   25          // 描述: USB_CDC初始化.
+   26          // 参数: none.
+   27          // 返回: none.
+   28          // 版本: V1.0, 2024-06-26
+   29          void USB_CDC_Initialization(void)
+   30          {
+   31   1              
+   32   1              USB_CDC_GPIO_config();
+   33   1              IRC48MCR = 0x80; //使能内部 48M 的 USB 专用 IRC
+   34   1              while (!(IRC48MCR & 0x01));
+   35   1              USBCLK = 0x00; //设置 USB 时钟源为内部 48M 的 USB 专用 IRC
+   36   1              USBCON = 0x90; //使能 USB 功能
+   37   1                      
+   38   1              usb_init(); //调用 USB CDC 初始化库函数
+   39   1                      
+   40   1              EUSB = 1; //使能 USB 中断       
+   41   1      }
+   42          
+   43          //========================================================================
+   44          // 函数: void USB_CDC_Senddata(unsigned long count)
+   45          // 描述: USB_CDC测试.
+   46          // 参数: none.
+   47          // 返回: none.
+   48          // 版本: V1.0, 2024-06-26
+   49          void USB_CDC_Senddata(unsigned long count)
+   50          {               
+   51   1                      //if (bUsbOutReady)     //当硬件接收完成上位机通过串口助手发送数据后会自动将 bUsbOutReady 置 1
+   52   1                                                                                                      //接收的数据字节数保存在 OutNumber 变量中
+   53   1                                                                                                      //接收的数据保存在 UsbOutBuffer 缓冲区
+   54   1              //      {
+   55   1                                      OutNumber=sprintf(UsbOutBuffer, "50N力传感器(N):%d\n",count);
+   56   1                                      USB_SendData(UsbOutBuffer,OutNumber); //使用 USB_SendData 库函数可向上位机发送数据
+   57   1                                                                                                                                                                                              //这里的测试代码为将 接收数据原样返回                                   
+   58   1                                      usb_OUT_done();         //处理完成接收的数据后  //调用 usb_OUT_done 准备 接收 下一笔数据
+C251 COMPILER V5.60.0,  USB_CDC_drive                                                      19/05/26  11:10:49  PAGE 2   
+
+   59   1                      //}
+   60   1      }
+   61          //========================================================================
+   62          // 函数: void USB_CDC_Test(void)
+   63          // 描述: USB_CDC测试.
+   64          // 参数: none.
+   65          // 返回: none.
+   66          // 版本: V1.0, 2024-06-26
+   67          void USB_CDC_Test(void)
+   68          {
+   69   1                      unsigned char iii;
+   70   1      //              while (DeviceState != DEVSTATE_CONFIGURED); //等待 USB 完成配置
+   71   1                      if (bUsbOutReady)       //当硬件接收完成上位机通过串口助手发送数据后会自动将 bUsbOutReady 置 1
+   72   1                                                                                                      //接收的数据字节数保存在 OutNumber 变量中
+   73   1                                                                                                      //接收的数据保存在 UsbOutBuffer 缓冲区
+   74   1                      {
+   75   2                                      if (UsbOutBuffer[0] == 'K') 
+   76   2                                      {
+   77   3                                                      UsbOutBuffer[0] = 'G';  
+   78   3                                                      UsbOutBuffer[1] = 'O';  
+   79   3                                                      UsbOutBuffer[2] = 'L';  
+   80   3                                                      UsbOutBuffer[3] = 'D';                                                          
+   81   3                                                      UsbOutBuffer[4] = 'E';  
+   82   3                                                      UsbOutBuffer[5] = 'N';          
+   83   3                                                      for(iii=0;iii<6;iii++)
+   84   3                                                      {               
+   85   4                                                                      USB_SendData((UsbOutBuffer+iii),OutNumber); //使用 USB_SendData 库函数可向上位机发送数据
+   86   4                                                      }               
+   87   3                                                      USB_SendData(UsbOutBuffer,OutNumber); //使用 USB_SendData 库函数可向上位机发送数据
+   88   3                                      }
+   89   2                                      else
+   90   2                                      {
+   91   3                                                      USB_SendData(UsbOutBuffer,OutNumber); //使用 USB_SendData 库函数可向上位机发送数据
+   92   3                                                                                                                                                                                              //这里的测试代码为将 接收数据原样返回
+   93   3                                      }                                       
+   94   2                                      usb_OUT_done();         //处理完成接收的数据后  //调用 usb_OUT_done 准备 接收 下一笔数据
+   95   2                      }       
+   96   1      }
+   97          /*
+   98          BOOL usb_OUT_callback()
+   99          {
+  100              USB_SendData(UsbOutBuffer, OutNumber);
+  101              return 1;
+  102          }
+  103          */
+  104          
+  105          
+  106          
+
+
+Module Information          Static   Overlayable
+------------------------------------------------
+  code size            =       194     ------
+  ecode size           =    ------     ------
+  data size            =    ------     ------
+  idata size           =    ------     ------
+  pdata size           =    ------     ------
+  xdata size           =    ------     ------
+  xdata-const size     =    ------     ------
+  edata size           =        12     ------
+  bit size             =    ------     ------
+  ebit size            =    ------     ------
+  bitaddressable size  =    ------     ------
+  ebitaddressable size =    ------     ------
+  far data size        =    ------     ------
+  huge data size       =    ------     ------
+  const size           =    ------     ------
+C251 COMPILER V5.60.0,  USB_CDC_drive                                                      19/05/26  11:10:49  PAGE 3   
+
+  hconst size          =        52     ------
+End of Module Information.
+
+
+C251 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

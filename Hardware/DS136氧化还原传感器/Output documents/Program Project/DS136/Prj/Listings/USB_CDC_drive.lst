@@ -1,0 +1,61 @@
+C251 COMPILER V5.60.0,  USB_CDC_drive                                                      19/05/26  14:35:42  PAGE 1   
+
+
+C251 COMPILER V5.60.0, COMPILATION OF MODULE USB_CDC_drive
+OBJECT MODULE PLACED IN .\Objects\USB_CDC_drive.obj
+COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE ..\Driver\USB_CDC_drive.c XSMALL INTR2 BROWSE INCDIR(..\App;..\Driver;
+                    -..\Driver\Library;..\Driver\Tool) DEBUG PRINT(.\Listings\USB_CDC_drive.lst) OBJECT(.\Objects\USB_CDC_drive.obj) 
+
+stmt  level    source
+
+    1          #include "usb_cdc_drive.h"
+    2          #include "stc32g.h"
+    3          #include "STC32G_GPIO.h"
+    4          #include "stc32_stc8_usb.h"
+    5          
+    6          char *USER_DEVICEDESC =NULL;                            //设备描述
+    7          char *USER_PRODUCTDESC = NULL;                  //产品描述
+    8          char *USER_STCISPCMD = "@STCISP#";      //不停电自动 ISP 下载命令
+    9          
+   10          //========================================================================
+   11          // 函数: void USB_CDC_Initialization(void)
+   12          // 描述: USB_CDC初始化.
+   13          // 参数: none.
+   14          // 返回: none.
+   15          // 版本: V1.0, 2024-06-26
+   16          void USB_CDC_Initialization(void)
+   17          {
+   18   1              P3_MODE_IN_HIZ(GPIO_Pin_0|GPIO_Pin_1)
+   19   1              IRC48MCR = 0x80; //使能内部 48M 的 USB 专用 IRC
+   20   1              while (!(IRC48MCR & 0x01));
+   21   1              USBCLK = 0x00; //设置 USB 时钟源为内部 48M 的 USB 专用 IRC
+   22   1              USBCON = 0x90; //使能 USB 功能
+   23   1                      
+   24   1              usb_init(); //调用 USB CDC 初始化库函数
+   25   1                      
+   26   1              EUSB = 1; //使能 USB 中断       
+   27   1      }
+
+
+Module Information          Static   Overlayable
+------------------------------------------------
+  code size            =        46     ------
+  ecode size           =    ------     ------
+  data size            =    ------     ------
+  idata size           =    ------     ------
+  pdata size           =    ------     ------
+  xdata size           =    ------     ------
+  xdata-const size     =    ------     ------
+  edata size           =        12     ------
+  bit size             =    ------     ------
+  ebit size            =    ------     ------
+  bitaddressable size  =    ------     ------
+  ebitaddressable size =    ------     ------
+  far data size        =    ------     ------
+  huge data size       =    ------     ------
+  const size           =    ------     ------
+  hconst size          =        33     ------
+End of Module Information.
+
+
+C251 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

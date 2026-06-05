@@ -1,0 +1,129 @@
+C251 COMPILER V5.60.0,  DS135_Tur_drive                                                    19/06/25  17:00:29  PAGE 1   
+
+
+C251 COMPILER V5.60.0, COMPILATION OF MODULE DS135_Tur_drive
+OBJECT MODULE PLACED IN .\Objects\DS135_Tur_drive.obj
+COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE USER\DS135_Tur_drive.c XSMALL INTR2 BROWSE INCDIR(.\USER;.\Library) DE
+                    -BUG PRINT(.\Listings\DS135_Tur_drive.lst) OBJECT(.\Objects\DS135_Tur_drive.obj) 
+
+stmt  level    source
+
+    1          #include "DS135_tur_drive.h"
+    2          
+    3          #include "stc32g.h"
+    4          #include "STC32G_ADC.h"
+    5          #include "STC32G_GPIO.h"
+    6          #include "STC32G_Delay.h"
+    7          
+    8          #define V_REF 3.3f
+    9          
+   10          sbit Tr = P1^1; //发射管控制端口
+   11          
+   12          float ref_vol;
+   13          
+   14          #define Tr_ON   Tr = 1
+   15          #define Tr_OFF  Tr = 0
+   16          
+   17          static float Avg_Filter(float in_data);
+   18          
+   19          float adc_vol = 0.0f;
+   20          
+   21          void Tur_Init(void)
+   22          {
+   23   1          ADC_InitTypeDef ADC_InitSruct;
+   24   1      
+   25   1          P1_MODE_IN_HIZ(GPIO_Pin_0); // P1.0设置为高阻输入(ADC0)
+   26   1          P1_MODE_OUT_PP(GPIO_Pin_1); // P1.1设置为推挽输出
+   27   1          
+   28   1          Tr_ON;
+   29   1          
+   30   1          ADC_InitSruct.ADC_SMPduty = 31;
+   31   1          ADC_InitSruct.ADC_Speed = ADC_SPEED_2X16T;
+   32   1          ADC_InitSruct.ADC_AdjResult = ADC_LEFT_JUSTIFIED;
+   33   1          ADC_InitSruct.ADC_CsSetup = 0;
+   34   1          ADC_InitSruct.ADC_CsHold = 1;
+   35   1      
+   36   1          ADC_Inilize(&ADC_InitSruct);
+   37   1          ADC_PowerControl(ENABLE);
+   38   1      }
+   39          
+   40          float Tur_Read(void)
+   41          {
+   42   1          static u8 first_entry = 1;
+   43   1          u16 adc_val = 0;
+   44   1      //    float adc_vol = 0.0f;
+   45   1          float tur_val = 10.0f;
+   46   1          
+   47   1          if(first_entry)
+   48   1          {
+   49   2              delay_ms(1500);
+   50   2          }
+   51   1          
+   52   1          adc_val = Get_ADCResult(ADC_CH0);
+   53   1          adc_vol = (float)adc_val * V_REF / 4096;
+   54   1          
+   55   1          if(first_entry)
+   56   1          {
+   57   2              first_entry = 0;
+   58   2              ref_vol = adc_vol;
+C251 COMPILER V5.60.0,  DS135_Tur_drive                                                    19/06/25  17:00:29  PAGE 2   
+
+   59   2          }
+   60   1          
+   61   1          adc_vol = (adc_vol - ref_vol) * 1000;//mV
+   62   1          
+   63   1          if(adc_vol>60&&adc_vol<240)//100NTU
+   64   1          {
+   65   2              tur_val = 100;
+   66   2          }
+   67   1          if(adc_vol>240)//200NTU
+   68   1          {
+   69   2              tur_val = 200;
+   70   2          }
+   71   1          if(adc_vol<-50)//20NTU
+   72   1          {
+   73   2              tur_val = 20;
+   74   2          }
+   75   1          return tur_val;
+   76   1      }
+   77          
+   78          #define AVG_NUMS 3
+   79          volatile float dat[AVG_NUMS] = {0.0f};
+   80          static float Avg_Filter(float in_data)
+   81          {
+   82   1          float sum_data = 0.0f;
+   83   1          int i = 0;
+   84   1          // 前移（左移）滑动窗口
+   85   1          for (; i < AVG_NUMS - 1; i++) {
+   86   2              dat[i] = dat[i + 1];
+   87   2              sum_data += dat[i];
+   88   2          }
+   89   1          dat[AVG_NUMS - 1] = in_data;
+   90   1          sum_data += dat[AVG_NUMS - 1];
+   91   1          return (sum_data / AVG_NUMS);
+   92   1      }
+*** WARNING C174 IN LINE 80 OF USER\DS135_Tur_drive.c: 'Avg_Filter': unreferenced 'static' function
+
+
+Module Information          Static   Overlayable
+------------------------------------------------
+  code size            =       297     ------
+  ecode size           =    ------     ------
+  data size            =    ------     ------
+  idata size           =    ------     ------
+  pdata size           =    ------     ------
+  xdata size           =    ------     ------
+  xdata-const size     =    ------     ------
+  edata size           =        21          5
+  bit size             =    ------     ------
+  ebit size            =    ------     ------
+  bitaddressable size  =    ------     ------
+  ebitaddressable size =    ------     ------
+  far data size        =    ------     ------
+  huge data size       =    ------     ------
+  const size           =    ------     ------
+  hconst size          =        29     ------
+End of Module Information.
+
+
+C251 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)

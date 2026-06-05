@@ -1,0 +1,1 @@
+"USER\DHT11_drive.c" XSMALL INTR2 BROWSE INCDIR(.\USER;.\Library) DEBUG PRINT(.\Listings\DHT11_drive.lst) TABS (2) OBJECT(.\Objects\DHT11_drive.obj)

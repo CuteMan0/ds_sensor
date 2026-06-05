@@ -1,0 +1,80 @@
+C251 COMPILER V5.60.0,  DS145_dCO2_drive                                                   17/07/25  17:20:02  PAGE 1   
+
+
+C251 COMPILER V5.60.0, COMPILATION OF MODULE DS145_dCO2_drive
+OBJECT MODULE PLACED IN .\Objects\DS145_dCO2_drive.obj
+COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE USER\DS145_dCO2_drive.c XSMALL INTR2 BROWSE INCDIR(.\USER;.\Library) D
+                    -EBUG PRINT(.\Listings\DS145_dCO2_drive.lst) OBJECT(.\Objects\DS145_dCO2_drive.obj) 
+
+stmt  level    source
+
+    1          #include "DS145_dCO2_drive.h"
+    2          
+    3          #include "STC32G_ADC.h"
+    4          #include "STC32G_GPIO.h"
+    5          
+    6          #include "avg_filter.h"
+    7          
+    8          #define V_REF 3.3f
+    9          
+   10          avg_filter_t dCO2_filter;    //滤波器
+   11          u16          dCO2_buffer[20];//滤波数组
+   12          
+   13          void dCO2_Init(void)
+   14          {
+   15   1          ADC_InitTypeDef ADC_InitSruct;
+   16   1          
+   17   1          P1_MODE_IN_HIZ(GPIO_Pin_0);         //P1.0设置为高阻输入
+   18   1          
+   19   1          ADC_InitSruct.ADC_SMPduty = 31;
+   20   1          ADC_InitSruct.ADC_Speed = ADC_SPEED_2X16T;
+   21   1          ADC_InitSruct.ADC_AdjResult = ADC_LEFT_JUSTIFIED;
+   22   1          ADC_InitSruct.ADC_CsSetup = 0;
+   23   1          ADC_InitSruct.ADC_CsHold = 1;
+   24   1          
+   25   1          ADC_Inilize(&ADC_InitSruct);
+   26   1          ADC_PowerControl(ENABLE);
+   27   1          
+   28   1          AvgFilter_Init(&dCO2_filter,dCO2_buffer,sizeof(dCO2_buffer)/2);
+   29   1      }
+   30          
+   31          float dCO2_Read(void)
+   32          {
+   33   1          u16 adc_val = 0;
+   34   1          float adc_vol = 0.0f;
+   35   1          float dco2_val = 0.0f;
+   36   1          
+   37   1          adc_val = Get_ADCResult(ADC_CH0);
+   38   1          adc_val = AvgFilter_Update(&dCO2_filter,adc_val);
+   39   1          adc_vol = (float)adc_val * V_REF / 4096.0f;
+   40   1          
+   41   1          dco2_val = adc_vol * 3846.1f - 1538.4f;
+   42   1          
+   43   1          return (dco2_val > 0.0f) ? dco2_val : 0.0f ;
+   44   1      }
+
+
+Module Information          Static   Overlayable
+------------------------------------------------
+  code size            =       132     ------
+  ecode size           =    ------     ------
+  data size            =    ------     ------
+  idata size           =    ------     ------
+  pdata size           =    ------     ------
+  xdata size           =    ------     ------
+  xdata-const size     =    ------     ------
+  edata size           =        51          5
+  bit size             =    ------     ------
+  ebit size            =    ------     ------
+  bitaddressable size  =    ------     ------
+C251 COMPILER V5.60.0,  DS145_dCO2_drive                                                   17/07/25  17:20:02  PAGE 2   
+
+  ebitaddressable size =    ------     ------
+  far data size        =    ------     ------
+  huge data size       =    ------     ------
+  const size           =    ------     ------
+  hconst size          =    ------     ------
+End of Module Information.
+
+
+C251 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

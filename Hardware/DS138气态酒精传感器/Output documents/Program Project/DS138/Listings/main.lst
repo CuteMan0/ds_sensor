@@ -1,0 +1,87 @@
+C251 COMPILER V5.60.0,  main                                                               28/05/26  13:16:50  PAGE 1   
+
+
+C251 COMPILER V5.60.0, COMPILATION OF MODULE main
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE USER\main.c XSMALL INTR2 BROWSE INCDIR(.\USER;.\Library) DEBUG PRINT(.
+                    -\Listings\main.lst) OBJECT(.\Objects\main.obj) 
+
+stmt  level    source
+
+    1          // 测试工作频率为 24 MHz
+    2          #include <string.h>
+    3          //------------------------------STC函数库文件--------------------------
+    4          #include "stc32g.h"
+    5          #include "stc32_stc8_usb.h"
+    6          #include "STC32G_GPIO.h"
+    7          #include "STC32G_NVIC.h"
+    8          #include "STC32G_Delay.h"
+    9          #include "STC32G_Switch.h"
+   10          //------------------------------用户文件------------------------------
+   11          #include "USB_CDC_drive.h"
+   12          #include "COMMON_drive.h"
+   13          #include "SYS_drive.h"
+   14          #include "KEY_drive.h"
+   15          #include "LED_drive.h"
+   16          #include "DS138_dC2H6O_drive.h"
+   17          
+   18          extern unsigned long Adj_num;
+   19          extern unsigned char Transmission_mode_flag;
+   20          
+   21          char test[100] = {0};
+   22          float res;
+   23          
+   24          void main(void)
+   25          {
+   26   1          WTST = 0;  // 设置程序指令延时参数，赋值为0可将CPU执行指令的速度设置为最快
+   27   1          EAXFR = 1; // 扩展寄存器(XFR)访问使能
+   28   1          CKCON = 0; // 提高访问XRAM速度
+   29   1      
+   30   1          // 基础功能初始化
+   31   1          DIS_LED_init();
+   32   1          KEY_GPIO_init();
+   33   1          USB_CDC_Initialization(); // USB初始化
+   34   1      
+   35   1          // 传感器初始化
+   36   1          airC2H6O_Init();
+   37   1      
+   38   1          EA = 1; // 开总中断
+   39   1      
+   40   1          while (DeviceState != DEVSTATE_CONFIGURED)
+   41   1                          ; // 等待 USB 完成配置
+   42   1          while (1)
+   43   1          {
+   44   2              
+   45   2              res = airC2H6O_Read();
+   46   2      
+   47   2              sprintf(test,"ppm:%.1f\n",res);
+   48   2              USB_SendData(test, strlen(test)); // 使用 USB_SendData 库函数可向上位机发送数据
+   49   2              delay_ms(100);
+   50   2          }
+   51   1      }
+
+
+Module Information          Static   Overlayable
+------------------------------------------------
+  code size            =        79     ------
+  ecode size           =    ------     ------
+  data size            =    ------     ------
+  idata size           =    ------     ------
+C251 COMPILER V5.60.0,  main                                                               28/05/26  13:16:50  PAGE 2   
+
+  pdata size           =    ------     ------
+  xdata size           =    ------     ------
+  xdata-const size     =    ------     ------
+  edata size           =       104     ------
+  bit size             =    ------     ------
+  ebit size            =    ------     ------
+  bitaddressable size  =    ------     ------
+  ebitaddressable size =    ------     ------
+  far data size        =    ------     ------
+  huge data size       =    ------     ------
+  const size           =    ------     ------
+  hconst size          =       114     ------
+End of Module Information.
+
+
+C251 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

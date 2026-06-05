@@ -1,0 +1,49 @@
+C251 COMPILER V5.60.0,  filter                                                             26/05/25  11:04:23  PAGE 1   
+
+
+C251 COMPILER V5.60.0, COMPILATION OF MODULE filter
+OBJECT MODULE PLACED IN .\Objects\filter.obj
+COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE USER\filter.c XSMALL INTR2 BROWSE INCDIR(.\USER;.\Library) DEBUG PRINT
+                    -(.\Listings\filter.lst) OBJECT(.\Objects\filter.obj) 
+
+stmt  level    source
+
+    1          #include "filter.h"
+    2          
+    3          float Avg_Filter(AvgFilter_t *filter, float in_data)
+    4          {
+    5   1          float sum_data = 0.0f;
+    6   1          int i = 0;
+    7   1          // Ç°ÒÆ£¨×óÒÆ£©»¬¶¯´°¿Ú
+    8   1          for ( ; i < AVG_NUMS - 1; i++) {
+    9   2              filter->dat[i] = filter->dat[i + 1];
+   10   2              sum_data += filter->dat[i];
+   11   2          }
+   12   1          filter->dat[AVG_NUMS - 1] = in_data;
+   13   1          sum_data += filter->dat[AVG_NUMS - 1];
+   14   1          return (sum_data / AVG_NUMS);
+   15   1      }
+
+
+Module Information          Static   Overlayable
+------------------------------------------------
+  code size            =        89     ------
+  ecode size           =    ------     ------
+  data size            =    ------     ------
+  idata size           =    ------     ------
+  pdata size           =    ------     ------
+  xdata size           =    ------     ------
+  xdata-const size     =    ------     ------
+  edata size           =    ------     ------
+  bit size             =    ------     ------
+  ebit size            =    ------     ------
+  bitaddressable size  =    ------     ------
+  ebitaddressable size =    ------     ------
+  far data size        =    ------     ------
+  huge data size       =    ------     ------
+  const size           =    ------     ------
+  hconst size          =    ------     ------
+End of Module Information.
+
+
+C251 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

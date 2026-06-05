@@ -1,0 +1,1 @@
+"..\Driver\Tool\task.c" XSMALL INTR2 BROWSE INCDIR(..\App;..\Driver;..\Driver\Library;..\Driver\Tool) DEBUG PRINT(.\Listings\task.lst) OBJECT(.\Objects\task.obj)

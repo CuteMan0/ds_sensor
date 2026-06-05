@@ -1,0 +1,387 @@
+C251 COMPILER V5.60.0,  multi_button                                                       04/11/25  11:02:51  PAGE 1   
+
+
+C251 COMPILER V5.60.0, COMPILATION OF MODULE multi_button
+OBJECT MODULE PLACED IN .\Objects\multi_button.obj
+COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE ..\Driver\Tool\multi_button.c XSMALL INTR2 BROWSE INCDIR(..\App;..\Dri
+                    -ver;..\Driver\Library;..\Driver\Tool) DEBUG PRINT(.\Listings\multi_button.lst) OBJECT(.\Objects\multi_button.obj) 
+
+stmt  level    source
+
+    1          /*
+    2           * Copyright (c) 2016 Zibin Zheng <znbin@qq.com>
+    3           * All rights reserved
+    4           */
+    5          
+    6          #include "multi_button.h"
+*** WARNING C317 IN LINE 45 OF ..\Driver\Library\type_def.h: attempt to redefine macro 'NULL'
+    7          
+    8          // Macro for callback execution with null check
+    9          #define EVENT_CB(ev)                \
+   10                  do                              \
+   11                  {                               \
+   12                          if (handle->cb[ev])         \
+   13                                  handle->cb[ev](handle); \
+   14                  } while (0)
+   15          
+   16          // Button handle list head
+   17          static Button *head_handle = NULL;
+   18          
+   19          // Forward declarations
+   20          static void button_handler(Button *handle);
+   21          static uint8_t button_read_level(Button *handle);
+   22          
+   23          /**
+   24           * @brief  Initialize the button struct handle
+   25           * @param  handle: the button handle struct
+   26           * @param  pin_level: read the HAL GPIO of the connected button level
+   27           * @param  active_level: pressed GPIO level
+   28           * @param  button_id: the button id
+   29           * @retval None
+   30           */
+   31          void button_init(Button *handle, uint8_t (*pin_level)(uint8_t), uint8_t active_level, uint8_t button_id)
+   32          {
+   33   1              if (!handle || !pin_level)
+   34   1                      return; // parameter validation
+   35   1      
+   36   1              memset(handle, 0, sizeof(Button));
+   37   1              handle->event = (uint8_t)BTN_NONE_PRESS;
+   38   1              handle->hal_button_level = pin_level;
+   39   1              handle->button_level = !active_level; // initialize to opposite of active level
+   40   1              handle->active_level = active_level;
+   41   1              handle->button_id = button_id;
+   42   1              handle->state = BTN_STATE_IDLE;
+   43   1      }
+   44          
+   45          /**
+   46           * @brief  Attach the button event callback function
+   47           * @param  handle: the button handle struct
+   48           * @param  event: trigger event type
+   49           * @param  cb: callback function
+   50           * @retval None
+   51           */
+   52          void button_attach(Button *handle, ButtonEvent event, BtnCallback cb)
+   53          {
+   54   1              if (!handle || event >= BTN_EVENT_COUNT)
+   55   1                      return; // parameter validation
+   56   1              handle->cb[event] = cb;
+   57   1      }
+C251 COMPILER V5.60.0,  multi_button                                                       04/11/25  11:02:51  PAGE 2   
+
+   58          
+   59          /**
+   60           * @brief  Detach the button event callback function
+   61           * @param  handle: the button handle struct
+   62           * @param  event: trigger event type
+   63           * @retval None
+   64           */
+   65          void button_detach(Button *handle, ButtonEvent event)
+   66          {
+   67   1              if (!handle || event >= BTN_EVENT_COUNT)
+   68   1                      return; // parameter validation
+   69   1              handle->cb[event] = NULL;
+*** WARNING C151 IN LINE 69 OF ..\Driver\Tool\multi_button.c: pointer truncation: 'far' to 'code'
+   70   1      }
+   71          
+   72          /**
+   73           * @brief  Get the button event that happened
+   74           * @param  handle: the button handle struct
+   75           * @retval button event
+   76           */
+   77          ButtonEvent button_get_event(Button *handle)
+   78          {
+   79   1              if (!handle)
+   80   1                      return BTN_NONE_PRESS;
+   81   1              return (ButtonEvent)(handle->event);
+   82   1      }
+   83          
+   84          /**
+   85           * @brief  Get the repeat count of button presses
+   86           * @param  handle: the button handle struct
+   87           * @retval repeat count
+   88           */
+   89          uint8_t button_get_repeat_count(Button *handle)
+   90          {
+   91   1              if (!handle)
+   92   1                      return 0;
+   93   1              return handle->repeat;
+   94   1      }
+   95          
+   96          /**
+   97           * @brief  Reset button state to idle
+   98           * @param  handle: the button handle struct
+   99           * @retval None
+  100           */
+  101          void button_reset(Button *handle)
+  102          {
+  103   1              if (!handle)
+  104   1                      return;
+  105   1              handle->state = BTN_STATE_IDLE;
+  106   1              handle->ticks = 0;
+  107   1              handle->repeat = 0;
+  108   1              handle->event = (uint8_t)BTN_NONE_PRESS;
+  109   1              handle->debounce_cnt = 0;
+  110   1      }
+  111          
+  112          /**
+  113           * @brief  Check if button is currently pressed
+  114           * @param  handle: the button handle struct
+  115           * @retval 1: pressed, 0: not pressed, -1: error
+  116           */
+  117          int button_is_pressed(Button *handle)
+  118          {
+  119   1              if (!handle)
+  120   1                      return -1;
+  121   1              return (handle->button_level == handle->active_level) ? 1 : 0;
+  122   1      }
+C251 COMPILER V5.60.0,  multi_button                                                       04/11/25  11:02:51  PAGE 3   
+
+  123          
+  124          /**
+  125           * @brief  Read button level with inline optimization
+  126           * @param  handle: the button handle struct
+  127           * @retval button level
+  128           */
+  129          static uint8_t button_read_level(Button *handle)
+  130          {
+  131   1              return handle->hal_button_level(handle->button_id);
+  132   1      }
+  133          
+  134          /**
+  135           * @brief  Button driver core function, driver state machine
+  136           * @param  handle: the button handle struct
+  137           * @retval None
+  138           */
+  139          static void button_handler(Button *handle)
+  140          {
+  141   1              uint8_t read_gpio_level = button_read_level(handle);
+  142   1      
+  143   1              // Increment ticks counter when not in idle state
+  144   1              if (handle->state > BTN_STATE_IDLE)
+  145   1              {
+  146   2                      handle->ticks++;
+  147   2              }
+  148   1      
+  149   1              /*------------Button debounce handling---------------*/
+  150   1              if (read_gpio_level != handle->button_level)
+  151   1              {
+  152   2                      // Continue reading same new level for debounce
+  153   2                      if (++(handle->debounce_cnt) >= DEBOUNCE_TICKS)
+  154   2                      {
+  155   3                              handle->button_level = read_gpio_level;
+  156   3                              handle->debounce_cnt = 0;
+  157   3                      }
+  158   2              }
+  159   1              else
+  160   1              {
+  161   2                      // Level not changed, reset counter
+  162   2                      handle->debounce_cnt = 0;
+  163   2              }
+  164   1      
+  165   1              /*-----------------State machine-------------------*/
+  166   1              switch (handle->state)
+  167   1              {
+  168   2              case BTN_STATE_IDLE:
+  169   2                      if (handle->button_level == handle->active_level)
+  170   2                      {
+  171   3                              // Button press detected
+  172   3                              handle->event = (uint8_t)BTN_PRESS_DOWN;
+  173   3                              EVENT_CB(BTN_PRESS_DOWN);
+  174   3                              handle->ticks = 0;
+  175   3                              handle->repeat = 1;
+  176   3                              handle->state = BTN_STATE_PRESS;
+  177   3                      }
+  178   2                      else
+  179   2                      {
+  180   3                              handle->event = (uint8_t)BTN_NONE_PRESS;
+  181   3                      }
+  182   2                      break;
+  183   2      
+  184   2              case BTN_STATE_PRESS:
+  185   2                      if (handle->button_level != handle->active_level)
+  186   2                      {
+  187   3                              // Button released
+  188   3                              handle->event = (uint8_t)BTN_PRESS_UP;
+C251 COMPILER V5.60.0,  multi_button                                                       04/11/25  11:02:51  PAGE 4   
+
+  189   3                              EVENT_CB(BTN_PRESS_UP);
+  190   3                              handle->ticks = 0;
+  191   3                              handle->state = BTN_STATE_RELEASE;
+  192   3                      }
+  193   2                      else if (handle->ticks > LONG_TICKS)
+  194   2                      {
+  195   3                              // Long press detected
+  196   3                              handle->event = (uint8_t)BTN_LONG_PRESS_START;
+  197   3                              EVENT_CB(BTN_LONG_PRESS_START);
+  198   3                              handle->state = BTN_STATE_LONG_HOLD;
+  199   3                      }
+  200   2                      break;
+  201   2      
+  202   2              case BTN_STATE_RELEASE:
+  203   2                      if (handle->button_level == handle->active_level)
+  204   2                      {
+  205   3                              // Button pressed again
+  206   3                              handle->event = (uint8_t)BTN_PRESS_DOWN;
+  207   3                              EVENT_CB(BTN_PRESS_DOWN);
+  208   3                              if (handle->repeat < PRESS_REPEAT_MAX_NUM)
+  209   3                              {
+  210   4                                      handle->repeat++;
+  211   4                              }
+  212   3                              EVENT_CB(BTN_PRESS_REPEAT);
+  213   3                              handle->ticks = 0;
+  214   3                              handle->state = BTN_STATE_REPEAT;
+  215   3                      }
+  216   2                      else if (handle->ticks > SHORT_TICKS)
+  217   2                      {
+  218   3                              // Timeout reached, determine click type
+  219   3                              if (handle->repeat == 1)
+  220   3                              {
+  221   4                                      handle->event = (uint8_t)BTN_SINGLE_CLICK;
+  222   4                                      EVENT_CB(BTN_SINGLE_CLICK);
+  223   4                              }
+  224   3                              else if (handle->repeat == 2)
+  225   3                              {
+  226   4                                      handle->event = (uint8_t)BTN_DOUBLE_CLICK;
+  227   4                                      EVENT_CB(BTN_DOUBLE_CLICK);
+  228   4                              }
+  229   3                              handle->state = BTN_STATE_IDLE;
+  230   3                      }
+  231   2                      break;
+  232   2      
+  233   2              case BTN_STATE_REPEAT:
+  234   2                      if (handle->button_level != handle->active_level)
+  235   2                      {
+  236   3                              // Button released
+  237   3                              handle->event = (uint8_t)BTN_PRESS_UP;
+  238   3                              EVENT_CB(BTN_PRESS_UP);
+  239   3                              if (handle->ticks < SHORT_TICKS)
+  240   3                              {
+  241   4                                      handle->ticks = 0;
+  242   4                                      handle->state = BTN_STATE_RELEASE; // Continue waiting for more presses
+  243   4                              }
+  244   3                              else
+  245   3                              {
+  246   4                                      handle->state = BTN_STATE_IDLE; // End of sequence
+  247   4                              }
+  248   3                      }
+  249   2                      else if (handle->ticks > SHORT_TICKS)
+  250   2                      {
+  251   3                              // Held down too long, treat as normal press
+  252   3                              handle->state = BTN_STATE_PRESS;
+  253   3                      }
+  254   2                      break;
+C251 COMPILER V5.60.0,  multi_button                                                       04/11/25  11:02:51  PAGE 5   
+
+  255   2      
+  256   2              case BTN_STATE_LONG_HOLD:
+  257   2                      if (handle->button_level == handle->active_level)
+  258   2                      {
+  259   3                              // Continue holding
+  260   3                              handle->event = (uint8_t)BTN_LONG_PRESS_HOLD;
+  261   3                              EVENT_CB(BTN_LONG_PRESS_HOLD);
+  262   3                      }
+  263   2                      else
+  264   2                      {
+  265   3                              // Released from long press
+  266   3                              handle->event = (uint8_t)BTN_PRESS_UP;
+  267   3                              EVENT_CB(BTN_PRESS_UP);
+  268   3                              handle->state = BTN_STATE_IDLE;
+  269   3                      }
+  270   2                      break;
+  271   2      
+  272   2              default:
+  273   2                      // Invalid state, reset to idle
+  274   2                      handle->state = BTN_STATE_IDLE;
+  275   2                      break;
+  276   2              }
+  277   1      }
+  278          
+  279          /**
+  280           * @brief  Start the button work, add the handle into work list
+  281           * @param  handle: target handle struct
+  282           * @retval 0: succeed, -1: already exist, -2: invalid parameter
+  283           */
+  284          int button_start(Button *handle)
+  285          {
+  286   1              Button *target;
+  287   1              if (!handle)
+  288   1                      return -2; // invalid parameter
+  289   1              target = head_handle;
+  290   1              while (target)
+  291   1              {
+  292   2                      if (target == handle)
+  293   2                              return -1; // already exist
+  294   2                      target = target->next;
+  295   2              }
+  296   1      
+  297   1              handle->next = head_handle;
+  298   1              head_handle = handle;
+  299   1              return 0;
+  300   1      }
+  301          
+  302          /**
+  303           * @brief  Stop the button work, remove the handle from work list
+  304           * @param  handle: target handle struct
+  305           * @retval None
+  306           */
+  307          void button_stop(Button *handle)
+  308          {
+  309   1              Button **curr;
+  310   1              if (!handle)
+  311   1                      return; // parameter validation
+  312   1      
+  313   1              for (curr = &head_handle; *curr;)
+  314   1              {
+  315   2                      Button *entry = *curr;
+  316   2                      if (entry == handle)
+  317   2                      {
+  318   3                              *curr = entry->next;
+  319   3                              entry->next = NULL; // clear next pointer
+  320   3                              return;
+C251 COMPILER V5.60.0,  multi_button                                                       04/11/25  11:02:51  PAGE 6   
+
+  321   3                      }
+  322   2                      else
+  323   2                      {
+  324   3                              curr = &entry->next;
+  325   3                      }
+  326   2              }
+  327   1      }
+  328          
+  329          /**
+  330           * @brief  Background ticks, timer repeat invoking interval 5ms
+  331           * @param  None
+  332           * @retval None
+  333           */
+  334          void button_ticks(void)
+  335          {
+  336   1              Button *target;
+  337   1              for (target = head_handle; target; target = target->next)
+  338   1              {
+  339   2                      button_handler(target);
+  340   2              }
+  341   1      }
+
+
+Module Information          Static   Overlayable
+------------------------------------------------
+  code size            =      1374     ------
+  ecode size           =    ------     ------
+  data size            =    ------     ------
+  idata size           =    ------     ------
+  pdata size           =    ------     ------
+  xdata size           =    ------     ------
+  xdata-const size     =    ------     ------
+  edata size           =         4          4
+  bit size             =    ------     ------
+  ebit size            =    ------     ------
+  bitaddressable size  =    ------     ------
+  ebitaddressable size =    ------     ------
+  far data size        =    ------     ------
+  huge data size       =    ------     ------
+  const size           =    ------     ------
+  hconst size          =         8     ------
+End of Module Information.
+
+
+C251 COMPILATION COMPLETE.  2 WARNING(S),  0 ERROR(S)

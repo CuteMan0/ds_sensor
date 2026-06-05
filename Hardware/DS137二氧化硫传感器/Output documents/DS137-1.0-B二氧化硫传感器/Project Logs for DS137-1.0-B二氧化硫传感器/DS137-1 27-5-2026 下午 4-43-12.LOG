@@ -1,0 +1,106 @@
+Removed Pin From Net: NetName=GND Pin=U2-2
+Removed Pin From Net: NetName=NetC3_1 Pin=U2-4
+Removed Pin From Net: NetName=VCC_3V3_MCU Pin=U2-5
+Removed Pin From Net: NetName=ADC0 Pin=U3-1
+Removed Pin From Net: NetName=GND Pin=U3-2
+Removed Pin From Net: NetName=NetR8_2 Pin=U3-3
+Removed Pin From Net: NetName=NetC5_2 Pin=U3-4
+Removed Pin From Net: NetName=VCC_3V3_MCU Pin=U3-5
+Removed Member From Class: ClassName=DS137-1.0-B二氧化硫传感器 Member=U3
+Change Component Footprint: Designator=U2 Old Footprint=SOT23-5 New Footprint=SO-8
+Change Component Comment : Designator=U2 Old Comment=AD8605 New Comment=TL062C
+Added Component: Designator=C1(0603CAP)
+Add component (AddParameter): Name = "Value"; Value = "100nF"; VariantName = "[No Variations]"
+Added Component: Designator=D1(LED_0805)
+Add component (AddParameter): Name = "Value"; Value = "BLUE"; VariantName = "[No Variations]"
+Added Component: Designator=D2(LED_0805)
+Add component (AddParameter): Name = "Value"; Value = "RED"; VariantName = "[No Variations]"
+Added Component: Designator=D3(LED_0805)
+Add component (AddParameter): Name = "Value"; Value = "GREEN"; VariantName = "[No Variations]"
+Added Component: Designator=J1(X1321WVS-2x04J-C40D53)
+Add component (AddParameter): Name = "Value"; Value = "2*4P"; VariantName = "[No Variations]"
+Added Component: Designator=J2(X1321WVS-2x04J-C40D53)
+Add component (AddParameter): Name = "Value"; Value = "2*4P"; VariantName = "[No Variations]"
+Added Component: Designator=J3(X1321WVS-2x04J-C40D53)
+Add component (AddParameter): Name = "Value"; Value = "2*4P"; VariantName = "[No Variations]"
+Added Component: Designator=J4(X1321WVS-2x04J-C40D53)
+Add component (AddParameter): Name = "Value"; Value = "2*4P"; VariantName = "[No Variations]"
+Added Component: Designator=K1(KEY_TS-1185-x-A-A-A)
+Add component (AddParameter): Name = "Value"; Value = "TS-1185-B-A-A-A"; VariantName = "[No Variations]"
+Added Component: Designator=R1(0603RES_Pack4)
+Add component (AddParameter): Name = "Value"; Value = "510R"; VariantName = "[No Variations]"
+Added Component: Designator=U1(SO-8)
+Add component (AddParameter): Name = "Value"; Value = "ULN2001"; VariantName = "[No Variations]"
+Added Pin To Net: NetName=GND Pin=C1-1
+Added Pin To Net: NetName=VCC_3V3_MCU Pin=C1-2
+Added Pin To Net: NetName=VCC_3V3_MCU Pin=D1-1
+Added Pin To Net: NetName=LED_blue Pin=D1-2
+Added Pin To Net: NetName=VCC_3V3_MCU Pin=D2-1
+Added Pin To Net: NetName=LED_red Pin=D2-2
+Added Pin To Net: NetName=VCC_3V3_MCU Pin=D3-1
+Added Pin To Net: NetName=LED_green Pin=D3-2
+Added Pin To Net: NetName=VSS Pin=J1-1
+Added Pin To Net: NetName=VBUS Pin=J1-2
+Added Pin To Net: NetName=VSS Pin=J1-3
+Added Pin To Net: NetName=VBUS Pin=J1-4
+Added Pin To Net: NetName=VSS Pin=J1-5
+Added Pin To Net: NetName=VBUS Pin=J1-6
+Added Pin To Net: NetName=VSS Pin=J1-7
+Added Pin To Net: NetName=VBUS Pin=J1-8
+Added Pin To Net: NetName=VCC_5V Pin=J2-1
+Added Pin To Net: NetName=GND Pin=J2-2
+Added Pin To Net: NetName=VCC_5V Pin=J2-3
+Added Pin To Net: NetName=GND Pin=J2-4
+Added Pin To Net: NetName=VCC_5V Pin=J2-5
+Added Pin To Net: NetName=GND Pin=J2-6
+Added Pin To Net: NetName=VCC_5V Pin=J2-7
+Added Pin To Net: NetName=GND Pin=J2-8
+Added Pin To Net: NetName=SPI2_MISO Pin=J3-1
+Added Pin To Net: NetName=SPI2_SCK Pin=J3-2
+Added Pin To Net: NetName=SPI2_MOSI Pin=J3-3
+Added Pin To Net: NetName=SPI2_CS Pin=J3-4
+Added Pin To Net: NetName=USART2_RXD Pin=J3-5
+Added Pin To Net: NetName=DAC_OUT Pin=J3-6
+Added Pin To Net: NetName=USART2_TXD Pin=J3-7
+Added Pin To Net: NetName=ADC0 Pin=J3-8
+Added Pin To Net: NetName=I2C1_SCL Pin=J4-1
+Added Pin To Net: NetName=ADC1 Pin=J4-2
+Added Pin To Net: NetName=I2C1_SDA Pin=J4-3
+Added Pin To Net: NetName=Dis_blue_EN Pin=J4-4
+Added Pin To Net: NetName=KEY_HOME Pin=J4-5
+Added Pin To Net: NetName=Dis_red_EN Pin=J4-6
+Added Pin To Net: NetName=VCC_3V3_MCU Pin=J4-7
+Added Pin To Net: NetName=Dis_green_EN Pin=J4-8
+Added Pin To Net: NetName=GND Pin=K1-1
+Added Pin To Net: NetName=KEY_HOME Pin=K1-2
+Added Pin To Net: NetName=NetR1_1 Pin=R1-1
+Added Pin To Net: NetName=NetR1_2 Pin=R1-2
+Added Pin To Net: NetName=NetR1_3 Pin=R1-3
+Added Pin To Net: NetName=LED_blue Pin=R1-6
+Added Pin To Net: NetName=LED_red Pin=R1-7
+Added Pin To Net: NetName=LED_green Pin=R1-8
+Added Pin To Net: NetName=Dis_blue_EN Pin=U1-1
+Added Pin To Net: NetName=Dis_red_EN Pin=U1-2
+Added Pin To Net: NetName=Dis_green_EN Pin=U1-3
+Added Pin To Net: NetName=GND Pin=U1-4
+Added Pin To Net: NetName=VCC_3V3_MCU Pin=U1-5
+Added Pin To Net: NetName=NetR1_1 Pin=U1-6
+Added Pin To Net: NetName=NetR1_2 Pin=U1-7
+Added Pin To Net: NetName=NetR1_3 Pin=U1-8
+Added Pin To Net: NetName=NetC3_1 Pin=U2-2
+Added Pin To Net: NetName=GND Pin=U2-4
+Added Pin To Net: NetName=NetR8_2 Pin=U2-5
+Added Pin To Net: NetName=NetC5_2 Pin=U2-6
+Added Pin To Net: NetName=ADC0 Pin=U2-7
+Added Pin To Net: NetName=VCC_3V3_MCU Pin=U2-8
+Added Member To Class: ClassName=DS137-1.0-B二氧化硫传感器 Member=Component C1 SMDCAP00013
+Added Member To Class: ClassName=DS137-1.0-B二氧化硫传感器 Member=Component D1 SMDLED00010
+Added Member To Class: ClassName=DS137-1.0-B二氧化硫传感器 Member=Component D2 SMDLED00003
+Added Member To Class: ClassName=DS137-1.0-B二氧化硫传感器 Member=Component D3 Chip 翠绿LED 0805
+Added Member To Class: ClassName=DS137-1.0-B二氧化硫传感器 Member=Component J1 X1321WVS-2x04J-C40D53
+Added Member To Class: ClassName=DS137-1.0-B二氧化硫传感器 Member=Component J2 X1321WVS-2x04J-C40D53
+Added Member To Class: ClassName=DS137-1.0-B二氧化硫传感器 Member=Component J3 X1321WVS-2x04J-C40D53
+Added Member To Class: ClassName=DS137-1.0-B二氧化硫传感器 Member=Component J4 X1321WVS-2x04J-C40D53
+Added Member To Class: ClassName=DS137-1.0-B二氧化硫传感器 Member=Component K1 TS-1185-B-A-A-A
+Added Member To Class: ClassName=DS137-1.0-B二氧化硫传感器 Member=Component R1 SMDRES05003
+Added Member To Class: ClassName=DS137-1.0-B二氧化硫传感器 Member=Component U1 SMDIC000018

@@ -1,0 +1,145 @@
+C251 COMPILER V5.60.0,  sw_iic                                                             19/05/26  11:10:50  PAGE 1   
+
+
+C251 COMPILER V5.60.0, COMPILATION OF MODULE sw_iic
+OBJECT MODULE PLACED IN .\Objects\sw_iic.obj
+COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE USER\sw_iic.c XSMALL INTR2 BROWSE INCDIR(.\USER;.\Library) DEBUG PRINT
+                    -(.\Listings\sw_iic.lst) OBJECT(.\Objects\sw_iic.obj) 
+
+stmt  level    source
+
+    1          #include "sw_iic.h"
+    2          
+    3          #include "stc32g.h"
+    4          #include "STC32G_Delay.h"
+    5          #include "STC32G_GPIO.h"
+    6          
+    7          void soft_i2c_delay(void)
+    8          {
+    9   1          delay_us(5);
+   10   1      }
+   11          
+   12          void soft_i2c_init(void)
+   13          {
+   14   1          SDA_OUT();
+   15   1          SCL_OUT();
+   16   1          SDA_HIGH();
+   17   1          SCL_HIGH();
+   18   1      }
+   19          
+   20          void soft_i2c_start(void)
+   21          {
+   22   1          soft_i2c_delay();
+   23   1          SDA_OUT();
+   24   1          SDA_HIGH();
+   25   1          SCL_HIGH();
+   26   1          soft_i2c_delay();
+   27   1          SDA_LOW();
+   28   1          soft_i2c_delay();
+   29   1          SCL_LOW();
+   30   1          soft_i2c_delay();
+   31   1      }
+   32          
+   33          void soft_i2c_stop(void)
+   34          {
+   35   1          SDA_OUT();
+   36   1          SDA_LOW();
+   37   1          soft_i2c_delay();
+   38   1          SCL_HIGH();
+   39   1          soft_i2c_delay();
+   40   1          SDA_HIGH();
+   41   1          soft_i2c_delay();
+   42   1      }
+   43          
+   44          //i2c写入 返回1为ack，0为nack
+   45          bit soft_i2c_write_byte(u8 byte)
+   46          {
+   47   1          u8 i;
+   48   1          bit ack;
+   49   1          SDA_OUT();
+   50   1          for (i = 0; i < 8; i++) 
+   51   1          {
+   52   2              if (byte & 0x80)
+   53   2                  SDA_HIGH();
+   54   2              else
+   55   2                  SDA_LOW();
+   56   2      
+   57   2              soft_i2c_delay();
+   58   2              SCL_HIGH();
+C251 COMPILER V5.60.0,  sw_iic                                                             19/05/26  11:10:50  PAGE 2   
+
+   59   2              soft_i2c_delay();
+   60   2              SCL_LOW();
+   61   2              byte <<= 1;
+   62   2          }
+   63   1      
+   64   1          // 读取ACK
+   65   1          SDA_IN();
+   66   1          soft_i2c_delay();
+   67   1          SCL_HIGH();
+   68   1          ack = !(SDA_READ);
+   69   1          soft_i2c_delay();
+   70   1          SCL_LOW();
+   71   1          SDA_OUT();
+   72   1      
+   73   1          return ack;
+   74   1      }
+   75          
+   76          //i2c读出 参数写1为ack，写0为nack
+   77          u8 soft_i2c_read_byte(bit ack)
+   78          {
+   79   1          u8 i;
+   80   1          u8 byte = 0;
+   81   1          SDA_IN();
+   82   1          for (i = 0; i < 8; i++)
+   83   1          {
+   84   2              byte <<= 1;
+   85   2              SCL_HIGH();
+   86   2              soft_i2c_delay();
+   87   2              if (SDA_READ)
+   88   2                  byte |= 0x01;
+   89   2              SCL_LOW();
+   90   2              soft_i2c_delay();
+   91   2          }
+   92   1      
+   93   1          // 发出 ACK/NACK
+   94   1          SDA_OUT();
+   95   1          if (ack)
+   96   1              SDA_LOW();
+   97   1          else
+   98   1              SDA_HIGH();
+   99   1      
+  100   1          soft_i2c_delay();
+  101   1          SCL_HIGH();
+  102   1          soft_i2c_delay();
+  103   1          SCL_LOW();
+  104   1          SDA_HIGH();
+  105   1      
+  106   1          return byte;
+  107   1      }
+
+
+Module Information          Static   Overlayable
+------------------------------------------------
+  code size            =       250     ------
+  ecode size           =    ------     ------
+  data size            =    ------     ------
+  idata size           =    ------     ------
+  pdata size           =    ------     ------
+  xdata size           =    ------     ------
+  xdata-const size     =    ------     ------
+  edata size           =    ------     ------
+  bit size             =    ------          2
+  ebit size            =    ------     ------
+  bitaddressable size  =    ------     ------
+  ebitaddressable size =    ------     ------
+  far data size        =    ------     ------
+  huge data size       =    ------     ------
+C251 COMPILER V5.60.0,  sw_iic                                                             19/05/26  11:10:50  PAGE 3   
+
+  const size           =    ------     ------
+  hconst size          =    ------     ------
+End of Module Information.
+
+
+C251 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

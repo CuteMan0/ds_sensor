@@ -1,0 +1,18 @@
+".\Objects\main.obj",
+".\Objects\USB_CDC_drive.obj",
+".\Objects\LED_drive.obj",
+".\Objects\KEY_drive.obj",
+".\Objects\SYS_drive.obj",
+".\Objects\COMMON_drive.obj",
+".\Objects\DS134_Color_drive.obj",
+".\Objects\sw_iic.obj",
+".\Objects\STC32G_Delay.obj",
+".\Objects\STC32G_GPIO.obj",
+".\Library\stc_usb_cdc_32.LIB",
+".\Objects\STC32G_NVIC.obj",
+".\Objects\STC32G_I2C.obj" 
+TO ".\Objects\DS109Test1_Slave" 
+PRINT(".\Listings\DS109Test1_Slave.map") CASE 
+REMOVEUNUSED 
+CLASSES (EDATA (0x0-0xFFF), 
+HDATA (0x0-0xFFF)) 

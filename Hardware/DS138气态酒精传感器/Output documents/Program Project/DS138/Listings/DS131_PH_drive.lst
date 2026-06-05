@@ -1,0 +1,109 @@
+C251 COMPILER V5.60.0,  DS131_PH_drive                                                     29/05/25  14:30:32  PAGE 1   
+
+
+C251 COMPILER V5.60.0, COMPILATION OF MODULE DS131_PH_drive
+OBJECT MODULE PLACED IN .\Objects\DS131_PH_drive.obj
+COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE USER\DS131_PH_drive.c XSMALL INTR2 BROWSE INCDIR(.\USER;.\Library) DEB
+                    -UG PRINT(.\Listings\DS131_PH_drive.lst) OBJECT(.\Objects\DS131_PH_drive.obj) 
+
+stmt  level    source
+
+    1          #include "DS131_PH_drive.h"
+    2          
+    3          #include "STC32G_ADC.h"
+    4          #include "STC32G_GPIO.h"
+    5          
+    6          #define V_ADC 3.3f
+    7          #define V_REF 1.25f
+    8          
+    9          #define K_1 -11.4856f    //酸斜率--delta PH /delta Vol
+   10          #define B_1  6.951f    //截距
+   11          #define K_2 -12.0996f    //碱斜率--delta PH /delta Vol
+   12          #define B_2  6.956f     //截距
+   13          
+   14          #define OFFSET 0.00f
+   15          
+   16          static float Avg_Filter(float in_data);
+   17          
+   18          void PH_Init(void)
+   19          {
+   20   1          ADC_InitTypeDef ADC_InitSruct;
+   21   1          
+   22   1          P1_MODE_IN_HIZ(GPIO_Pin_0);         //P1.0设置为高阻输入
+   23   1          
+   24   1          ADC_InitSruct.ADC_SMPduty = 31;
+   25   1          ADC_InitSruct.ADC_Speed = ADC_SPEED_2X16T;
+   26   1          ADC_InitSruct.ADC_AdjResult = ADC_LEFT_JUSTIFIED;
+   27   1          ADC_InitSruct.ADC_CsSetup = 0;
+   28   1          ADC_InitSruct.ADC_CsHold = 1;
+   29   1          
+   30   1          ADC_Inilize(&ADC_InitSruct);
+   31   1          ADC_PowerControl(ENABLE);
+   32   1      }
+   33          
+   34          float PH_Read(void)
+   35          {
+   36   1          u16 adc_val = 0;
+   37   1          float ph_vol = 0.0f;
+   38   1          float ph_val;
+   39   1          
+   40   1          adc_val = Get_ADCResult(ADC_CH0);
+   41   1          ph_vol = (float)adc_val * V_ADC / 4096.0f - V_REF;
+   42   1      
+   43   1          //电压信号转换至PH值 begin
+   44   1          if(ph_vol > 0)
+   45   1          {
+   46   2              ph_val = K_1 * (ph_vol - OFFSET) + B_1 ;
+   47   2              ph_val = Avg_Filter(ph_val);
+   48   2          }
+   49   1          else
+   50   1          {
+   51   2              ph_val = K_2 * (ph_vol - OFFSET) + B_2;
+   52   2              ph_val = Avg_Filter(ph_val);
+   53   2          }
+   54   1          //电压信号转换至PH值   end
+   55   1          
+   56   1          return ph_val < 0.0f ? 0.0f : (ph_val > 14.0f ? 14.0f : ph_val);
+   57   1      }
+   58          
+C251 COMPILER V5.60.0,  DS131_PH_drive                                                     29/05/25  14:30:32  PAGE 2   
+
+   59          #define AVG_NUMS 20
+   60          volatile float dat[AVG_NUMS] = {0.0f};
+   61          static float Avg_Filter(float in_data)
+   62          {
+   63   1          float sum_data = 0.0f;
+   64   1          int i = 0;
+   65   1          // 前移（左移）滑动窗口
+   66   1          for (; i < AVG_NUMS - 1; i++) {
+   67   2              dat[i] = dat[i + 1];
+   68   2              sum_data += dat[i];
+   69   2          }
+   70   1          dat[AVG_NUMS - 1] = in_data;
+   71   1          sum_data += dat[AVG_NUMS - 1];
+   72   1          return (sum_data / AVG_NUMS);
+   73   1      }
+
+
+Module Information          Static   Overlayable
+------------------------------------------------
+  code size            =       247     ------
+  ecode size           =    ------     ------
+  data size            =    ------     ------
+  idata size           =    ------     ------
+  pdata size           =    ------     ------
+  xdata size           =    ------     ------
+  xdata-const size     =    ------     ------
+  edata size           =        80          5
+  bit size             =    ------     ------
+  ebit size            =    ------     ------
+  bitaddressable size  =    ------     ------
+  ebitaddressable size =    ------     ------
+  far data size        =    ------     ------
+  huge data size       =    ------     ------
+  const size           =    ------     ------
+  hconst size          =        84     ------
+End of Module Information.
+
+
+C251 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

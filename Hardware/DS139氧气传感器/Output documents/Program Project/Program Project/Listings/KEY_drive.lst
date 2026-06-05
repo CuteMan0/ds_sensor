@@ -1,0 +1,91 @@
+C251 COMPILER V5.60.0,  KEY_drive                                                          26/05/26  14:30:01  PAGE 1   
+
+
+C251 COMPILER V5.60.0, COMPILATION OF MODULE KEY_drive
+OBJECT MODULE PLACED IN .\Objects\KEY_drive.obj
+COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE USER\KEY_drive.c XSMALL INTR2 BROWSE INCDIR(.\USER;.\Library) DEBUG PR
+                    -INT(.\Listings\KEY_drive.lst) OBJECT(.\Objects\KEY_drive.obj) 
+
+stmt  level    source
+
+    1          #include "STC32G_GPIO.h"
+    2          #include "STC32G_DMA.h"
+    3          #include "STC32G_NVIC.h"
+    4          #include "STC32G_LCM.h"
+    5          #include "STC32G_Delay.h"
+    6          #include "STC32G_Switch.h"
+    7          #include "KEY_drive.h"
+    8          #include "LED_drive.h"
+    9          
+   10          //========================================================================
+   11          // 函数: void KEY_GPIO_config(void)
+   12          // 描述: 按键_IO口配置.
+   13          // 参数: none.
+   14          // 返回: none.
+   15          // 版本: V1.0, 2024-06-26
+   16          void KEY_GPIO_config(void)
+   17          {
+   18   1              P3_MODE_IN_HIZ(GPIO_Pin_2);             //P3.2设置为准双向口            
+   19   1              P3_PULL_UP_ENABLE(GPIO_Pin_2);//P3.2上拉使能    
+   20   1      }
+   21          
+   22          //========================================================================
+   23          // 函数: void KEY_GPIO_init(void)
+   24          // 描述: 按键_IO口配置.
+   25          // 参数: none.
+   26          // 返回: none.
+   27          // 版本: V1.0, 2024-06-26
+   28          void KEY_GPIO_init(void)
+   29          {
+   30   1              KEY_GPIO_config();      
+   31   1      }
+   32          
+   33          //========================================================================
+   34          // 函数: void KEY_GPIO_config(void)
+   35          // 描述: 按键_IO口配置.
+   36          // 参数: none.
+   37          // 返回: none.
+   38          // 版本: V1.0, 2024-06-26
+   39          void KEY_Test(void)
+   40          {
+   41   1              if(HOME_key==0)
+   42   1              {
+   43   2                      delay_ms(10);
+   44   2                       if(HOME_key==0)
+   45   2                       {
+   46   3                                      while(HOME_key==0);
+   47   3      
+   48   3                       }  
+   49   2              }
+   50   1      }
+   51          
+   52          
+   53          
+   54          
+   55          
+
+
+Module Information          Static   Overlayable
+------------------------------------------------
+C251 COMPILER V5.60.0,  KEY_drive                                                          26/05/26  14:30:01  PAGE 2   
+
+  code size            =        52     ------
+  ecode size           =    ------     ------
+  data size            =    ------     ------
+  idata size           =    ------     ------
+  pdata size           =    ------     ------
+  xdata size           =    ------     ------
+  xdata-const size     =    ------     ------
+  edata size           =    ------     ------
+  bit size             =    ------     ------
+  ebit size            =    ------     ------
+  bitaddressable size  =    ------     ------
+  ebitaddressable size =    ------     ------
+  far data size        =    ------     ------
+  huge data size       =    ------     ------
+  const size           =    ------     ------
+  hconst size          =    ------     ------
+End of Module Information.
+
+
+C251 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

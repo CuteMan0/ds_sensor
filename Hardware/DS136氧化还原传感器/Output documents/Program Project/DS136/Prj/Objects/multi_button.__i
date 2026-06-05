@@ -1,0 +1,1 @@
+"..\Driver\Tool\multi_button.c" XSMALL INTR2 BROWSE INCDIR(..\App;..\Driver;..\Driver\Library;..\Driver\Tool) DEBUG PRINT(.\Listings\multi_button.lst) OBJECT(.\Objects\multi_button.obj)

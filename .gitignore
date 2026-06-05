@@ -6,17 +6,11 @@
 /Listings
 /Objects
 
-__Previews/
+**/BOM/
+**/程序和流程图
+
 **/__Previews/
-
-History/
-**/History/
-
-Project Logs for */
+**/HISTORY/
 **/Project Logs for */
-
-Project Outputs for */
 **/Project Outputs for */
-
-HISTORY_temp/
-**/HISTORY_temp/
+**/HISTORY_temp

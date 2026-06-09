@@ -140,7 +140,7 @@ void ec_read(float *ec_val)
 
     if (2 == flag_key) // 长按，开始EEPROM备份
     {
-        flag_key = 0;                                          // mS/cm
+        flag_key = 0;
         adc_vol = (adc_get(&adc0) / 5.0f + offset_vol) / 2.0f; // 信号电压
         switch (ec_range)
         {
@@ -198,7 +198,7 @@ void ProcessCalibration(void)
     }
 }
 
-void EC_Led_Task(void)
+void Led_Task(void)
 {
     static u8 cnt = 0;
     static bit on = 0;

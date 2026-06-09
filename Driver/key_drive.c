@@ -59,14 +59,14 @@ void Scan_Key(void)
             if (!long_press_triggered && key_press_time >= 50) // 50 * 20ms = 1000ms
             {
                 long_press_triggered = 1;
-                flag_key = 2; // 长按，
+                flag_key = 2; // 长按
             }
         }
         else // 按键释放
         {
             if (!long_press_triggered)
             {
-                flag_key = 1; // 短按，校准
+                flag_key = 1; // 短按
             }
             key_state = 0;
         }

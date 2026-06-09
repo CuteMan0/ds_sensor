@@ -13,14 +13,14 @@
 #include "filter.h"
 #include "task_scheduler.h"
 
-#define NUM_BUF_AVG 10
+#define NUM_BUF_AVG 20
 avg_filter_t filter;
 avgf_data_t buffer[NUM_BUF_AVG];
 float dat_for_printf;
 
 void task_calibration_save(void)
 {
-#if DS_SENSOR == 133 || DS_SENSOR == 132
+#if DS_SENSOR == 133 || DS_SENSOR == 132 || DS_SENSOR == 144
     ProcessCalibration();
 #endif
 }
@@ -32,35 +32,38 @@ void task_key_scan()
 
 void task_led_blink(void)
 {
-#if DS_SENSOR == 133 || DS_SENSOR == 132
-    EC_Led_Task();
+#if DS_SENSOR == 133 || DS_SENSOR == 132 || DS_SENSOR == 144
+    Led_Task();
 #endif
 }
 
 void task_sensor(void)
 {
     ds_update(&dat_for_printf); // 传感器数据更新
+    avg_filter_update(&filter, dat_for_printf);
 }
 
 void task_printf(void)
 {
 #if USB_INFO
 #if DS_SENSOR == 112
-    printf("temp:%.2fC\n", avg_filter_update(&filter, dat_for_printf));
+    printf("temp:%.2fC\n", dat_for_printf);
 #elif DS_SENSOR == 131
-    printf("ph:%.2f\n", avg_filter_update(&filter, dat_for_printf));
+    printf("ph:%.2f\n", dat_for_printf);
 #elif DS_SENSOR == 132
-    printf("EC:%.4f\n", avg_filter_update(&filter, dat_for_printf));
+    printf("EC:%.4f\n", dat_for_printf);
 #elif DS_SENSOR == 133
-    printf("EC:%.4f\n", avg_filter_update(&filter, dat_for_printf));
+    printf("EC:%.4f\n", dat_for_printf);
 #elif DS_SENSOR == 135
-    printf("tur:%.3f\n", avg_filter_update(&filter, dat_for_printf));
+    printf("tur:%.6f\n", dat_for_printf);
 #elif DS_SENSOR == 136
-    printf("ORG:%.1f\n", avg_filter_update(&filter, dat_for_printf));
+    printf("ORG:%.1f\n", dat_for_printf);
 #elif DS_SENSOR == 138
-    printf("airC2H6O:%.1f\n", avg_filter_update(&filter, dat_for_printf));
+    printf("airC2H6O:%.1f\n", dat_for_printf);
 #elif DS_SENSOR == 139
-    printf("O2:%.2f%\n", avg_filter_update(&filter, dat_for_printf));
+    printf("O2:%.2f%\n", dat_for_printf);
+#elif DS_SENSOR == 144
+    printf("dO2:%.2f%\n", dat_for_printf);
 #endif
 #endif
 }

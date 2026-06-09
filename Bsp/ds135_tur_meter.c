@@ -10,8 +10,8 @@
 
 #include "math.h"
 
-#define K 0.766f
-#define B -208.2f
+#define K 98.181f
+#define B -110.47f
 
 #define Tr_ON Tr = 1
 #define Tr_OFF Tr = 0
@@ -27,14 +27,16 @@ void tur_init(void)
     adc_init(&adc0, 0, 3.3f);
     P1_MODE_OUT_PP(GPIO_Pin_1); // P1.1设置为推挽输出
     Tr_ON;
-    //    Tr_OFF;
 }
 
 void tur_read(float *tur_val)
 {
-    adc_vol = adc_get(&adc0) * 1000; // mV
-    *tur_val = adc_vol;              // 一级信号输出电压
-    //    *tur_val = K * *tur_val + B;
+    adc_vol = adc_get(&adc0);
+#if 1
+    *tur_val = K * adc_vol + B;
+#else
+    *tur_val = adc_vol;
+#endif
 }
 
 #endif

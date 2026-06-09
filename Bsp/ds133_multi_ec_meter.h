@@ -48,7 +48,7 @@ void ec_init(void);
 void ec_read(float *ec_val);
 
 void ProcessCalibration(void);
-void EC_Led_Task(void);
+void Led_Task(void);
 
 #endif
 #endif

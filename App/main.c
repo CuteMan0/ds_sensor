@@ -20,7 +20,7 @@ float dat_for_printf;
 
 void task_calibration_save(void)
 {
-#if DS_SENSOR == 133 || DS_SENSOR == 132 || DS_SENSOR == 144
+#if USE_CALIBRATION
     ProcessCalibration();
 #endif
 }
@@ -32,7 +32,7 @@ void task_key_scan()
 
 void task_led_blink(void)
 {
-#if DS_SENSOR == 133 || DS_SENSOR == 132 || DS_SENSOR == 144
+#if USE_BLINK
     Led_Task();
 #endif
 }
@@ -47,23 +47,27 @@ void task_printf(void)
 {
 #if USB_INFO
 #if DS_SENSOR == 112
-    printf("temp:%.2fC\n", dat_for_printf);
+    printf("temp:%.2fC\n", dat_for_printf); // ¡æ
 #elif DS_SENSOR == 131
     printf("ph:%.2f\n", dat_for_printf);
 #elif DS_SENSOR == 132
-    printf("EC:%.4f\n", dat_for_printf);
+    printf("EC:%.4f\n", dat_for_printf); // mS/cm
 #elif DS_SENSOR == 133
-    printf("EC:%.4f\n", dat_for_printf);
+    printf("EC:%.4f\n", dat_for_printf); // mS/cm
 #elif DS_SENSOR == 135
-    printf("tur:%.6f\n", dat_for_printf);
+    printf("tur:%.6f\n", dat_for_printf); // NTU
 #elif DS_SENSOR == 136
-    printf("ORG:%.1f\n", dat_for_printf);
+    printf("ORG:%.1f\n", dat_for_printf); // mV
 #elif DS_SENSOR == 138
-    printf("airC2H6O:%.1f\n", dat_for_printf);
+    printf("airC2H6O:%.1f\n", dat_for_printf); // ppm
 #elif DS_SENSOR == 139
     printf("O2:%.2f%\n", dat_for_printf);
 #elif DS_SENSOR == 144
-    printf("dO2:%.2f%\n", dat_for_printf);
+    printf("dO:%.2f\n", dat_for_printf); // ppm
+#elif DS_SENSOR == 145
+    printf("dCO2:%.2f\n", dat_for_printf); // ppm
+#elif DS_SENSOR == 153
+    printf("H2:%.2f\n", dat_for_printf); // ppm
 #endif
 #endif
 }

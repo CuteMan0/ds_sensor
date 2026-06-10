@@ -6,7 +6,7 @@
 
 #define SEN 2.0f // 2nA /ppm
 #define GAIN 0.25f
-#define RF 153.33f // 153.33k¦¸ = R9//Rt
+#define RF 153.33f // 153.33k = R9//Rt
 
 ADC_Handle_t adc0;
 

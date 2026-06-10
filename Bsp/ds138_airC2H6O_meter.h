@@ -13,7 +13,6 @@ void airC2H6O_Init(void);
 
 u8 airC2H6O_Read(float *val);
 
-// У׼
 void ProcessCalibration(void);
 
 #endif

@@ -1,4 +1,4 @@
-/*多量程电导率传感器 0-20mS/cm、0-2mS/cm、0-0.2mS/cm*/
+/*电导率传感器 0-20mS/cm*/
 #include "ds132_ec_meter.h"
 
 #if DS_SENSOR == 132

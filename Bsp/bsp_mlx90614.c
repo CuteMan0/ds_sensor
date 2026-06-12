@@ -7,7 +7,7 @@
 #include "STC32G_GPIO.h"
 #include "STC32G_Delay.h"
 
-u8 mlx_iic_read(u8 addr, u8 reg, u8 *buf, u16 len)
+void mlx_iic_read(u8 addr, u8 reg, u8 *buf, u16 len)
 {
     u8 i;
     soft_i2c_start();
@@ -42,7 +42,7 @@ void mlx_getVal(float *celsius)
 {
     u16 val;
     u8 buf[3];
-    u8 pec_check[5];
+    // u8 pec_check[5];
 
     mlx_iic_read(MLX90614_DEV_ADDRESS, MLX90614_REG_TOBJ1, buf, 3);
 

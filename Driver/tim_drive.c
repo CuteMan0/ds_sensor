@@ -24,7 +24,7 @@ void tim_init(TIM_Handle_t *htim)
 float tim_get(TIM_Handle_t *htim)
 {
     if (!htim)
-        return;
+        return -1.0f;
 
     switch (htim->id)
     {
@@ -44,7 +44,7 @@ float tim_get(TIM_Handle_t *htim)
         htim->ticks = T4H << 8 | T4L;
         break;
     default:
-        return;
+        return -1.0f;
     }
 
     return htim->ticks;

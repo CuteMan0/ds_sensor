@@ -1,12 +1,8 @@
 #ifndef __DS_SENSOR_H
 #define __DS_SENSOR_H
 
-#define DS_SENSOR 164
+#define DS_SENSOR 161
 
-/*
-void ds_init(void);
-void ds_update(float *dat);
-*/
 #if DS_SENSOR == 112 /*红外温度传感器 */
 #include "ds112_fir_meter.h"
 #endif
@@ -42,6 +38,18 @@ void ds_update(float *dat);
 #endif
 #if DS_SENSOR == 153 /*氢气传感器*/
 #include "ds153_h2_meter.h"
+#endif
+#if DS_SENSOR == 160 /*二氧化氮传感器*/
+#include "ds160_no2_meter.h"
+#endif
+#if DS_SENSOR == 161 /*一氧化碳传感器*/
+#include "ds161_co_meter.h"
+#endif
+#if DS_SENSOR == 162 /*甲烷传感器*/
+#include "ds162_ch4_meter.h"
+#endif
+#if DS_SENSOR == 163 /*氨气传感器*/
+#include "ds163_nh4_meter.h"
 #endif
 #if DS_SENSOR == 164 /*氯气传感器*/
 #include "ds164_cl2_meter.h"

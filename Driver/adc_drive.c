@@ -58,7 +58,7 @@ void adc_init(ADC_Handle_t *hadc, u8 channel, float vref)
 float adc_get(ADC_Handle_t *hadc)
 {
     if (!hadc)
-        return;
+        return -1.0f;
 
     hadc->raw = Get_ADCResult(hadc->channel);
     hadc->voltage = (float)hadc->raw * hadc->vref / MAX_ADC_RES;

@@ -6,6 +6,7 @@
 #include "STC32G_UART.h"
 #include "STC32G_NVIC.h"
 
+#include "ds_sensor.h"
 //========================================================================
 // 函数: Timer0_ISR_Handler
 // 描述: Timer0中断函数.
@@ -13,7 +14,7 @@
 // 返回: none.
 // 版本: V1.0, 2020-09-23
 //========================================================================
-//void Timer0_ISR_Handler(void) interrupt TMR0_VECTOR // 进中断时已经清除标志
+// void Timer0_ISR_Handler(void) interrupt TMR0_VECTOR // 进中断时已经清除标志
 //{
 
 //}
@@ -53,6 +54,16 @@ void Timer2_ISR_Handler(void) interrupt TMR2_VECTOR // 进中断时已经清除标志
 //========================================================================
 void Timer3_ISR_Handler(void) interrupt TMR3_VECTOR // 进中断时已经清除标志
 {
+#if DS_SENSOR == 161
+#include "ds161_co_meter.h"
+    static u16 tick = 0;
+    tick++;
+    if (tick == 100)
+    {
+        tick = 0;
+        sys_tick++;
+    }
+#endif
     // TODO: 在此处添加用户代码
     P64 = ~P64;
 }

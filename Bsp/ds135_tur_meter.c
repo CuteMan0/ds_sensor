@@ -1,4 +1,3 @@
-/*浊度传感器*/
 #include "ds135_tur_meter.h"
 
 #if DS_SENSOR == 135
@@ -6,7 +5,6 @@
 #include "stc32g.h"
 #include "adc_drive.h"
 #include "STC32G_GPIO.h"
-#include "STC32G_Delay.h"
 
 #include "math.h"
 
@@ -22,20 +20,20 @@ float ref_vol;
 float adc_vol = 0.0f;
 ADC_Handle_t adc0;
 
-void tur_init(void)
+void ds_init(void)
 {
     adc_init(&adc0, 0, 3.3f);
     P1_MODE_OUT_PP(GPIO_Pin_1); // P1.1设置为推挽输出
     Tr_ON;
 }
 
-void tur_read(float *tur_val)
+void ds_update(float *dat)
 {
     adc_vol = adc_get(&adc0);
 #if 1
-    *tur_val = K * adc_vol + B;
+    *dat = K * adc_vol + B;
 #else
-    *tur_val = adc_vol;
+    *dat = adc_vol;
 #endif
 }
 

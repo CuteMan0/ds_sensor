@@ -1,4 +1,3 @@
-/*ÑõÆø´«¸ÐÆ÷*/
 #include "ds139_o2_meter.h"
 
 #if DS_SENSOR == 139
@@ -11,12 +10,12 @@
 
 ADC_Handle_t adc0;
 
-void O2_Init(void)
+void ds_init(void)
 {
     adc_init(&adc0, 0, 3.3f);
 }
 
-void O2_Read(float *dat)
+void ds_update(float *dat)
 {
     float tmp = 0.0f;
     adc_get(&adc0);

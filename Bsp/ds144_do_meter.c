@@ -22,7 +22,7 @@ static volatile float zero_point = 0.6f; // mV
 
 u8 flag_cal = 1; // 校准模式标志
 
-void DO_Init(void)
+void ds_init(void)
 {
     u8 tmp[4];
     P1_MODE_OUT_PP(GPIO_Pin_1); // P1.1设置为推挽输出
@@ -36,7 +36,7 @@ void DO_Init(void)
     }
 }
 
-void DO_Read(float *dat)
+void ds_update(float *dat)
 {
     float do_val = 0.0f;
 

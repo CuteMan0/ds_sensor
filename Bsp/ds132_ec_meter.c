@@ -1,4 +1,3 @@
-/*电导率传感器 0-20mS/cm*/
 #include "ds132_ec_meter.h"
 
 #if DS_SENSOR == 132
@@ -64,7 +63,7 @@ ADC_Handle_t adc1;
 static void Auto_Switcher(void);
 static void Scan_Key(void);
 
-void ec_init(void)
+void ds_init(void)
 {
     u8 tmp[2];
 
@@ -87,10 +86,10 @@ void ec_init(void)
     }
 }
 
-void ec_read(float *ec_val)
+void ds_update(float *dat)
 {
     float adc_vol = 0.0f;
-    *ec_val = 0.0f;
+    *dat = 0.0f;
 
     if (2 == flag_key) // 长按，开始EEPROM备份
     {
@@ -103,7 +102,7 @@ void ec_read(float *ec_val)
     Auto_Switcher(); // 自动切换量程
 
     adc_vol = (adc_get(&adc0) / 5.0f + offset_vol) / 2.0f;
-    *ec_val = adc_vol * Q / (res_fb * VIN * G_20MS); // k = Q/(R*|Vin|)*Vout
+    *dat = adc_vol * Q / (res_fb * VIN * G_20MS); // k = Q/(R*|Vin|)*Vout
 }
 
 void ProcessCalibration(void)

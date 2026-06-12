@@ -1,10 +1,9 @@
 /*红外温度传感器 */
 #include "bsp_mlx90614.h"
 
-#if DS_SENSOR == 112
+#include "sw_iic_drive.h"
 
 #include "stc32g.h"
-#include "sw_iic_drive.h"
 #include "STC32G_GPIO.h"
 #include "STC32G_Delay.h"
 
@@ -52,5 +51,3 @@ void mlx_getVal(float *celsius)
     if (celsius)
         *celsius = (val * 0.02f) - 273.15f;
 }
-
-#endif

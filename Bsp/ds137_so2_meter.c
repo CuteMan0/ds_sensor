@@ -4,17 +4,17 @@
 
 #include "adc_drive.h"
 
-#define SEN 0.6f // 0.6uA /ppm
-#define RF 20.0f // 20k
+#define SEN 0.6f // 0.6uA/ppm  (range: 0-150ppm)
+#define RF 26.7f // 26.7kOhm
 
 ADC_Handle_t adc0;
 
-void SO2_Init(void)
+void ds_init(void)
 {
     adc_init(&adc0, 0, 3.3f);
 }
 
-void SO2_Read(float *dat)
+void ds_update(float *dat)
 {
     float ppm = 0.0f;
 

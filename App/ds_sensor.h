@@ -1,78 +1,50 @@
 #ifndef __DS_SENSOR_H
 #define __DS_SENSOR_H
 
-#define DS_SENSOR 137
+#define DS_SENSOR 164
 
-#if DS_SENSOR == 112
-#include "bsp_mlx90614.h"
-#define ds_init() mlx_init()
-#define ds_update(x) mlx_getVal(x)
+/*
+void ds_init(void);
+void ds_update(float *dat);
+*/
+#if DS_SENSOR == 112 /*红外温度传感器 */
+#include "ds112_fir_meter.h"
 #endif
-
-#if DS_SENSOR == 131
+#if DS_SENSOR == 131 /*ph传感器 */
 #include "ds131_ph_meter.h"
-#define ds_init() pH_init()
-#define ds_update(x) pH_read(x)
 #endif
-
-#if DS_SENSOR == 132
+#if DS_SENSOR == 132 /*电导率传感器 0-20mS/cm*/
 #include "ds132_ec_meter.h"
-#define ds_init() ec_init()
-#define ds_update(x) ec_read(x)
 #endif
-
-#if DS_SENSOR == 133
+#if DS_SENSOR == 133 /*多量程电导率传感器 0-20mS/cm、0-2mS/cm、0-0.2mS/cm*/
 #include "ds133_multi_ec_meter.h"
-#define ds_init() ec_init()
-#define ds_update(x) ec_read(x)
 #endif
-
-#if DS_SENSOR == 135
+#if DS_SENSOR == 135 /*浊度传感器*/
 #include "ds135_tur_meter.h"
-#define ds_init() tur_init()
-#define ds_update(x) tur_read(x)
 #endif
-
-#if DS_SENSOR == 136
+#if DS_SENSOR == 136 /*氧化还原传感器*/
 #include "ds136_orp_meter.h"
-#define ds_init() ORP_Init()
-#define ds_update(x) ORP_Read(x)
 #endif
-
-#if DS_SENSOR == 137
+#if DS_SENSOR == 137 /*二氧化硫传感器*/
 #include "ds137_so2_meter.h"
-#define ds_init() SO2_Init()
-#define ds_update(x) SO2_Read(x)
 #endif
-
-#if DS_SENSOR == 138
+#if DS_SENSOR == 138 /*气体酒精传感器*/
 #include "ds138_airC2H6O_meter.h"
-#define ds_init() airC2H6O_Init()
-#define ds_update(x) airC2H6O_Read(x)
 #endif
-
-#if DS_SENSOR == 139
+#if DS_SENSOR == 139 /*氧气传感器*/
 #include "ds139_o2_meter.h"
-#define ds_init() O2_Init()
-#define ds_update(x) O2_Read(x)
 #endif
-
-#if DS_SENSOR == 144
+#if DS_SENSOR == 144 /*溶解氧传感器*/
 #include "ds144_do_meter.h"
-#define ds_init() DO_Init()
-#define ds_update(x) DO_Read(x)
 #endif
-
-#if DS_SENSOR == 145
+#if DS_SENSOR == 145 /*溶解二氧化碳传感器*/
 #include "ds145_dco2_meter.h"
-#define ds_init() dCO2_Init()
-#define ds_update(x) dCO2_Read(x)
 #endif
-
-#if DS_SENSOR == 153
+#if DS_SENSOR == 153 /*氢气传感器*/
 #include "ds153_h2_meter.h"
-#define ds_init() H2_Init()
-#define ds_update(x) H2_Read(x)
+#endif
+#if DS_SENSOR == 164 /*氯气传感器*/
+#include "ds164_cl2_meter.h"
 #endif
 
 #endif

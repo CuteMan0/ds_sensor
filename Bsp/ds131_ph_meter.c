@@ -1,12 +1,10 @@
-/*ph传感器 */
 #include "ds131_ph_meter.h"
 
 #if DS_SENSOR == 131
 
 #include "adc_drive.h"
-#include "STC32G_GPIO.h"
 
-#define V_REF 1.25f
+#define V_OFFSET 1.25f
 
 #define K_1 -11.4856f // 酸斜率--delta PH /delta Vol
 #define B_1 6.951f    // 截距
@@ -17,19 +15,17 @@
 
 ADC_Handle_t adc0;
 
-void pH_init(void)
+void ds_init(void)
 {
     adc_init(&adc0, 0, 3.3f);
 }
 
-void pH_read(float *ph_val)
+void ds_update(float *dat)
 {
-    u16 adc_vol = 0;
     float ph_vol = 0.0f;
     float tmp = 0.0f;
 
-    adc_vol = adc_get(&adc0);
-    ph_vol = adc_vol - V_REF;
+    ph_vol = adc_get(&adc0) - V_OFFSET;
 
     // 电压信号转换至PH值 begin
     if (ph_vol > 0)
@@ -42,7 +38,7 @@ void pH_read(float *ph_val)
     }
     // 电压信号转换至PH值   end
 
-    *ph_val = tmp < 0.0f ? 0.0f : (tmp > 14.0f ? 14.0f : tmp);
+    *dat = tmp < 0.0f ? 0.0f : (tmp > 14.0f ? 14.0f : tmp);
 }
 
 #endif

@@ -9,10 +9,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-void airC2H6O_Init(void);
-
-u8 airC2H6O_Read(float *val);
-
+void ds_init(void);
+u8 ds_update(float *dat);
 void ProcessCalibration(void);
 
 #endif

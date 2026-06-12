@@ -1,4 +1,3 @@
-/*气体酒精传感器*/
 #include "ds138_airC2H6O_meter.h"
 
 #if DS_SENSOR == 138
@@ -30,7 +29,7 @@ ADC_Handle_t adc0;
 static volatile u8 calibration_pending = 0;
 static volatile float pending_zero_value = 0;
 
-void airC2H6O_Init(void)
+void ds_init(void)
 {
     u8 tmp[2];
     adc_init(&adc0, 0, 3.3f);
@@ -44,21 +43,8 @@ void airC2H6O_Init(void)
         zero_voltage_calibrated = pending_zero_value + 0.01f;
     }
 }
-void ProcessCalibration(void)
-{
-    u8 tmp[2];
-    if (calibration_pending)
-    {
-        calibration_pending = 0;
 
-        // 写入EEPROM（这里过于耗时，在低频任务中执行）
-        tmp[0] = (u16)(pending_zero_value * 1000) >> 8;
-        tmp[1] = (u16)(pending_zero_value * 1000);
-        EEPROM_write_n(0, tmp, sizeof(tmp));
-    }
-}
-
-u8 airC2H6O_Read(float *val)
+u8 ds_update(float *dat)
 {
     float voltage, new_zero;
     float zero_voltage = zero_voltage_calibrated;
@@ -104,14 +90,14 @@ u8 airC2H6O_Read(float *val)
     // 边界检查：低于校准后的零点
     if (voltage <= zero_voltage)
     {
-        *val = concentration_table[0];
+        *dat = concentration_table[0];
         return 1;
     }
 
     // 边界检查：高于最大电压
     if (voltage >= voltage_table[TABLE_SIZE - 1])
     {
-        *val = concentration_table[TABLE_SIZE - 1];
+        *dat = concentration_table[TABLE_SIZE - 1];
         return 2;
     }
 
@@ -120,7 +106,7 @@ u8 airC2H6O_Read(float *val)
     {
         // 零点到第一个点之间线性插值
         float ratio = (voltage - zero_voltage) / (voltage_table[0] - zero_voltage);
-        *val = ratio * concentration_table[0]; // 0到5ppm之间
+        *dat = ratio * concentration_table[0]; // 0到5ppm之间
         return 3;
     }
 
@@ -134,12 +120,27 @@ u8 airC2H6O_Read(float *val)
             float concentration_diff = concentration_table[i + 1] - concentration_table[i];
             float ratio = (voltage - voltage_table[i]) / voltage_diff;
 
-            *val = concentration_table[i] + ratio * concentration_diff;
+            *dat = concentration_table[i] + ratio * concentration_diff;
             return 4;
         }
     }
 
-    *val = concentration_table[TABLE_SIZE - 1];
+    *dat = concentration_table[TABLE_SIZE - 1];
     return 5;
 }
+
+void ProcessCalibration(void)
+{
+    u8 tmp[2];
+    if (calibration_pending)
+    {
+        calibration_pending = 0;
+
+        // 写入EEPROM（这里过于耗时，在低频任务中执行）
+        tmp[0] = (u16)(pending_zero_value * 1000) >> 8;
+        tmp[1] = (u16)(pending_zero_value * 1000);
+        EEPROM_write_n(0, tmp, sizeof(tmp));
+    }
+}
+
 #endif

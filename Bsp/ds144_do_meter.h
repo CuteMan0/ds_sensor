@@ -8,9 +8,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-void DO_Init(void);
-
-void DO_Read(float *dat);
+void ds_init(void);
+void ds_update(float *dat);
 
 void ProcessCalibration(void);
 void Led_Task(void);

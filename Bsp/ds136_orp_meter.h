@@ -15,9 +15,8 @@ typedef struct
     float vol;
 } ORP_Handle_t;
 
-void ORP_Init(void);
-
-void ORP_Read(float *dat);
+void ds_init(void);
+void ds_update(float *dat);
 
 #endif
 #endif

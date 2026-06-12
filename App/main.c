@@ -54,12 +54,13 @@ void task_printf(void)
     printf("EC:%.4f\n", dat_for_printf); // mS/cm
 #elif DS_SENSOR == 133
     printf("EC:%.4f\n", dat_for_printf); // mS/cm
+// DS134 单独设置程序文件
 #elif DS_SENSOR == 135
     printf("tur:%.6f\n", dat_for_printf); // NTU
 #elif DS_SENSOR == 136
     printf("ORG:%.1f\n", dat_for_printf); // mV
 #elif DS_SENSOR == 137
-    printf("SO2:%.1f\n", dat_for_printf); // ppm
+    printf("SO2:%.2f\n", dat_for_printf); // ppm
 #elif DS_SENSOR == 138
     printf("airC2H6O:%.1f\n", dat_for_printf); // ppm
 #elif DS_SENSOR == 139

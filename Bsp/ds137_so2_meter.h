@@ -9,9 +9,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-void SO2_Init(void);
-
-void SO2_Read(float *dat);
+void ds_init(void);
+void ds_update(float *dat);
 
 #endif
 #endif

@@ -8,9 +8,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-void dCO2_Init(void);
-
-void dCO2_Read(float *dat);
+void ds_init(void);
+void ds_update(float *dat);
 
 #endif
 #endif

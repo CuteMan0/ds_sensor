@@ -1,5 +1,5 @@
-#ifndef __EC_MULTI_METER_H
-#define __EC_MULTI_METER_H
+#ifndef __DS133_EC_MULTI_METER_H
+#define __DS133_EC_MULTI_METER_H
 
 #include "ds_sensor.h"
 
@@ -33,19 +33,8 @@ typedef struct stStmRow
     pfState pDestState;
 } StmRow_t;
 
-//========================================================================
-// 函数: void EC_Init(void)
-// 描述: 电导率传感器的ADC和量程切换IO初始化.
-// 参数: none.
-// 返回: none.
-void ec_init(void);
-
-//========================================================================
-// 函数: float EC_Read(void)
-// 描述: 根据ADC和量程模式获取电导率数值.
-// 参数: none.
-// 返回: 电导率数值.
-void ec_read(float *ec_val);
+void ds_init(void);
+void ds_update(float *dat);
 
 void ProcessCalibration(void);
 void Led_Task(void);

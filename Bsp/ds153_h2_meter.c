@@ -6,16 +6,16 @@
 
 #define SEN 2.0f // 2nA /ppm
 #define GAIN 0.25f
-#define RF 153.33f // 153.33k = R9//Rt
+#define RF 153.33f // 153.33kohm = R9//Rt
 
 ADC_Handle_t adc0;
 
-void H2_Init(void)
+void ds_init(void)
 {
     adc_init(&adc0, 0, 3.3f);
 }
 
-void H2_Read(float *dat)
+void ds_update(float *dat)
 {
     float ppm = 0.0f;
 

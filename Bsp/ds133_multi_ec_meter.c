@@ -1,4 +1,3 @@
-/*多量程电导率传感器 0-20mS/cm、0-2mS/cm、0-0.2mS/cm*/
 #include "ds133_multi_ec_meter.h"
 
 #if DS_SENSOR == 133
@@ -107,7 +106,7 @@ static void Auto_Switcher(void);
 static void EC_Range_Manager(void);
 static void Scan_Key(void);
 
-void ec_init(void)
+void ds_init(void)
 {
     adc_init(&adc0, 0, 3.3f);
     adc_init(&adc1, 1, 3.3f);
@@ -132,11 +131,11 @@ void ec_init(void)
         Q_0P2MS = cal.q02 / 1000.0f;
 }
 
-void ec_read(float *ec_val)
+void ds_update(float *dat)
 {
     float adc_vol = 0.0f;
     float q, gain;
-    *ec_val = 0.0f;
+    *dat = 0.0f;
 
     if (2 == flag_key) // 长按，开始EEPROM备份
     {
@@ -173,9 +172,9 @@ void ec_read(float *ec_val)
     EC_Range_Manager();
 
     adc_vol = (adc_get(&adc0) / 5.0f + offset_vol) / 2.0f;
-    q = Q_val[ec_range];                           // 根据量程选择Q值
-    gain = G_val[ec_range];                        // 根据量程选择增益
-    *ec_val = adc_vol * q / (res_fb * VIN * gain); // k = Q/(R*|Vin|)*Vout,Vin = Vp * 2/pi
+    q = Q_val[ec_range];                        // 根据量程选择Q值
+    gain = G_val[ec_range];                     // 根据量程选择增益
+    *dat = adc_vol * q / (res_fb * VIN * gain); // k = Q/(R*|Vin|)*Vout,Vin = Vp * 2/pi
 }
 
 void ProcessCalibration(void)

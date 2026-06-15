@@ -6,7 +6,7 @@
 #include "adc_drive.h"
 #include "STC32G_GPIO.h"
 
-#include "math.h"
+#include <math.h>
 
 #define K 98.181f
 #define B -110.47f

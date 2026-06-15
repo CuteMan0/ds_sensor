@@ -1,15 +1,27 @@
 #include "ds160_no2_meter.h"
-
+// WSP-1110
 #if DS_SENSOR == 160
 
 #include "adc_drive.h"
 
-#define V_S 5.0f
-#define R_L 0.47f
+#include "lut.h"
 
-#define PLOY(x) (0.0028f * pow(x, 3) - 0.0565f * pow(x, 2) + 0.6004f * x - 0.0714f)
+#include <math.h>
+
+#define VCC 5.0f
+#define RL 1000000.0f // 1M
+#define R0 510000.0f  // 510K 空气标定电阻值
 
 ADC_Handle_t adc0;
+
+static const LUT_2D wsp1110_lut[] = {
+    {1.31f, 0.1f},
+    {2.9f, 0.3f},
+    {4.1f, 0.5f},
+    {6.1f, 0.7f},
+    {9.3f, 1.0f},
+    {23.1f, 2.0f},
+    {42.0f, 3.0f}};
 
 void ds_init(void)
 {
@@ -18,22 +30,25 @@ void ds_init(void)
 
 void ds_update(float *dat)
 {
-    float adc_vol, no2_val, rs, rs_sq, rs_cu = 0.0f;
+    float ratio, rs = 0.0f;
+    u16 ppm = 0;
 
-    adc_vol = 2.0f * adc_get(&adc0);
-    // Vo与Rs的关系
-    rs = (V_S - adc_vol) / adc_vol * R_L;
-    // Rs与NO2浓度关系
-    // 计算 NO2 浓度：0.0028*x^3 - 0.0565*x^2 + 0.6004*x - 0.0714
-    rs_sq = rs * rs;
-    rs_cu = rs_sq * rs;
-    no2_val = 0.0028f * rs_cu - 0.0565f * rs_sq + 0.6004f * rs - 0.0714f;
+    rs = RL * (0.5f * VCC / adc_get(&adc0) - 1.0f);
+    ratio = rs / R0;
 
-    // 限制最小浓度
-    if (no2_val < 0.1f)
+    if (ratio > 42.0f)
     {
-        no2_val = 0.0f;
+        // 高浓度按照拟合曲线计算
+        ppm = pow(ratio / 9.2, 1.0 / 1.18);
     }
-    *dat = no2_val;
+    else
+    {
+        // 低浓度直接查表
+        ppm = LUT_BinaryInterp_u16(wsp1110_lut,
+                                   sizeof(wsp1110_lut) / sizeof(wsp1110_lut[0]),
+                                   ratio);
+    }
+
+    *dat = (float)ppm;
 }
 #endif

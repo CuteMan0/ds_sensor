@@ -1,18 +1,34 @@
 #include "ds161_co_meter.h"
-
+// MP-7
 #if DS_SENSOR == 161
 
 #include "adc_drive.h"
 #include "led_drive.h"
 
+#include "lut.h"
+
 #define HEAT_INTERVAL (10 * 60) // 脱附间隔10分钟
 #define HEAT_TIME 45            // 加热脱附45s
 
 sbit sw = P2 ^ 4;
-volatile u8 heating_flag = 0;
+volatile u8 heating_flag = 1;
 volatile u32 sys_tick = 0;
 u32 last_heating_time = 0; // 上次加热时间
 ADC_Handle_t adc0;
+
+const LUT_2D mp7_lut[] =
+    {
+        {2600, 0},
+        {2850, 50},
+        {3100, 100},
+        {3350, 150},
+        {3550, 200},
+        {3700, 250},
+        {3800, 300},
+        {3880, 350},
+        {3950, 400},
+        {4000, 450},
+        {4050, 500}};
 
 static void Timer3_Init(void);       // 10毫秒@24.000MHz
 static void CO_HeatingControl(void); // CO加热脱附控制
@@ -26,8 +42,8 @@ void ds_init(void)
 
 void ds_update(float *dat)
 {
-    float adc_vol = 0.0f;
-    static float co_val = 0.0f;
+    u16 adc_vol_mv = 0.0f;
+    static u16 co_val = 0.0f;
 
     CO_HeatingControl();
 
@@ -36,23 +52,17 @@ void ds_update(float *dat)
         DIS_LED_Just_One_Enable(3); // 运行指示灯（未加热）
 
         // 未加热时才能测量
-        adc_vol = adc_get(&adc0);
+        adc_vol_mv = (u16)(adc_get(&adc0) * 2000);
+        co_val = LUT_BinaryInterp_u16(mp7_lut,
+                                      sizeof(mp7_lut) / sizeof(mp7_lut[0]),
+                                      adc_vol_mv);
 
-        if (adc_vol < 1.8f)
-            co_val = 0.0f;
-        else if (adc_vol < 4.1f) // 0~200
-            co_val = 86.95f * adc_vol - 156.5f;
-        else if (adc_vol < 4.4f) // 200~300
-            co_val = 333.3f * adc_vol - 1166.6f;
-        else // 300~1000
-            co_val = 1521.7f * adc_vol - 6395.6f;
-
-        *dat = (co_val > 0.1f) ? co_val : 0.0f;
+        *dat = (float)co_val;
     }
     else
     {
         DIS_LED_Just_One_Enable(1); // 加热指示灯
-        *dat = co_val;              // 加热期间返回上次有效值
+        *dat = (float)co_val;       // 加热期间返回上次有效值
     }
 }
 

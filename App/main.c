@@ -78,7 +78,7 @@ void task_printf(void)
 #elif DS_SENSOR == 162
     printf("CH4:%.2f\n", dat_for_printf); // ppm
 #elif DS_SENSOR == 163
-    printf("NH4:%.2f\n", dat_for_printf); // ppm
+    printf("NH3:%.2f\n", dat_for_printf); // ppm
 #elif DS_SENSOR == 164
     printf("CL2:%.2f\n", dat_for_printf); // ppm
 #endif

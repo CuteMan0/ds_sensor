@@ -2,6 +2,8 @@
 // MP-7
 #if DS_SENSOR == 161
 
+#include "STC32G_GPIO.h"
+
 #include "adc_drive.h"
 #include "led_drive.h"
 
@@ -35,6 +37,7 @@ static void CO_HeatingControl(void); // CO加热脱附控制
 
 void ds_init(void)
 {
+    P2_MODE_OUT_PP(GPIO_Pin_4); // P2.4输出
     adc_init(&adc0, 0, 3.3f);
     sw = 0; // PMOS导通，5V加热待机状态
     Timer3_Init();

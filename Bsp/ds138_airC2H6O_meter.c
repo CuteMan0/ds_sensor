@@ -28,6 +28,7 @@ ADC_Handle_t adc0;
 // 校准延迟处理变量
 static volatile u8 calibration_pending = 0;
 static volatile float pending_zero_value = 0;
+static volatile u8 led_flash = 0; // LED闪烁标志
 
 void ds_init(void)
 {
@@ -50,8 +51,7 @@ u8 ds_update(float *dat)
     float zero_voltage = zero_voltage_calibrated;
     u8 i;
 
-    // 处理短按校准请求（通知校准函数）
-    if (1 == flag_key)
+    if (2 == flag_key) // 长按，开始校准零点
     {
         flag_key = 0;
 
@@ -66,23 +66,7 @@ u8 ds_update(float *dat)
             // 标记需要保存到EEPROM
             pending_zero_value = new_zero;
             calibration_pending = 1;
-
-            // LED指示
-            DIS_LED_Just_One_Enable(2);
         }
-    }
-    else if (2 == flag_key) // 长按：恢复出厂设置
-    {
-        flag_key = 0;
-
-        // 恢复出厂零点
-        zero_voltage_calibrated = 0.24f;
-        pending_zero_value = 0.24f;
-        calibration_pending = 1;
-
-        // LED指示恢复
-        delay_ms(100);
-        DIS_LED_Just_One_Enable(3);
     }
 
     voltage = adc_get(&adc0);
@@ -140,6 +124,50 @@ void ProcessCalibration(void)
         tmp[0] = (u16)(pending_zero_value * 1000) >> 8;
         tmp[1] = (u16)(pending_zero_value * 1000);
         EEPROM_write_n(0, tmp, sizeof(tmp));
+        led_flash = 1;
+    }
+}
+
+void Led_Task(void)
+{
+    static u8 cnt = 0;
+    static bit on = 0;
+    static u8 flash_cnt = 0;
+
+    if (!led_flash)
+        return;
+
+    cnt++;
+
+    if (cnt >= 10)
+    {
+        cnt = 0;
+
+        on = !on;
+
+        if (on)
+        {
+
+            DIS_LED_Just_One_Enable(3);
+
+        }
+        else
+        {
+            DIS_LED_ALL_off();
+        }
+    }
+
+    if (cnt == 0)
+    {
+        flash_cnt++;
+
+        if (flash_cnt >= 6)
+        {
+            flash_cnt = 0;
+            led_flash = 0;
+
+            DIS_LED_Just_One_Enable(3);
+        }
     }
 }
 

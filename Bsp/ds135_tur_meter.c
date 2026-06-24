@@ -8,8 +8,11 @@
 
 #include <math.h>
 
-#define K 98.181f
-#define B -110.47f
+// 计算斜率 k
+#define CALC_K(x1, x0) (190 / (x1 - x0))
+
+// 计算截距 b（需要传入 k）
+#define CALC_B(x0, k) ((10) - (k) * (x0))
 
 #define Tr_ON Tr = 1
 #define Tr_OFF Tr = 0
@@ -19,6 +22,8 @@ sbit Tr = P1 ^ 1; // 发射管控制端口
 float ref_vol;
 float adc_vol = 0.0f;
 ADC_Handle_t adc0;
+
+const float x[2] = {0.88f, 2.85f}; // 10NTU 和 200NTU 对应的电压值
 
 void ds_init(void)
 {
@@ -31,7 +36,7 @@ void ds_update(float *dat)
 {
     adc_vol = adc_get(&adc0);
 #if 1
-    *dat = K * adc_vol + B;
+    *dat = CALC_K(x[1], x[0]) * adc_vol + CALC_B(x[0], CALC_K(x[1], x[0]));
 #else
     *dat = adc_vol;
 #endif

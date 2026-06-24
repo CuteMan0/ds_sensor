@@ -25,7 +25,6 @@ u8 flag_cal = 1; // 校准模式标志
 void ds_init(void)
 {
     u8 tmp[4];
-    P1_MODE_OUT_PP(GPIO_Pin_1); // P1.1设置为推挽输出
     adc_init(&adc0, 0, 3.3f);
 
     EEPROM_read_n(0, tmp, sizeof(tmp));

@@ -10,7 +10,6 @@ ADC_Handle_t adc0;
 
 void ds_init(void)
 {
-    P1_MODE_IN_HIZ(GPIO_Pin_0); // P1.0设置为推挽输出
     adc_init(&adc0, 0, 3.3f);
 }
 

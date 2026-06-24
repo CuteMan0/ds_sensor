@@ -12,6 +12,7 @@
 void ds_init(void);
 u8 ds_update(float *dat);
 void ProcessCalibration(void);
+void Led_Task(void);
 
 #endif
 #endif

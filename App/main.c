@@ -107,6 +107,20 @@ void main(void)
     }
 }
 
+#if DS_SENSOR == 161
+void Timer3_ISR_Handler(void) interrupt TMR3_VECTOR // 进中断时已经清除标志
+{
+#include "ds161_co_meter.h"
+    static u16 tick = 0;
+    tick++;
+    if (tick == 100)
+    {
+        tick = 0;
+        sys_tick++;
+    }
+}
+#endif
+
 void Timer0_ISR_Handler(void) interrupt TMR0_VECTOR
 {
     task_scheduler_tick_isr(); // 用于任务框架的时基

@@ -64,13 +64,17 @@ void task_printf(void)
 #elif DS_SENSOR == 138
     printf("airC2H6O:%.1f\n", dat_for_printf); // ppm
 #elif DS_SENSOR == 139
-    printf("O2:%.2f%\n", dat_for_printf);
+    printf("O2:%.2f%\n", dat_for_printf); // %
+#elif DS_SENSOR == 141
+    printf("CO2:%.2f\n", dat_for_printf); // ppm
 #elif DS_SENSOR == 144
     printf("dO:%.2f\n", dat_for_printf); // ppm
 #elif DS_SENSOR == 145
     printf("dCO2:%.2f\n", dat_for_printf); // ppm
 #elif DS_SENSOR == 153
     printf("H2:%.2f\n", dat_for_printf); // ppm
+#elif DS_SENSOR == 157
+    printf("BPM:%u\n", (u16)dat_for_printf); // bpm
 #elif DS_SENSOR == 160
     printf("NO2:%.2f\n", dat_for_printf); // ppm
 #elif DS_SENSOR == 161

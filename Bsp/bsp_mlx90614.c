@@ -7,7 +7,7 @@
 #include "STC32G_GPIO.h"
 #include "STC32G_Delay.h"
 
-void mlx_iic_read(u8 addr, u8 reg, u8 *buf, u16 len)
+void mlx90614_iic_read(u8 addr, u8 reg, u8 *buf, u16 len)
 {
     u8 i;
     soft_i2c_start();
@@ -25,7 +25,7 @@ void mlx_iic_read(u8 addr, u8 reg, u8 *buf, u16 len)
  * @brief  初始化mlx90614红外温度传感器
  * @retval 成功返回0，失败返回1
  */
-u8 mlx_init(void)
+u8 mlx90614_init(void)
 {
     /**********************************外设初始化**********************************/
     soft_i2c_init();
@@ -37,13 +37,13 @@ u8 mlx_init(void)
  * @brief  读取红外温度值。
  * @para   存放红外温度数据的数组指针
  */
-void mlx_getVal(float *celsius)
+void mlx90614_getVal(float *celsius)
 {
     u16 val;
     u8 buf[3];
     // u8 pec_check[5];
 
-    mlx_iic_read(MLX90614_DEV_ADDRESS, MLX90614_REG_TOBJ1, buf, 3);
+    mlx90614_iic_read(MLX90614_DEV_ADDRESS, MLX90614_REG_TOBJ1, buf, 3);
 
     val = (u16)((buf[1] << 8) | buf[0]);
 

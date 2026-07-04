@@ -6,7 +6,7 @@
 #define MLX90614_DEV_ADDRESS 0x5A
 #define MLX90614_REG_TOBJ1 0x07
 
-u8 mlx_init(void);
-void mlx_getVal(float *dat);
+u8 mlx90614_init(void);
+void mlx90614_getVal(float *dat);
 
 #endif

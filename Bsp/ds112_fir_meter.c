@@ -6,12 +6,12 @@
 
 void ds_init(void)
 {
-    mlx_init();
+    mlx90614_init();
 }
 
 void ds_update(float *dat)
 {
-    mlx_getVal(dat);
+    mlx90614_getVal(dat);
 }
 
 #endif

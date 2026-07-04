@@ -10,7 +10,7 @@ void adc_init(ADC_Handle_t *hadc, u8 channel, float vref)
     if (!hadc)
         return;
 
-    switch (channel)
+    switch (channel) // 选择通道 STC32G12K128
     {
     case 0:
         P1_MODE_IN_HIZ(1 << 0);
@@ -35,6 +35,30 @@ void adc_init(ADC_Handle_t *hadc, u8 channel, float vref)
         break;
     case 7:
         P1_MODE_IN_HIZ(1 << 7);
+        break;
+    case 8:
+        P0_MODE_IN_HIZ(1 << 0);
+        break;
+    case 9:
+        P0_MODE_IN_HIZ(1 << 1);
+        break;
+    case 10:
+        P0_MODE_IN_HIZ(1 << 2);
+        break;
+    case 11:
+        P0_MODE_IN_HIZ(1 << 3);
+        break;
+    case 12:
+        P0_MODE_IN_HIZ(1 << 4);
+        break;
+    case 13:
+        P0_MODE_IN_HIZ(1 << 5);
+        break;
+    case 14:
+        P0_MODE_IN_HIZ(1 << 6);
+        break;
+    case 15:
+        // 内部1.19V参考电压
         break;
     default:
         return;

@@ -1,7 +1,7 @@
 #ifndef __DS_SENSOR_H
 #define __DS_SENSOR_H
 
-#define DS_SENSOR 135
+#define DS_SENSOR 141
 
 #if DS_SENSOR == 112 /*红外温度传感器 */
 #include "ds112_fir_meter.h"
@@ -30,6 +30,9 @@
 #if DS_SENSOR == 139 /*氧气传感器*/
 #include "ds139_o2_meter.h"
 #endif
+#if DS_SENSOR == 141 /*循环式二氧化碳传感器*/
+#include "ds141_co2_meter.h"
+#endif
 #if DS_SENSOR == 144 /*溶解氧传感器*/
 #include "ds144_do_meter.h"
 #endif
@@ -38,6 +41,9 @@
 #endif
 #if DS_SENSOR == 153 /*氢气传感器*/
 #include "ds153_h2_meter.h"
+#endif
+#if DS_SENSOR == 157 /*心率传感器*/
+#include "ds157_hr_meter.h"
 #endif
 #if DS_SENSOR == 160 /*二氧化氮传感器*/
 #include "ds160_no2_meter.h"

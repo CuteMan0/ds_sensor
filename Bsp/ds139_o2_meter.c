@@ -4,7 +4,6 @@
 
 #include "adc_drive.h"
 
-#define V_REF 3.3f
 #define A0 15  // 短接传感器的ADC，用于消除电路噪声干扰
 #define A1 566 // 空气中的ADC，用于基准
 

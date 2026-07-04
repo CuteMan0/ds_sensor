@@ -108,3 +108,39 @@ u8 soft_i2c_read_byte(bit ack)
 
     return byte;
 }
+
+u8 soft_iic_read(u8 addr, u8 reg, u8 *buf, u16 len)
+{
+    u8 i;
+    soft_i2c_start();
+    soft_i2c_write_byte(addr << 1); // 发送设备地址（写）
+    soft_i2c_write_byte(reg);       // 写寄存器地址
+    soft_i2c_start();
+    soft_i2c_write_byte(addr << 1 | 0x01); // 读设备地址
+    for (i = 0; i < len - 1; i++)
+        *(buf + i) = soft_i2c_read_byte(1); // 其他位ACK
+    *(buf + i) = soft_i2c_read_byte(0);     // 最后一位NACK
+    soft_i2c_stop();
+    return 0;
+}
+
+u8 soft_iic_write(u8 addr, u8 reg, u8 *buf, u16 len)
+{
+    u16 i;
+    soft_i2c_start();
+    if (!soft_i2c_write_byte(addr << 1)) // 发送设备地址（写）
+        goto stop_fail;
+    if (!soft_i2c_write_byte(reg)) // 发送寄存器地址
+        goto stop_fail;
+    for (i = 0; i < len; i++) // 发送数据
+    {
+        if (!soft_i2c_write_byte(*(buf + i)))
+            goto stop_fail;
+    }
+    soft_i2c_stop();
+    return 0; // 写入成功
+
+stop_fail:
+    soft_i2c_stop();
+    return 1; // 写入失败
+}

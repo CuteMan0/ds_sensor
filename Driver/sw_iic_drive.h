@@ -29,3 +29,6 @@ void soft_i2c_stop(void);
 
 bit soft_i2c_write_byte(u8 byte);
 u8 soft_i2c_read_byte(bit ack);
+
+u8 soft_iic_read(u8 addr, u8 reg, u8 *buf, u16 len);
+u8 soft_iic_write(u8 addr, u8 reg, u8 *buf, u16 len);

@@ -1,0 +1,107 @@
+C251 COMPILER V5.60.0,  iir                                                                04/07/26  14:42:13  PAGE 1   
+
+
+C251 COMPILER V5.60.0, COMPILATION OF MODULE iir
+OBJECT MODULE PLACED IN .\Objects\iir.obj
+COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE USER\iir.c XSMALL INTR2 BROWSE INCDIR(.\USER;.\Library) DEBUG PRINT(.\
+                    -Listings\iir.lst) OBJECT(.\Objects\iir.obj) 
+
+stmt  level    source
+
+    1          #include "iir.h"
+    2          
+    3          void notch_fixed_init(NotchFilterFixed *nf,float fs,float f0,float r)
+    4          {
+    5   1          float w;
+    6   1          float b0,b1,b2;
+    7   1          float a1,a2;
+    8   1      
+    9   1          w=2.0f*M_PI*f0/fs;
+   10   1      
+   11   1          b0=1.0f;
+   12   1          b1=-2.0f*cos(w);
+   13   1          b2=1.0f;
+   14   1      
+   15   1          a1=-2.0f*r*cos(w);
+   16   1          a2=r*r;
+   17   1      
+   18   1          nf->b0=(q15_t)(b0*Q14_SCALE);
+   19   1          nf->b1=(q15_t)(b1*Q14_SCALE);
+   20   1          nf->b2=(q15_t)(b2*Q14_SCALE);
+   21   1      
+   22   1          nf->a1=(q15_t)(a1*Q14_SCALE);
+   23   1          nf->a2=(q15_t)(a2*Q14_SCALE);
+   24   1      
+   25   1          nf->x1=0;
+   26   1          nf->x2=0;
+   27   1          nf->y1=0;
+   28   1          nf->y2=0;
+   29   1      }
+   30          
+   31          q15_t adc_to_q15(u16 adc_value)
+   32          {
+   33   1          float normalized = ((float)adc_value - ADC_MID) / ADC_SCALE;
+   34   1          // 限幅到 [-1, 1]
+   35   1          if (normalized > 1.0f) normalized = 1.0f;
+   36   1          if (normalized < -1.0f) normalized = -1.0f;
+   37   1          // 转换为 Q15
+   38   1          return (q15_t)(normalized * 32767.0f);
+   39   1      }
+   40          
+   41          q15_t notch_fixed_process(NotchFilterFixed *nf, q15_t x)
+   42          {
+   43   1          q31_t acc;
+   44   1          q15_t y;
+   45   1      
+   46   1          acc = 0;
+   47   1      
+   48   1          acc += ((q31_t)nf->b0 * x)      >> 14;
+   49   1          acc += ((q31_t)nf->b1 * nf->x1) >> 14;
+   50   1          acc += ((q31_t)nf->b2 * nf->x2) >> 14;
+   51   1      
+   52   1          acc -= ((q31_t)nf->a1 * nf->y1) >> 14;
+   53   1          acc -= ((q31_t)nf->a2 * nf->y2) >> 14;
+   54   1      
+   55   1          /* 饱和 */
+   56   1          if(acc > 32767)
+   57   1              acc = 32767;
+   58   1          else if(acc < -32768)
+C251 COMPILER V5.60.0,  iir                                                                04/07/26  14:42:13  PAGE 2   
+
+   59   1              acc = -32768;
+   60   1      
+   61   1          y = (q15_t)acc;
+   62   1      
+   63   1          /* 更新状态 */
+   64   1          nf->x2 = nf->x1;
+   65   1          nf->x1 = x;
+   66   1      
+   67   1          nf->y2 = nf->y1;
+   68   1          nf->y1 = y;
+   69   1      
+   70   1          return y;
+   71   1      }
+
+
+Module Information          Static   Overlayable
+------------------------------------------------
+  code size            =       474     ------
+  ecode size           =    ------     ------
+  data size            =    ------     ------
+  idata size           =    ------     ------
+  pdata size           =    ------     ------
+  xdata size           =    ------     ------
+  xdata-const size     =    ------     ------
+  edata size           =    ------         16
+  bit size             =    ------     ------
+  ebit size            =    ------     ------
+  bitaddressable size  =    ------     ------
+  ebitaddressable size =    ------     ------
+  far data size        =    ------     ------
+  huge data size       =    ------     ------
+  const size           =    ------     ------
+  hconst size          =    ------     ------
+End of Module Information.
+
+
+C251 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

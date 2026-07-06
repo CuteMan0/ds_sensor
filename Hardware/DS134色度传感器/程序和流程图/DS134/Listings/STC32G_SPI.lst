@@ -1,0 +1,130 @@
+C251 COMPILER V5.60.0,  STC32G_SPI                                                         08/05/25  18:16:56  PAGE 1   
+
+
+C251 COMPILER V5.60.0, COMPILATION OF MODULE STC32G_SPI
+OBJECT MODULE PLACED IN .\Objects\STC32G_SPI.obj
+COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE Library\STC32G_SPI.c XSMALL INTR2 BROWSE INCDIR(.\USER;.\Library) DEBU
+                    -G PRINT(.\Listings\STC32G_SPI.lst) TABS(2) OBJECT(.\Objects\STC32G_SPI.obj) 
+
+stmt  level    source
+
+    1          #include  "STC32G_SPI.h"
+    2          
+    3          u8  SPI_RxTimerOut;
+    4          u8  SPI_BUF_type SPI_RxBuffer[SPI_BUF_LENTH];
+    5          bit B_SPI_Busy; //发送忙标志
+    6          
+    7          
+    8          //========================================================================
+    9          // 函数: void SPI_Init(SPI_InitTypeDef *SPIx)
+   10          // 描述: SPI初始化程序.
+   11          // 参数: SPIx: 结构参数,请参考spi.h里的定义.
+   12          // 返回: none.
+   13          // 版本: V1.0, 2012-11-22
+   14          //========================================================================
+   15          void  SPI_Init(SPI_InitTypeDef *SPIx)
+   16          {
+   17   1          if(SPIx->SPI_SSIG == ENABLE)  //片选位, ENABLE(忽略SS引脚功能), DISABLE(SS确定主机从机)
+   18   1          {   
+   19   2              SSIG = 1;   //conform Master or Slave by SPI_Mode(ignore SS)
+   20   2          }
+   21   1          else
+   22   1          {     
+   23   2              SSIG = 0;   //conform Master or Slave by SS pin.
+   24   2          }
+   25   1          SPI_Start(SPIx->SPI_Enable);          //u8  SPI_Enable; //SPI启动, ENABLE,DISABLE
+   26   1          SPI_FirstBit_Set(SPIx->SPI_FirstBit); //u8  SPI_FirstBit; //SPI_MSB, SPI_LSB
+   27   1          SPI_Mode_Set(SPIx->SPI_Mode);         //u8  SPI_Mode; //SPI_Mode_Master, SPI_Mode_Slave
+   28   1          SPI_CPOL_Set(SPIx->SPI_CPOL);         //u8  SPI_CPOL; //SPI_CPOL_High,   SPI_CPOL_Low
+   29   1          SPI_CPHA_Set(SPIx->SPI_CPHA);         //u8  SPI_CPHA; //SPI_CPHA_1Edge,  SPI_CPHA_2Edge
+   30   1          SPI_Clock_Select(SPIx->SPI_Speed);    //u8  SPI_Speed; //SPI_Speed_4, SPI_Speed_8, SPI_Speed_16, SPI_Speed
+             -_2
+   31   1        
+   32   1          SPI_RxTimerOut = 0;
+   33   1          B_SPI_Busy = 0;
+   34   1      }
+   35          
+   36          //========================================================================
+   37          // 函数: void SPI_SetMode(u8 mode)
+   38          // 描述: SPI设置主从模式函数.
+   39          // 参数: mode: 指定模式, 取值 SPI_Mode_Master 或 SPI_Mode_Slave.
+   40          // 返回: none.
+   41          // 版本: V1.0, 2012-11-22
+   42          //========================================================================
+   43          void SPI_SetMode(u8 mode)
+   44          {
+   45   1        if(mode == SPI_Mode_Slave)
+   46   1        {
+   47   2          MSTR = 0;   //重新设置为从机待机
+   48   2          SSIG = 0;   //SS引脚确定主从
+   49   2        }
+   50   1        else
+   51   1        {
+   52   2          MSTR = 1;   //使能 SPI 主机模式
+   53   2          SSIG = 1;   //忽略SS引脚功能
+   54   2        }
+   55   1      }
+   56          
+   57          //========================================================================
+C251 COMPILER V5.60.0,  STC32G_SPI                                                         08/05/25  18:16:56  PAGE 2   
+
+   58          // 函数: void SPI_WriteByte(u8 dat)
+   59          // 描述: SPI发送一个字节数据.
+   60          // 参数: dat: 要发送的数据.
+   61          // 返回: none.
+   62          // 版本: V1.0, 2020-09-14
+   63          //========================================================================
+   64          void SPI_WriteByte(u8 dat)    //SPI发送一个字节数据
+   65          {
+   66   1        if(ESPI)
+   67   1        {
+   68   2          B_SPI_Busy = 1;
+   69   2          SPDAT = dat;
+   70   2          while(B_SPI_Busy);  //中断模式
+   71   2        }
+   72   1        else
+   73   1        {
+   74   2          SPDAT = dat;
+   75   2          while(SPIF == 0); //查询模式
+   76   2          SPI_ClearFlag();   //清除SPIF和WCOL标志
+   77   2        }
+   78   1      }
+   79          
+   80          //========================================================================
+   81          // 函数: void SPI_ReadByte(u8 dat)
+   82          // 描述: SPI查询模式读取一个字节数据.
+   83          // 参数: none.
+   84          // 返回: 读取的数据.
+   85          // 版本: V1.0, 2020-09-14
+   86          //========================================================================
+   87          u8 SPI_ReadByte(void)
+   88          {
+   89   1        SPDAT = 0xff;
+   90   1        while(SPIF == 0) ;
+   91   1        SPI_ClearFlag();   //清0 SPIF和WCOL标志
+   92   1        return (SPDAT);
+   93   1      }
+
+
+Module Information          Static   Overlayable
+------------------------------------------------
+  code size            =       155     ------
+  ecode size           =    ------     ------
+  data size            =    ------     ------
+  idata size           =    ------     ------
+  pdata size           =    ------     ------
+  xdata size           =    ------     ------
+  xdata-const size     =    ------     ------
+  edata size           =       129     ------
+  bit size             =         1     ------
+  ebit size            =    ------     ------
+  bitaddressable size  =    ------     ------
+  ebitaddressable size =    ------     ------
+  far data size        =    ------     ------
+  huge data size       =    ------     ------
+  const size           =    ------     ------
+  hconst size          =    ------     ------
+End of Module Information.
+
+
+C251 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

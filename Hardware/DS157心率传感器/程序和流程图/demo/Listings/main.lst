@@ -1,0 +1,278 @@
+C251 COMPILER V5.60.0,  main                                                               06/07/26  16:38:10  PAGE 1   
+
+
+C251 COMPILER V5.60.0, COMPILATION OF MODULE main
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE Sources\main.c XSMALL BROWSE INCDIR(.\Sources\inc;.\Sources\driver) DE
+                    -BUG PRINT(.\Listings\main.lst) OBJECT(.\Objects\main.obj) 
+
+stmt  level    source
+
+    1          //<<AICUBE_USER_HEADER_REMARK_BEGIN>>
+    2          ////////////////////////////////////////
+    3          // 在此添加用户文件头说明信息  
+    4          // 文件名称: main.c
+    5          // 文件描述: 
+    6          // 文件版本: V1.0
+    7          // 修改记录:
+    8          //   1. (2026-07-06) 创建文件
+    9          ////////////////////////////////////////
+   10          //<<AICUBE_USER_HEADER_REMARK_END>>
+   11          
+   12          
+   13          #include "config.h"                     //默认已包含stdio.h、intrins.h等头文件
+   14          
+   15          
+   16          //<<AICUBE_USER_INCLUDE_BEGIN>>
+   17          // 在此添加用户头文件包含  
+   18          #include "max30102.h"
+   19          #include "fft.h"
+   20          //<<AICUBE_USER_INCLUDE_END>>
+   21          
+   22          
+   23          //<<AICUBE_USER_GLOBAL_DEFINE_BEGIN>>
+   24          // 在此添加用户全局变量定义、用户宏定义以及函数声明
+   25          void task_update(void);
+   26          void task_sensor(void);
+   27          float FFT_FreDetect(float *raw, float sample_rate);
+   28          
+   29          #define PI 3.1415926f
+   30          #define FS 100.0f
+   31          #define N MAX_FFT_N
+   32          float xdata fifo_buf[MAX_FFT_N];
+   33          complex_t xdata fft_out[MAX_FFT_N];
+   34          float xdata mag[MAX_FFT_N];
+   35          
+   36          uint32_t red_fifo = 0;
+   37          uint32_t ir_fifo = 0;
+   38          
+   39          u8 data_ready;
+   40          
+   41          u16 fill = 0;
+   42          u16 k;
+   43          //<<AICUBE_USER_GLOBAL_DEFINE_END>>
+   44          
+   45          
+   46          
+   47          ////////////////////////////////////////
+   48          // 项目主函数
+   49          // 入口参数: 无
+   50          // 函数返回: 无
+   51          ////////////////////////////////////////
+   52          void main(void)
+   53          {
+   54   1          //<<AICUBE_USER_MAIN_INITIAL_BEGIN>>
+   55   1          // 在此添加用户主函数初始化代码  
+   56   1          //<<AICUBE_USER_MAIN_INITIAL_END>>
+   57   1      
+   58   1          SYS_Init();
+C251 COMPILER V5.60.0,  main                                                               06/07/26  16:38:10  PAGE 2   
+
+   59   1      
+   60   1          //<<AICUBE_USER_MAIN_CODE_BEGIN>>
+   61   1          // 在此添加主函数中运行一次的用户代码  
+   62   1          fft_init();
+   63   1          max30102_init();
+   64   1          //<<AICUBE_USER_MAIN_CODE_END>>
+   65   1      
+   66   1          while (1)
+   67   1          {
+   68   2              //<<AICUBE_USER_MAIN_LOOP_BEGIN>>
+   69   2              // 在此添加主函数中用户主循环代码  
+   70   2              task_update();
+   71   2              task_sensor();
+   72   2              delay_ms(10);
+   73   2              //<<AICUBE_USER_MAIN_LOOP_END>>
+   74   2          }
+   75   1      }
+   76          
+   77          ////////////////////////////////////////
+   78          // 系统初始化函数
+   79          // 入口参数: 无
+   80          // 函数返回: 无
+   81          ////////////////////////////////////////
+   82          void SYS_Init(void)
+   83          {
+   84   1          EnableAccessXFR();                  //使能访问扩展XFR
+   85   1          AccessCodeFastest();                //设置最快速度访问程序代码
+   86   1          AccessIXramSpeed(1);                //设置访问内部XDATA的速度（如果不使能DMA，可将参数设置为0）
+   87   1          IAP_SetTimeBase();                  //设置IAP等待参数,产生1us时基
+   88   1      
+   89   1          //<<AICUBE_USER_PREINITIAL_CODE_BEGIN>>
+   90   1          // 在此添加用户预初始化代码  
+   91   1          //<<AICUBE_USER_PREINITIAL_CODE_END>>
+   92   1      
+   93   1          PORT1_Init();                       //P1口初始化
+   94   1          PORT2_Init();                       //P2口初始化
+   95   1          PORT3_Init();                       //P3口初始化
+   96   1          CLK_Init();                         //时钟模块初始化
+   97   1          delay_ms(1);
+   98   1          USBLIB_Init();                      //USB库初始化
+   99   1          delay_ms(1);
+  100   1      
+  101   1          //<<AICUBE_USER_INITIAL_CODE_BEGIN>>
+  102   1          // 在此添加用户初始化代码  
+  103   1          //<<AICUBE_USER_INITIAL_CODE_END>>
+  104   1      
+  105   1          EnableGlobalInt();                  //使能全局中断
+  106   1          USBLIB_WaitConfiged();              //等待USB完成配置
+  107   1      }
+  108          
+  109          ////////////////////////////////////////
+  110          // 微秒延时函数
+  111          // 入口参数: us (设置延时的微秒值)
+  112          // 函数返回: 无
+  113          ////////////////////////////////////////
+  114          void delay_us(uint16_t us)
+  115          {
+  116   1          do
+  117   1          {
+  118   2              NOP(34);                        //(MAIN_Fosc + 500000) / 1000000 - 6
+  119   2          } while (--us);
+  120   1      }
+  121          
+  122          
+  123          ////////////////////////////////////////
+  124          // 毫秒延时函数
+C251 COMPILER V5.60.0,  main                                                               06/07/26  16:38:10  PAGE 3   
+
+  125          // 入口参数: ms (设置延时的毫秒值)
+  126          // 函数返回: 无
+  127          ////////////////////////////////////////
+  128          void delay_ms(uint16_t ms)
+  129          {
+  130   1          uint16_t i;
+  131   1      
+  132   1          do
+  133   1          {
+  134   2              i = MAIN_Fosc / 6000;
+  135   2              while (--i);
+  136   2          } while (--ms);
+  137   1      }
+  138          
+  139          
+  140          //<<AICUBE_USER_FUNCTION_IMPLEMENT_BEGIN>>
+  141          // 在此添加用户函数实现代码 
+  142          void task_sensor(void)
+  143          {
+  144   1          u16 i;
+  145   1          float f;
+  146   1          float heart_hz,heart_bpm = 0;
+  147   1      
+  148   1          if(!data_ready)
+  149   1              return;
+  150   1          data_ready = 0;
+  151   1      
+  152   1          heart_hz  = FFT_FreDetect(fifo_buf, FS);
+  153   1          heart_bpm = heart_hz * 60.0f;
+  154   1      
+  155   1          printf("Heart: %.1f BPM\r\n",heart_bpm);
+  156   1      
+  157   1      }
+*** WARNING C47 IN LINE 144 OF Sources\main.c: 'i': unreferenced local variable
+*** WARNING C47 IN LINE 145 OF Sources\main.c: 'f': unreferenced local variable
+  158          
+  159          void task_update(void)
+  160          {
+  161   1              max30102_readFIFO(&red_fifo,&ir_fifo);
+  162   1      
+  163   1              //填充FFT数组
+  164   1              if (fill < N)
+  165   1              {
+  166   2                  fifo_buf[fill] = red_fifo;
+  167   2                  fill++;
+  168   2      
+  169   2                  if (N == fill)
+  170   2                      data_ready = 1;
+  171   2              }
+  172   1              else
+  173   1              {
+  174   2                  for (k = 0; k < N - 1; k++)
+  175   2                      fifo_buf[k] = fifo_buf[k + 1];
+  176   2                  fifo_buf[N - 1] = red_fifo;
+  177   2                  
+  178   2                  data_ready = 1;
+  179   2              }
+  180   1      }
+  181          
+  182          float FFT_FreDetect(float *raw, float sample_rate)
+  183          {
+  184   1      #define THRESHOLD 100.0f
+  185   1          u16 i, max_bin;
+  186   1          float dc, freq, max_val, min_freq, max_freq, f;
+  187   1          float xdata tmp[MAX_FFT_N];
+  188   1          
+C251 COMPILER V5.60.0,  main                                                               06/07/26  16:38:10  PAGE 4   
+
+  189   1          /* BPF */
+  190   1          min_freq = 0.66f;//  40BPM
+  191   1          max_freq = 4.0f; // 240BPM
+  192   1      
+  193   1          //去直流
+  194   1          dc = 0;
+  195   1          for (i = 0; i < MAX_FFT_N; i++)
+  196   1              dc += raw[i];
+  197   1          dc /= (float)MAX_FFT_N;
+  198   1          
+  199   1          for (i = 0; i < MAX_FFT_N; i++)
+  200   1              tmp[i] = raw[i] - dc;
+  201   1      
+  202   1          /* Hann */
+  203   1          for (i = 0; i < MAX_FFT_N; i++)
+  204   1              tmp[i] = tmp[i] * (0.5f - 0.5f * cos(2 * PI * i / (MAX_FFT_N - 1)));
+  205   1      
+  206   1          /* FFT */
+  207   1          fft_run(tmp, fft_out);
+  208   1          fft_abs(fft_out, mag);
+  209   1      
+  210   1          /* 频率峰值 */
+  211   1          max_val = 0;
+  212   1          max_bin = 0;
+  213   1          for (i = 1; i < MAX_FFT_N / 2; i++)
+  214   1          {
+  215   2              f = (float)i * sample_rate / (float)MAX_FFT_N;
+  216   2              if (f >= min_freq && f <= max_freq)
+  217   2              {
+  218   3                  if (mag[i] > max_val)
+  219   3                  {
+  220   4                      max_val = mag[i];
+  221   4                      max_bin = i;
+  222   4                  }
+  223   3              }
+  224   2          }
+  225   1      
+  226   1          if (0 == max_bin || THRESHOLD > max_val)
+  227   1              return 0.0f;
+  228   1      
+  229   1          freq = (float)max_bin * sample_rate / (float)MAX_FFT_N;
+  230   1          return freq;
+  231   1      }
+  232          //<<AICUBE_USER_FUNCTION_IMPLEMENT_END>>
+  233          
+  234          
+
+
+Module Information          Static   Overlayable
+------------------------------------------------
+  code size            =       864     ------
+  ecode size           =    ------     ------
+  data size            =    ------     ------
+  idata size           =    ------     ------
+  pdata size           =    ------     ------
+  xdata size           =      8192       2048
+  xdata-const size     =    ------     ------
+  edata size           =        13          8
+  bit size             =    ------     ------
+  ebit size            =    ------     ------
+  bitaddressable size  =    ------     ------
+  ebitaddressable size =    ------     ------
+  far data size        =    ------     ------
+  huge data size       =    ------     ------
+  const size           =    ------     ------
+  hconst size          =        42     ------
+End of Module Information.
+
+C251 COMPILER V5.60.0,  main                                                               06/07/26  16:38:10  PAGE 5   
+
+
+C251 COMPILATION COMPLETE.  2 WARNING(S),  0 ERROR(S)

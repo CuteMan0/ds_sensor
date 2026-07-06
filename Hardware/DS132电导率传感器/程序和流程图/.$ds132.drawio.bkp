@@ -1,0 +1,91 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36">
+  <diagram id="C5RBs43oDa-KdzZeNtuy" name="Page-1">
+    <mxGraphModel dx="1442" dy="663" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="WIyWlLk6GJQsqaUBKTNV-0" />
+        <mxCell id="WIyWlLk6GJQsqaUBKTNV-1" parent="WIyWlLk6GJQsqaUBKTNV-0" />
+        <mxCell id="lD_uCqGSHTTVjX1NaHrY-0" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="lD_uCqGSHTTVjX1NaHrY-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="lD_uCqGSHTTVjX1NaHrY-3" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lD_uCqGSHTTVjX1NaHrY-1" parent="WIyWlLk6GJQsqaUBKTNV-1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;glass=0;strokeWidth=1;shadow=0;" value="上电启动" vertex="1">
+          <mxGeometry height="40" width="120" x="410" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="lD_uCqGSHTTVjX1NaHrY-2" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="lD_uCqGSHTTVjX1NaHrY-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="lD_uCqGSHTTVjX1NaHrY-7" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lD_uCqGSHTTVjX1NaHrY-3" parent="WIyWlLk6GJQsqaUBKTNV-1" style="rounded=0;whiteSpace=wrap;html=1;" value="传感器初始化&lt;br&gt;&lt;div&gt;设置Vref=GND。读取EEPROM设置（上次校准的Q值）&lt;/div&gt;" vertex="1">
+          <mxGeometry height="80" width="120" x="410" y="170" as="geometry" />
+        </mxCell>
+        <mxCell id="lD_uCqGSHTTVjX1NaHrY-4" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="lD_uCqGSHTTVjX1NaHrY-7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="lD_uCqGSHTTVjX1NaHrY-9" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="470" y="350" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lD_uCqGSHTTVjX1NaHrY-5" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="lD_uCqGSHTTVjX1NaHrY-7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="lD_uCqGSHTTVjX1NaHrY-17" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="590" y="360" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lD_uCqGSHTTVjX1NaHrY-6" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="lD_uCqGSHTTVjX1NaHrY-7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.25;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="lD_uCqGSHTTVjX1NaHrY-15">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lD_uCqGSHTTVjX1NaHrY-7" parent="WIyWlLk6GJQsqaUBKTNV-1" style="rounded=0;whiteSpace=wrap;html=1;" value="扫描按键是否触发" vertex="1">
+          <mxGeometry height="40" width="120" x="410" y="290" as="geometry" />
+        </mxCell>
+        <mxCell id="lD_uCqGSHTTVjX1NaHrY-8" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="lD_uCqGSHTTVjX1NaHrY-9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="lD_uCqGSHTTVjX1NaHrY-11">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lD_uCqGSHTTVjX1NaHrY-9" parent="WIyWlLk6GJQsqaUBKTNV-1" style="whiteSpace=wrap;html=1;" value="量程自动检测和切换" vertex="1">
+          <mxGeometry height="60" width="120" x="410" y="380" as="geometry" />
+        </mxCell>
+        <mxCell id="lD_uCqGSHTTVjX1NaHrY-10" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="lD_uCqGSHTTVjX1NaHrY-11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="lD_uCqGSHTTVjX1NaHrY-19" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lD_uCqGSHTTVjX1NaHrY-11" parent="WIyWlLk6GJQsqaUBKTNV-1" style="whiteSpace=wrap;html=1;" value="换算电导率并输出" vertex="1">
+          <mxGeometry height="40" width="120" x="410" y="470" as="geometry" />
+        </mxCell>
+        <mxCell id="lD_uCqGSHTTVjX1NaHrY-12" parent="WIyWlLk6GJQsqaUBKTNV-1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="无按键事件" vertex="1">
+          <mxGeometry height="30" width="80" x="460" y="340" as="geometry" />
+        </mxCell>
+        <mxCell id="lD_uCqGSHTTVjX1NaHrY-13" parent="WIyWlLk6GJQsqaUBKTNV-1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="单击短按" vertex="1">
+          <mxGeometry height="30" width="80" x="320" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="lD_uCqGSHTTVjX1NaHrY-14" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="lD_uCqGSHTTVjX1NaHrY-15" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.75;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" target="lD_uCqGSHTTVjX1NaHrY-7">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="460" y="355" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lD_uCqGSHTTVjX1NaHrY-15" parent="WIyWlLk6GJQsqaUBKTNV-1" style="rounded=0;whiteSpace=wrap;html=1;" value="无操作" vertex="1">
+          <mxGeometry height="30" width="60" x="300" y="300" as="geometry" />
+        </mxCell>
+        <mxCell id="lD_uCqGSHTTVjX1NaHrY-16" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="lD_uCqGSHTTVjX1NaHrY-17" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" target="lD_uCqGSHTTVjX1NaHrY-9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lD_uCqGSHTTVjX1NaHrY-17" parent="WIyWlLk6GJQsqaUBKTNV-1" style="rounded=0;whiteSpace=wrap;html=1;" value="进行校准，写入EEPROM，指示灯闪烁表示校准成功" vertex="1">
+          <mxGeometry height="60" width="120" x="550" y="330" as="geometry" />
+        </mxCell>
+        <mxCell id="lD_uCqGSHTTVjX1NaHrY-18" parent="WIyWlLk6GJQsqaUBKTNV-1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="单击长按" vertex="1">
+          <mxGeometry height="30" width="80" x="540" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="lD_uCqGSHTTVjX1NaHrY-19" parent="WIyWlLk6GJQsqaUBKTNV-1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;glass=0;strokeWidth=1;shadow=0;" value="结束" vertex="1">
+          <mxGeometry height="40" width="120" x="410" y="540" as="geometry" />
+        </mxCell>
+        <mxCell id="lD_uCqGSHTTVjX1NaHrY-20" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" style="endArrow=none;dashed=1;html=1;rounded=0;" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="360" y="490" as="sourcePoint" />
+            <mxPoint x="410" y="440" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lD_uCqGSHTTVjX1NaHrY-21" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" style="endArrow=none;dashed=1;html=1;rounded=0;" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="360" y="380" as="sourcePoint" />
+            <mxPoint x="410" y="380" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lD_uCqGSHTTVjX1NaHrY-22" parent="WIyWlLk6GJQsqaUBKTNV-1" style="rounded=0;whiteSpace=wrap;html=1;" value="根据ADC1检测到的电压切换Vref，通过ADC0计算电导率值。" vertex="1">
+          <mxGeometry height="110" width="130" x="230" y="380" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

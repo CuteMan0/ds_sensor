@@ -1,0 +1,100 @@
+C251 COMPILER V5.60.0,  range_switcher                                                     30/05/25  10:26:31  PAGE 1   
+
+
+C251 COMPILER V5.60.0, COMPILATION OF MODULE range_switcher
+OBJECT MODULE PLACED IN .\Objects\range_switcher.obj
+COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE USER\range_switcher.c XSMALL INTR2 BROWSE INCDIR(.\USER;.\Library) DEB
+                    -UG PRINT(.\Listings\range_switcher.lst) OBJECT(.\Objects\range_switcher.obj) 
+
+stmt  level    source
+
+    1          #include "range_switcher.h"
+*** ERROR C318 IN LINE 1 OF USER\range_switcher.h: can't open file 'stdint.h'
+    2          
+    3          float offset_vol = 0.0f;
+    4          
+    5          typedef void (*pfState)(void);
+    6          
+    7          typedef enum eEvent {
+    8              EVT_NO_EVENT,
+    9              EVT_OverRange,
+   10              EVT_UnderRange
+   11          } eEvent;
+   12          
+   13          typedef struct stStmRow {
+   14              pfState  pSrcState;
+   15              eEvent        eEvt;
+   16              pfState pDestState;
+   17          } StmRow_t;
+   18          
+   19          //×´Ì¬º¯Êý
+   20          void Range_0_2(void);
+   21          void Range_2_6(void);
+   22          void Range_6_10(void);
+   23          void Range_10_14(void);
+   24          void Range_14_18(void);
+   25          void Range_18_20(void);
+   26          
+   27          static eEvent      eCurrentEvent       = EVT_NO_EVENT;
+   28          static pfState     pfCurrentState      = Range_0_2;
+   29          
+   30          // ×´Ì¬×ªÒÆ±í
+   31          StmRow_t  stm[10]= {
+   32          {Range_0_2     , EVT_OverRange , Range_2_6 },
+   33          
+   34          {Range_2_6     , EVT_OverRange , Range_6_10  },
+   35          {Range_2_6     , EVT_UnderRange , Range_0_2  },
+   36          
+   37          {Range_6_10     , EVT_OverRange , Range_10_14  },
+   38          {Range_6_10     , EVT_UnderRange , Range_2_6  },
+   39          
+   40          {Range_10_14     , EVT_OverRange , Range_14_18  },
+   41          {Range_10_14     , EVT_UnderRange , Range_6_10  },
+   42          
+   43          {Range_14_18     , EVT_OverRange , Range_18_20  },
+   44          {Range_14_18     , EVT_UnderRange , Range_10_14  },
+   45          
+   46          {Range_18_20     , EVT_UnderRange , Range_14_18  }
+   47          };
+   48          
+   49          
+   50          void Range_0_2(void)
+   51          {
+   52   1          REF_GND;
+*** ERROR C67 IN LINE 52 OF USER\range_switcher.c: 'REF_GND': undefined identifier
+   53   1          offset_vol = 0.0f;
+   54   1      }
+   55          void Range_2_6(void)
+   56          {
+C251 COMPILER V5.60.0,  range_switcher                                                     30/05/25  10:26:31  PAGE 2   
+
+   57   1          REF_V3;
+*** ERROR C67 IN LINE 57 OF USER\range_switcher.c: 'REF_V3': undefined identifier
+   58   1          offset_vol = 0.3f;
+   59   1      }
+   60          void Range_6_10(void)
+   61          {
+   62   1          REF_V95;
+*** ERROR C67 IN LINE 62 OF USER\range_switcher.c: 'REF_V95': undefined identifier
+   63   1          offset_vol = 0.95f;
+   64   1      }
+   65          void Range_10_14(void)
+   66          {
+   67   1          REF_1V6;
+*** ERROR C67 IN LINE 67 OF USER\range_switcher.c: 'REF_1V6': undefined identifier
+   68   1          offset_vol = 1.6f;
+   69   1      }
+   70          void Range_14_18(void)
+   71          {
+   72   1          REF_2V25;
+*** ERROR C67 IN LINE 72 OF USER\range_switcher.c: 'REF_2V25': undefined identifier
+   73   1          offset_vol = 2.25f;
+   74   1      }
+   75          void Range_18_20(void)
+   76          {
+   77   1          REF_2V9;
+*** ERROR C67 IN LINE 77 OF USER\range_switcher.c: 'REF_2V9': undefined identifier
+   78   1          offset_vol = 2.9f;
+   79   1      }
+
+C251 COMPILATION COMPLETE.  0 WARNING(S),  7 ERROR(S)

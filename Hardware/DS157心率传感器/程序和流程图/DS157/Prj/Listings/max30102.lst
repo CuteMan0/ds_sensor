@@ -1,0 +1,142 @@
+C251 COMPILER V5.60.0,  max30102                                                           06/07/26  11:26:02  PAGE 1   
+
+
+C251 COMPILER V5.60.0, COMPILATION OF MODULE max30102
+OBJECT MODULE PLACED IN .\Objects\max30102.obj
+COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE ..\Driver\max30102.c XSMALL INTR2 OPTIMIZE(SIZE) BROWSE INCDIR(..\App;
+                    -..\Driver;..\Driver\Library;..\Driver\Tool) DEBUG PRINT(.\Listings\max30102.lst) OBJECT(.\Objects\max30102.obj) 
+
+stmt  level    source
+
+    1          #include "max30102.h"
+    2          
+    3          #include "sw_iic.h"
+    4          #include "STC32G_Delay.h"
+    5          
+    6          // 传感器初始化标志
+    7          static uint8_t g_max30102_inited = 0;
+    8          
+    9          // 内部I2C读写辅助函数 (需要根据你的I2C库实现)
+   10          uint8_t max30102_readBytes(uint8_t reg_addr, uint8_t *buf, uint8_t len)
+   11          {
+   12   1          return soft_iic_read(MAX30102_I2C_ADDRESS,reg_addr,buf,len);
+   13   1      }
+   14          
+   15          uint8_t max30102_writeByte(uint8_t reg_addr, uint8_t dat)
+   16          {
+   17   1          return soft_iic_write(MAX30102_I2C_ADDRESS,reg_addr,&dat,1);
+   18   1      }
+   19          
+   20          /**
+   21           * @brief 初始化MAX30102
+   22           * @return 0-成功, 非0-失败
+   23           */
+   24          uint8_t max30102_init(void)
+   25          {
+   26   1          uint8_t res, part_id, prev,tmp;
+   27   1          
+   28   1          soft_i2c_init();
+   29   1          // 检查器件ID
+   30   1          res = max30102_readBytes(MAX30102_REG_PART_ID, &part_id, 1);
+   31   1          if (res != 0 || part_id != 0x15) {
+   32   2              return 1; // ID错误
+   33   2          }
+   34   1          
+   35   1          // 软复位 (置位RST位)
+   36   1          res = max30102_readBytes(MAX30102_REG_MODE_CONFIG, &prev, 1);
+   37   1          if (res != 0) return 2;
+   38   1          prev |= (1 << 6); // 设置RST位
+   39   1          res = max30102_writeByte(MAX30102_REG_MODE_CONFIG, prev);
+   40   1          if (res != 0) return 2;
+   41   1          delay_ms(10); // 等待复位完成
+   42   1          
+   43   1          // 配置传感器工作模式、采样率、设置LED电流等
+   44   1          // 例如: 采样率、使能中断等
+   45   1          max30102_writeByte(MAX30102_REG_INTERRUPT_ENABLE_1,0xE0);
+   46   1          max30102_writeByte(MAX30102_REG_INTERRUPT_ENABLE_2,0x02);
+   47   1      
+   48   1          // 复位FIFO (将读/写指针和溢出计数器清零)
+   49   1          prev = 0x00;
+   50   1          res = max30102_writeByte(MAX30102_REG_FIFO_READ_POINTER, prev);
+   51   1          if (res != 0) return 3;
+   52   1          res = max30102_writeByte(MAX30102_REG_FIFO_WRITE_POINTER, prev);
+   53   1          if (res != 0) return 3;
+   54   1          res = max30102_writeByte(MAX30102_REG_OVERFLOW_COUNTER, prev);
+   55   1          if (res != 0) return 3;
+   56   1          
+   57   1          max30102_writeByte(MAX30102_REG_FIFO_CONFIG, 0x0F);
+   58   1      
+C251 COMPILER V5.60.0,  max30102                                                           06/07/26  11:26:02  PAGE 2   
+
+   59   1          max30102_writeByte(MAX30102_REG_MODE_CONFIG, MAX30102_MODE_SPO2);
+   60   1          
+   61   1          //SpO2 configuration:ACD resolution:15.63pA,sample rate control: 50Hz, LED pulse width:215 us 
+   62   1          max30102_writeByte(MAX30102_REG_SPO2_CONFIG,0x23);
+   63   1      
+   64   1          max30102_writeByte(MAX30102_REG_LED_PULSE_1,0x3F);
+   65   1          max30102_writeByte(MAX30102_REG_LED_PULSE_2,0x3F);
+   66   1          max30102_writeByte(MAX30102_REG_PILOT_LED_PULSE,0x7f);
+   67   1          
+   68   1          max30102_writeByte(MAX30102_REG_DIE_TEMP_CONFIG,0x01);  //temperture
+   69   1          
+   70   1          // 清除任何挂起的中断
+   71   1          max30102_readBytes(MAX30102_REG_INTERRUPT_STATUS_1, &tmp, 1);
+   72   1          max30102_readBytes(MAX30102_REG_INTERRUPT_STATUS_2, &tmp, 1);
+   73   1      
+   74   1          g_max30102_inited = 1;
+   75   1          return 0;
+   76   1      }
+   77          
+   78          
+   79          /**
+   80           * @brief 从FIFO读取数据 (核心函数)
+   81           */
+   82          void max30102_readFIFO(uint32_t *raw_red, uint32_t *raw_ir)
+   83          {
+   84   1          u8 receive_data[6]={0};
+   85   1          u8 temp_data=0;
+   86   1          u32 dat[2];
+   87   1          u32 timeout = 3;
+   88   1      
+   89   1          do{
+   90   2              max30102_readBytes(MAX30102_REG_INTERRUPT_STATUS_1,&temp_data,1);
+   91   2              // 多次失败就返回
+   92   2              if (--timeout == 0)break;
+   93   2          }while((temp_data&0x40)!=0x40);
+   94   1          max30102_readBytes(MAX30102_REG_FIFO_DATA_REGISTER,receive_data,6);
+   95   1          dat[0] = ((receive_data[0] << 16) | 
+   96   1                    (receive_data[1] << 8)  | 
+   97   1                     receive_data[2]) & 0x03FFFF;
+   98   1      
+   99   1          dat[1] = ((receive_data[3] << 16) | 
+  100   1                    (receive_data[4] << 8)  | 
+  101   1                     receive_data[5]) & 0x03FFFF;
+  102   1          *raw_red = dat[0];
+  103   1          *raw_ir = dat[1];
+  104   1      }
+
+
+Module Information          Static   Overlayable
+------------------------------------------------
+  code size            =       408     ------
+  ecode size           =    ------     ------
+  data size            =    ------     ------
+  idata size           =    ------     ------
+  pdata size           =    ------     ------
+  xdata size           =    ------     ------
+  xdata-const size     =    ------     ------
+  edata size           =         1         27
+  bit size             =    ------     ------
+  ebit size            =    ------     ------
+  bitaddressable size  =    ------     ------
+  ebitaddressable size =    ------     ------
+  far data size        =    ------     ------
+  huge data size       =    ------     ------
+  const size           =    ------     ------
+  hconst size          =        11     ------
+End of Module Information.
+
+C251 COMPILER V5.60.0,  max30102                                                           06/07/26  11:26:02  PAGE 3   
+
+
+C251 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

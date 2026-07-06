@@ -1,0 +1,263 @@
+C251 COMPILER V5.60.0,  DS132_EC_drive                                                     30/05/25  13:49:36  PAGE 1   
+
+
+C251 COMPILER V5.60.0, COMPILATION OF MODULE DS132_EC_drive
+OBJECT MODULE PLACED IN .\Objects\DS132_EC_drive.obj
+COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE USER\DS132_EC_drive.c XSMALL INTR2 BROWSE INCDIR(.\USER;.\Library) DEB
+                    -UG PRINT(.\Listings\DS132_EC_drive.lst) OBJECT(.\Objects\DS132_EC_drive.obj) 
+
+stmt  level    source
+
+    1          #include "DS132_EC_drive.h"
+    2          
+    3          #include "stc32g.h"
+    4          #include "STC32G_ADC.h"
+    5          #include "STC32G_GPIO.h"
+    6          #include "STC32G_Delay.h"
+    7          
+    8          #define Q     1.033f
+    9          //#define Q     1.042f
+   10          #define VIN   0.205f
+   11          #define R     820
+   12          
+   13          #define V_REF 3.3f
+   14          
+   15          sbit _C=P1^1;
+   16          sbit _B=P2^5;
+   17          sbit _A=P2^4;
+   18          
+   19          #define SEL(x,y,z) _C = (x);\
+   20                             _B = (y);\
+   21                             _A = (z)
+   22          
+   23          #define REF_GND     SEL(0,0,0) //X0
+   24          #define REF_V3      SEL(1,1,1) //X7
+   25          #define REF_V95     SEL(1,1,0) //X6
+   26          #define REF_1V6     SEL(1,0,0) //X4
+   27          #define REF_2V25    SEL(1,0,1) //X5
+   28          #define REF_2V9     SEL(0,1,0) //X2
+   29          
+   30          float offset_vol = 0.0f;
+   31          u16 tmp = 0;
+   32          static float Avg_Filter(float in_data);
+   33          static void Auto_Switcher(void);
+   34          
+   35          void EC_Init(void)
+   36          {
+   37   1          ADC_InitTypeDef ADC_InitSruct;
+   38   1      
+   39   1          P1_MODE_IN_HIZ(GPIO_Pin_0); // P1.0设置为高阻输入(ADC0)
+   40   1          P1_MODE_OUT_PP(GPIO_Pin_1); // P1.1设置为推挽输出(切换量程)
+   41   1          P2_MODE_OUT_PP(GPIO_Pin_4); // P2.4设置为推挽输出(切换量程)
+   42   1          P2_MODE_OUT_PP(GPIO_Pin_5); // P2.5设置为推挽输出(切换量程)
+   43   1          
+   44   1          REF_GND;//设置基准为GND
+   45   1          
+   46   1          ADC_InitSruct.ADC_SMPduty = 31;
+   47   1          ADC_InitSruct.ADC_Speed = ADC_SPEED_2X16T;
+   48   1          ADC_InitSruct.ADC_AdjResult = ADC_LEFT_JUSTIFIED;
+   49   1          ADC_InitSruct.ADC_CsSetup = 0;
+   50   1          ADC_InitSruct.ADC_CsHold = 1;
+   51   1      
+   52   1          ADC_Inilize(&ADC_InitSruct);
+   53   1          ADC_PowerControl(ENABLE);
+   54   1      }
+   55          
+   56          float EC_Read(void)
+   57          {  
+   58   1          u16 adc_val = 0;
+C251 COMPILER V5.60.0,  DS132_EC_drive                                                     30/05/25  13:49:36  PAGE 2   
+
+   59   1          float adc_vol = 0.0f;
+   60   1          float ec_val = 0.0f;
+   61   1      
+   62   1          Auto_Switcher();                        //自动切换量程
+   63   1          
+   64   1          adc_val = Get_ADCResult(ADC_CH0);
+   65   1          adc_vol = (float)adc_val * V_REF / 4096;
+   66   1          adc_vol /= 5.0f;                           //还原放大五倍前的信号电压
+   67   1          adc_vol += offset_vol;                  //补偿硬件上减去的偏置电压
+   68   1          adc_vol = Avg_Filter(adc_vol);          //滤波
+   69   1          ec_val = adc_vol * Q / ( R * VIN );     //k = Q/(R*|Vin|)*Vout
+   70   1      
+   71   1          return ec_val;
+   72   1      }
+   73          /************************************状态机************************************/
+   74          //状态函数
+   75          void Range_0_2(void);
+   76          void Range_2_6(void);
+   77          void Range_6_10(void);
+   78          void Range_10_14(void);
+   79          void Range_14_18(void);
+   80          void Range_18_20(void);
+   81          
+   82          static eEvent      eCurrentEvent       = EVT_NO_EVENT;
+   83          static pfState     pfCurrentState      = Range_0_2;
+   84          
+   85          // 状态转移表
+   86          StmRow_t  stm[10]= {
+   87          {Range_0_2     , EVT_OverRange , Range_2_6 },
+   88          
+   89          {Range_2_6     , EVT_OverRange , Range_6_10  },
+   90          {Range_2_6     , EVT_UnderRange , Range_0_2  },
+   91          
+   92          {Range_6_10     , EVT_OverRange , Range_10_14  },
+   93          {Range_6_10     , EVT_UnderRange , Range_2_6  },
+   94          
+   95          {Range_10_14     , EVT_OverRange , Range_14_18  },
+   96          {Range_10_14     , EVT_UnderRange , Range_6_10  },
+   97          
+   98          {Range_14_18     , EVT_OverRange , Range_18_20  },
+   99          {Range_14_18     , EVT_UnderRange , Range_10_14  },
+  100          
+  101          {Range_18_20     , EVT_UnderRange , Range_14_18  }
+  102          };
+  103          
+  104          static void Auto_Switcher(void)
+  105          {
+  106   1          int idx = 0;
+  107   1          if(EVT_NO_EVENT != eCurrentEvent) 
+  108   1          {
+  109   2              for(;idx < 10; idx++) 
+  110   2              {
+  111   3                  if( (stm[idx].pSrcState == pfCurrentState) &&
+  112   3                      (stm[idx].eEvt      == eCurrentEvent)) 
+  113   3                  {
+  114   4                      eCurrentEvent  = EVT_NO_EVENT;
+  115   4                      pfCurrentState();
+  116   4                      // 更新状态
+  117   4                      pfCurrentState = stm[idx].pDestState;
+  118   4                  }
+  119   3              }
+  120   2          }
+  121   1      
+  122   1          if(NULL != pfCurrentState) 
+  123   1          {
+  124   2              pfCurrentState();
+C251 COMPILER V5.60.0,  DS132_EC_drive                                                     30/05/25  13:49:36  PAGE 3   
+
+  125   2          }
+  126   1      }
+  127          
+  128          void Range_0_2(void){
+  129   1          REF_GND;
+  130   1          offset_vol = 0.0f;
+  131   1          
+  132   1          tmp = Get_ADCResult(ADC_CH0);
+  133   1          if(tmp > 3000)//+1000
+  134   1          {
+  135   2              eCurrentEvent = EVT_OverRange;
+  136   2          }
+  137   1      }
+  138          void Range_2_6(void)
+  139          {
+  140   1          REF_V3;
+  141   1          offset_vol = 0.3f;
+  142   1          
+  143   1          tmp = Get_ADCResult(ADC_CH0);
+  144   1          if(tmp > 4040)//+20
+  145   1          {
+  146   2              eCurrentEvent = EVT_OverRange;
+  147   2          }
+  148   1          if(tmp < 20)//-50
+  149   1          {
+  150   2              eCurrentEvent = EVT_UnderRange;
+  151   2          }
+  152   1      }
+  153          void Range_6_10(void)
+  154          {
+  155   1          REF_V95;
+  156   1          offset_vol = 0.95f;
+  157   1      
+  158   1          tmp = Get_ADCResult(ADC_CH0);
+  159   1          if(tmp > 4070)//+100
+  160   1          {
+  161   2              eCurrentEvent = EVT_OverRange;
+  162   2          }
+  163   1          if(tmp < 5)//-20
+  164   1          {
+  165   2              eCurrentEvent = EVT_UnderRange;
+  166   2          }
+  167   1      }
+  168          void Range_10_14(void)
+  169          {
+  170   1          REF_1V6;
+  171   1          offset_vol = 1.6f;
+  172   1          delay_ms(10);
+  173   1          tmp = Get_ADCResult(ADC_CH0);
+  174   1          if(tmp > 4000)//+120
+  175   1          {
+  176   2              eCurrentEvent = EVT_OverRange;
+  177   2          }
+  178   1          if(tmp < 1)
+  179   1          {
+  180   2              eCurrentEvent = EVT_UnderRange;
+  181   2          }
+  182   1      }
+  183          void Range_14_18(void)
+  184          {
+  185   1          REF_2V25;
+  186   1          offset_vol = 2.25f;
+  187   1      
+  188   1          tmp = Get_ADCResult(ADC_CH0);
+  189   1          if(tmp > 4000)//+200
+  190   1          {
+C251 COMPILER V5.60.0,  DS132_EC_drive                                                     30/05/25  13:49:36  PAGE 4   
+
+  191   2              eCurrentEvent = EVT_OverRange;
+  192   2          }
+  193   1          if(tmp < 1)
+  194   1          {
+  195   2              eCurrentEvent = EVT_UnderRange;
+  196   2          }
+  197   1      }
+  198          void Range_18_20(void)
+  199          {
+  200   1          REF_2V9;
+  201   1          offset_vol = 2.9f;
+  202   1      
+  203   1          if(tmp < 1)
+  204   1          {
+  205   2              eCurrentEvent = EVT_UnderRange;
+  206   2          }
+  207   1      }
+  208          
+  209          #define AVG_NUMS 10
+  210          volatile float dat[AVG_NUMS] = {0.0f};
+  211          static float Avg_Filter(float in_data)
+  212          {
+  213   1          float sum_data = 0.0f;
+  214   1          int i = 0;
+  215   1          // 前移（左移）滑动窗口
+  216   1          for (; i < AVG_NUMS - 1; i++) {
+  217   2              dat[i] = dat[i + 1];
+  218   2              sum_data += dat[i];
+  219   2          }
+  220   1          dat[AVG_NUMS - 1] = in_data;
+  221   1          sum_data += dat[AVG_NUMS - 1];
+  222   1          return (sum_data / AVG_NUMS);
+  223   1      }
+
+
+Module Information          Static   Overlayable
+------------------------------------------------
+  code size            =       612     ------
+  ecode size           =    ------     ------
+  data size            =    ------     ------
+  idata size           =    ------     ------
+  pdata size           =    ------     ------
+  xdata size           =    ------     ------
+  xdata-const size     =    ------     ------
+  edata size           =       110          5
+  bit size             =    ------     ------
+  ebit size            =    ------     ------
+  bitaddressable size  =    ------     ------
+  ebitaddressable size =    ------     ------
+  far data size        =    ------     ------
+  huge data size       =    ------     ------
+  const size           =    ------     ------
+  hconst size          =       134     ------
+End of Module Information.
+
+
+C251 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

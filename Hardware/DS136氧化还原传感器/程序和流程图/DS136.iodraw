@@ -1,0 +1,31 @@
+<mxfile host="Electron">
+  <diagram id="KFt8vx8ZLzcEH1yvltXE" name="第 1 页">
+    <mxGraphModel dx="1432" dy="652" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="ycfu6I-ZbIwW28ed-Bh1-7" edge="1" parent="1" source="ycfu6I-ZbIwW28ed-Bh1-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="ycfu6I-ZbIwW28ed-Bh1-6" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ycfu6I-ZbIwW28ed-Bh1-4" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;rounded=1;" value="启动" vertex="1">
+          <mxGeometry height="60" width="120" x="350" y="500" as="geometry" />
+        </mxCell>
+        <mxCell id="ycfu6I-ZbIwW28ed-Bh1-9" edge="1" parent="1" source="ycfu6I-ZbIwW28ed-Bh1-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="ycfu6I-ZbIwW28ed-Bh1-8" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ycfu6I-ZbIwW28ed-Bh1-6" parent="1" style="whiteSpace=wrap;html=1;rounded=1;" value="初始化ADC" vertex="1">
+          <mxGeometry height="60" width="120" x="350" y="590" as="geometry" />
+        </mxCell>
+        <mxCell id="ycfu6I-ZbIwW28ed-Bh1-11" edge="1" parent="1" source="ycfu6I-ZbIwW28ed-Bh1-8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="ycfu6I-ZbIwW28ed-Bh1-10" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ycfu6I-ZbIwW28ed-Bh1-8" parent="1" style="whiteSpace=wrap;html=1;rounded=1;" value="根据&lt;div&gt;2010-1333.33*Vadc&lt;/div&gt;&lt;div&gt;计算出ORP电位&lt;/div&gt;" vertex="1">
+          <mxGeometry height="60" width="120" x="350" y="670" as="geometry" />
+        </mxCell>
+        <mxCell id="ycfu6I-ZbIwW28ed-Bh1-10" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;rounded=1;" value="结束" vertex="1">
+          <mxGeometry height="60" width="120" x="350" y="770" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

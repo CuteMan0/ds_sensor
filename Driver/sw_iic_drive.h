@@ -1,5 +1,13 @@
 #include "type_def.h"
 
+#define FAST_MODE 1
+
+#if FAST_MODE
+#define DELAY_TIME 1 // 400Kbps TestResult: 310Kbps
+#else
+#define DELAY_TIME 5 // 100Kbps TestResult: 92Kbps
+#endif
+
 #define SDA_OUT()      \
     P2M1 &= ~(1 << 4); \
     P2M0 |= (1 << 4) // 设置P2.4为推挽输出

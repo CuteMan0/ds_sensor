@@ -36,11 +36,10 @@ void task_led_blink(void)
     Led_Task();
 #endif
 }
-
 void task_sensor(void)
 {
     ds_update(&dat_for_printf); // 传感器数据更新
-    avg_filter_update(&filter, dat_for_printf);
+    // avg_filter_update(&filter, dat_for_printf);
 }
 
 void task_printf(void)
@@ -75,14 +74,16 @@ void task_printf(void)
     printf("H2:%.2f\n", dat_for_printf); // ppm
 #elif DS_SENSOR == 157
     printf("BPM:%u\n", (u16)dat_for_printf); // bpm
+#elif DS_SENSOR == 159
+    printf("BPM:%u\n", (u16)dat_for_printf); // bpm
 #elif DS_SENSOR == 160
     printf("NO2:%.2f\n", dat_for_printf); // ppm
 #elif DS_SENSOR == 161
-    printf("CO:%.2f\n", dat_for_printf); // ppm
+    printf("CO:%.2f\n", dat_for_printf); // ppmf
 #elif DS_SENSOR == 162
     printf("CH4:%.2f\n", dat_for_printf); // ppm
-#elif DS_SENSOR == 163
-    printf("NH3:%.2f\n", dat_for_printf); // ppm
+#elif DS_SENSOR == 163u
+    printf("NH3:%.2f\n", dat_for_printf); // ppmu
 #elif DS_SENSOR == 164
     printf("CL2:%.2f\n", dat_for_printf); // ppm
 #endif
@@ -99,7 +100,11 @@ void main(void)
     ds_init(); // 传感器初始化
     avg_filter_init(&filter, buffer, NUM_BUF_AVG);
     task_scheduler_init();
+#if DS_SENSOR == 159
+    task_register(task_sensor, 80, 3);
+#else
     task_register(task_sensor, 50, 3);
+#endif
     task_register(task_printf, 300, 4);
     task_register(task_calibration_save, 1000, 1);
     task_register(task_key_scan, 20, 2);

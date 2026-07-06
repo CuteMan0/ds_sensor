@@ -1,0 +1,20 @@
+".\Objects\main.obj",
+".\Objects\ADC_drive.obj",
+".\Objects\LED_drive.obj",
+".\Objects\USB_CDC_drive.obj",
+".\Objects\max30102.obj",
+".\Objects\sw_iic.obj",
+".\Objects\STC32G_Delay.obj",
+".\Objects\STC32G_ADC.obj",
+".\Objects\STC32G_GPIO.obj",
+".\Objects\STC32G_Timer.obj",
+".\Objects\STC32G_Timer_Isr.obj",
+"..\Driver\Library\stc_usb_cdc_32.LIB",
+".\Objects\task_scheduler.obj",
+".\Objects\fft.obj",
+".\Objects\log.obj" 
+TO ".\Objects\DS157HeartRate" 
+PRINT(".\Listings\DS157HeartRate.map") CASE 
+REMOVEUNUSED 
+CLASSES (EDATA (0x0-0xFFF), 
+HDATA (0x0-0xFFF)) 

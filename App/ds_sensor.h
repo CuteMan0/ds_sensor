@@ -15,6 +15,9 @@
 #if DS_SENSOR == 133 /*多量程电导率传感器 0-20mS/cm、0-2mS/cm、0-0.2mS/cm*/
 #include "ds133_multi_ec_meter.h"
 #endif
+#if DS_SENSOR == 134 /*色度传感器*/
+// ..\ds_sensor\Hardware\DS134色度传感器\程序和流程图\DS134
+#endif
 #if DS_SENSOR == 135 /*浊度传感器*/
 #include "ds135_tur_meter.h"
 #endif
@@ -43,7 +46,10 @@
 #include "ds153_h2_meter.h"
 #endif
 #if DS_SENSOR == 157 /*心率传感器*/
-#include "ds157_hr_meter.h"
+// ..\ds_sensor\Hardware\DS157心率传感器\程序和流程图\DS157
+#endif
+#if DS_SENSOR == 159 /*呼吸率传感器*/
+// ..\ds_sensor\Hardware\DS159呼吸率传感器\程序和流程图\DS159
 #endif
 #if DS_SENSOR == 160 /*二氧化氮传感器*/
 #include "ds160_no2_meter.h"

@@ -6,7 +6,7 @@
 
 void soft_i2c_delay(void)
 {
-    delay_us(5);
+    delay_us(DELAY_TIME);
 }
 
 void soft_i2c_init(void)

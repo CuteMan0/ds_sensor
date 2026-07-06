@@ -33,7 +33,7 @@ void ds_update(float *dat)
     tick++;
     if (tick == 10)// 10*50ms
         LAMP_ON();
-    if (tick == 15)
+    if (tick > 15)
     {
         adc_get(&adc0);
         adc_get(&adc1);

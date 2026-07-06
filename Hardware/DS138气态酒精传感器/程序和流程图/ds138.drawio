@@ -1,0 +1,204 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36">
+  <diagram id="C5RBs43oDa-KdzZeNtuy" name="Page-1">
+    <mxGraphModel dx="1696" dy="780" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="WIyWlLk6GJQsqaUBKTNV-0" />
+        <mxCell id="WIyWlLk6GJQsqaUBKTNV-1" parent="WIyWlLk6GJQsqaUBKTNV-0" />
+        <mxCell id="lD_uCqGSHTTVjX1NaHrY-0" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="lD_uCqGSHTTVjX1NaHrY-3" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="830" y="80" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Jp2m66oeewYk2qzuKcYo-3" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="lD_uCqGSHTTVjX1NaHrY-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="Jp2m66oeewYk2qzuKcYo-2" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lD_uCqGSHTTVjX1NaHrY-3" parent="WIyWlLk6GJQsqaUBKTNV-1" style="rounded=0;whiteSpace=wrap;html=1;" value="传感器初始化&lt;br&gt;&lt;div&gt;（初始化ADC、读零点值）&lt;/div&gt;" vertex="1">
+          <mxGeometry height="60" width="120" x="770" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="Jp2m66oeewYk2qzuKcYo-0" parent="WIyWlLk6GJQsqaUBKTNV-1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;" value="启动" vertex="1">
+          <mxGeometry height="40" width="100" x="780" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="Jp2m66oeewYk2qzuKcYo-5" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="Jp2m66oeewYk2qzuKcYo-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="Jp2m66oeewYk2qzuKcYo-4" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Jp2m66oeewYk2qzuKcYo-6" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="Jp2m66oeewYk2qzuKcYo-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="Jp2m66oeewYk2qzuKcYo-7">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="939.9999999999998" y="309.9999999999999" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Jp2m66oeewYk2qzuKcYo-8" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="Jp2m66oeewYk2qzuKcYo-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="Jp2m66oeewYk2qzuKcYo-9">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="690" y="289.9999999999999" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Jp2m66oeewYk2qzuKcYo-2" parent="WIyWlLk6GJQsqaUBKTNV-1" style="rounded=0;whiteSpace=wrap;html=1;" value="调度器启动" vertex="1">
+          <mxGeometry height="40" width="120" x="770" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="Jp2m66oeewYk2qzuKcYo-28" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="Jp2m66oeewYk2qzuKcYo-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="830" y="340" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Jp2m66oeewYk2qzuKcYo-4" parent="WIyWlLk6GJQsqaUBKTNV-1" style="whiteSpace=wrap;html=1;rounded=0;" value="读取ADC" vertex="1">
+          <mxGeometry height="60" width="120" x="770" y="250" as="geometry" />
+        </mxCell>
+        <mxCell id="Jp2m66oeewYk2qzuKcYo-12" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="Jp2m66oeewYk2qzuKcYo-7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="Jp2m66oeewYk2qzuKcYo-11" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Jp2m66oeewYk2qzuKcYo-7" parent="WIyWlLk6GJQsqaUBKTNV-1" style="rounded=0;whiteSpace=wrap;html=1;" value="按键扫描" vertex="1">
+          <mxGeometry height="60" width="120" x="1419.9999999999998" y="289.9999999999999" as="geometry" />
+        </mxCell>
+        <mxCell id="Jp2m66oeewYk2qzuKcYo-43" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="Jp2m66oeewYk2qzuKcYo-9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="Jp2m66oeewYk2qzuKcYo-42" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Jp2m66oeewYk2qzuKcYo-9" parent="WIyWlLk6GJQsqaUBKTNV-1" style="rounded=0;whiteSpace=wrap;html=1;" value="指示灯状态" vertex="1">
+          <mxGeometry height="60" width="140" x="130" y="290" as="geometry" />
+        </mxCell>
+        <mxCell id="Jp2m66oeewYk2qzuKcYo-14" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="Jp2m66oeewYk2qzuKcYo-11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="Jp2m66oeewYk2qzuKcYo-13" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Jp2m66oeewYk2qzuKcYo-23" connectable="0" parent="Jp2m66oeewYk2qzuKcYo-14" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="按键被按下" vertex="1">
+          <mxGeometry relative="1" x="-0.3602" y="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Jp2m66oeewYk2qzuKcYo-11" parent="WIyWlLk6GJQsqaUBKTNV-1" style="rounded=0;whiteSpace=wrap;html=1;" value="空闲" vertex="1">
+          <mxGeometry height="60" width="120" x="1419.9999999999998" y="369.9999999999999" as="geometry" />
+        </mxCell>
+        <mxCell id="Jp2m66oeewYk2qzuKcYo-16" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="Jp2m66oeewYk2qzuKcYo-13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1480.0000000000005" y="590" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Jp2m66oeewYk2qzuKcYo-24" connectable="0" parent="Jp2m66oeewYk2qzuKcYo-16" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="超过消抖阈值，按键依然被按下" vertex="1">
+          <mxGeometry relative="1" x="-0.1102" y="-4" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Jp2m66oeewYk2qzuKcYo-13" parent="WIyWlLk6GJQsqaUBKTNV-1" style="rounded=0;whiteSpace=wrap;html=1;" value="启动计数器" vertex="1">
+          <mxGeometry height="60" width="120" x="1419.9999999999998" y="479.9999999999999" as="geometry" />
+        </mxCell>
+        <mxCell id="Jp2m66oeewYk2qzuKcYo-18" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="Jp2m66oeewYk2qzuKcYo-17" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1480.0000000000005" y="650" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Jp2m66oeewYk2qzuKcYo-21" connectable="0" parent="Jp2m66oeewYk2qzuKcYo-18" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="计数器到阈值，按键被释放" vertex="1">
+          <mxGeometry relative="1" x="-0.1407" y="-3" as="geometry">
+            <mxPoint y="4" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Jp2m66oeewYk2qzuKcYo-19" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="Jp2m66oeewYk2qzuKcYo-32" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" target="Jp2m66oeewYk2qzuKcYo-20">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1420.0000000000005" y="620" as="sourcePoint" />
+            <mxPoint x="1340" y="860" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Jp2m66oeewYk2qzuKcYo-22" connectable="0" parent="Jp2m66oeewYk2qzuKcYo-19" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="计数器未到阈值，按键被释放" vertex="1">
+          <mxGeometry relative="1" x="0.3934" as="geometry">
+            <mxPoint x="10" y="2" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Jp2m66oeewYk2qzuKcYo-26" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="Jp2m66oeewYk2qzuKcYo-17" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1480" y="800" />
+              <mxPoint x="1250" y="800" />
+              <mxPoint x="1250" y="380" />
+            </Array>
+            <mxPoint x="1420" y="380" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Jp2m66oeewYk2qzuKcYo-17" parent="WIyWlLk6GJQsqaUBKTNV-1" style="rounded=0;whiteSpace=wrap;html=1;" value="长按操作标记" vertex="1">
+          <mxGeometry height="60" width="120" x="1419.9999999999998" y="709.9999999999999" as="geometry" />
+        </mxCell>
+        <mxCell id="Jp2m66oeewYk2qzuKcYo-25" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="Jp2m66oeewYk2qzuKcYo-20" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=-0.001;entryY=0.667;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryPerimeter=0;" target="Jp2m66oeewYk2qzuKcYo-11">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1340" y="780" />
+              <mxPoint x="1270" y="780" />
+              <mxPoint x="1270" y="410" />
+            </Array>
+            <mxPoint x="1330" y="600" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Jp2m66oeewYk2qzuKcYo-20" parent="WIyWlLk6GJQsqaUBKTNV-1" style="rounded=0;whiteSpace=wrap;html=1;" value="短按操作标记" vertex="1">
+          <mxGeometry height="60" width="120" x="1280" y="710" as="geometry" />
+        </mxCell>
+        <mxCell id="Jp2m66oeewYk2qzuKcYo-32" parent="WIyWlLk6GJQsqaUBKTNV-1" style="rhombus;whiteSpace=wrap;html=1;" value="过渡态" vertex="1">
+          <mxGeometry height="80" width="80" x="1440" y="590" as="geometry" />
+        </mxCell>
+        <mxCell id="Jp2m66oeewYk2qzuKcYo-35" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="Jp2m66oeewYk2qzuKcYo-33" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="Jp2m66oeewYk2qzuKcYo-34" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Jp2m66oeewYk2qzuKcYo-44" connectable="0" parent="Jp2m66oeewYk2qzuKcYo-35" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="是" vertex="1">
+          <mxGeometry relative="1" x="-0.6813" y="-3" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Jp2m66oeewYk2qzuKcYo-36" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="Jp2m66oeewYk2qzuKcYo-33" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" target="Jp2m66oeewYk2qzuKcYo-37">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="720" y="380" />
+              <mxPoint x="720" y="580" />
+            </Array>
+            <mxPoint x="720" y="580" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Jp2m66oeewYk2qzuKcYo-45" connectable="0" parent="Jp2m66oeewYk2qzuKcYo-36" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="否" vertex="1">
+          <mxGeometry relative="1" x="-0.2684" y="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Jp2m66oeewYk2qzuKcYo-33" parent="WIyWlLk6GJQsqaUBKTNV-1" style="rhombus;whiteSpace=wrap;html=1;" value="是否存在&lt;div&gt;长按标记&lt;/div&gt;" vertex="1">
+          <mxGeometry height="80" width="80" x="790" y="340" as="geometry" />
+        </mxCell>
+        <mxCell id="Jp2m66oeewYk2qzuKcYo-38" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="Jp2m66oeewYk2qzuKcYo-34" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="Jp2m66oeewYk2qzuKcYo-37" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Jp2m66oeewYk2qzuKcYo-34" parent="WIyWlLk6GJQsqaUBKTNV-1" style="whiteSpace=wrap;html=1;" value="立即读取adc，按照此时adc电压作为零点电压。挂起eeprom写入标志" vertex="1">
+          <mxGeometry height="60" width="120" x="770" y="450" as="geometry" />
+        </mxCell>
+        <mxCell id="Jp2m66oeewYk2qzuKcYo-37" parent="WIyWlLk6GJQsqaUBKTNV-1" style="rounded=0;whiteSpace=wrap;html=1;" value="查表输出" vertex="1">
+          <mxGeometry height="60" width="120" x="770" y="550" as="geometry" />
+        </mxCell>
+        <mxCell id="Jp2m66oeewYk2qzuKcYo-47" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="Jp2m66oeewYk2qzuKcYo-42" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="Jp2m66oeewYk2qzuKcYo-46" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Jp2m66oeewYk2qzuKcYo-51" connectable="0" parent="Jp2m66oeewYk2qzuKcYo-47" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="是" vertex="1">
+          <mxGeometry relative="1" x="-0.2786" y="3" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Jp2m66oeewYk2qzuKcYo-49" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="Jp2m66oeewYk2qzuKcYo-42" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="100" y="420" />
+              <mxPoint x="100" y="578" />
+            </Array>
+            <mxPoint x="197" y="578" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Jp2m66oeewYk2qzuKcYo-50" connectable="0" parent="Jp2m66oeewYk2qzuKcYo-49" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="否" vertex="1">
+          <mxGeometry relative="1" x="-0.3069" y="-2" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Jp2m66oeewYk2qzuKcYo-42" parent="WIyWlLk6GJQsqaUBKTNV-1" style="rhombus;whiteSpace=wrap;html=1;rounded=0;" value="是否存在&lt;br&gt;eeprom写入&lt;div&gt;标志&lt;/div&gt;" vertex="1">
+          <mxGeometry height="80" width="80" x="160" y="379.9999999999999" as="geometry" />
+        </mxCell>
+        <mxCell id="Jp2m66oeewYk2qzuKcYo-48" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="Jp2m66oeewYk2qzuKcYo-46" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="200" y="600" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Jp2m66oeewYk2qzuKcYo-46" parent="WIyWlLk6GJQsqaUBKTNV-1" style="whiteSpace=wrap;html=1;rounded=0;" value="在eeprom被写完成后，闪烁指示灯" vertex="1">
+          <mxGeometry height="60" width="120" x="140" y="499.9999999999999" as="geometry" />
+        </mxCell>
+        <mxCell id="0pGaNKkAu0_gw2PQFaIE-0" parent="WIyWlLk6GJQsqaUBKTNV-1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;" value="结束" vertex="1">
+          <mxGeometry height="60" width="120" x="140" y="600" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

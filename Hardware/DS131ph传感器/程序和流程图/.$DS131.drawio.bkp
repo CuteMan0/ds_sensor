@@ -1,0 +1,40 @@
+<mxfile host="Electron">
+  <diagram name="第 1 页" id="qa27evNkbouLnLHR0ZX9">
+    <mxGraphModel dx="1442" dy="663" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="WekBgLxD47YR4KVHBKcU-4" edge="1" parent="1" source="WekBgLxD47YR4KVHBKcU-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="WekBgLxD47YR4KVHBKcU-3" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="WekBgLxD47YR4KVHBKcU-1" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;" value="开始" vertex="1">
+          <mxGeometry height="60" width="120" x="353" y="314" as="geometry" />
+        </mxCell>
+        <mxCell id="WekBgLxD47YR4KVHBKcU-6" edge="1" parent="1" source="WekBgLxD47YR4KVHBKcU-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="WekBgLxD47YR4KVHBKcU-5" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="WekBgLxD47YR4KVHBKcU-3" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="adc0初始化" vertex="1">
+          <mxGeometry height="60" width="120" x="353" y="407" as="geometry" />
+        </mxCell>
+        <mxCell id="WekBgLxD47YR4KVHBKcU-8" edge="1" parent="1" source="WekBgLxD47YR4KVHBKcU-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="WekBgLxD47YR4KVHBKcU-7" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="WekBgLxD47YR4KVHBKcU-5" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="进入调度器" vertex="1">
+          <mxGeometry height="60" width="120" x="353" y="500" as="geometry" />
+        </mxCell>
+        <mxCell id="WekBgLxD47YR4KVHBKcU-9" edge="1" parent="1" source="WekBgLxD47YR4KVHBKcU-7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="WekBgLxD47YR4KVHBKcU-5">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="333" y="623" />
+              <mxPoint x="333" y="530" />
+            </Array>
+            <mxPoint x="305.39989280700684" y="536.3321533203125" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="WekBgLxD47YR4KVHBKcU-7" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="根据execl数据的斜率和截距，将adc电压转为ph值。" vertex="1">
+          <mxGeometry height="60" width="120" x="353" y="593" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

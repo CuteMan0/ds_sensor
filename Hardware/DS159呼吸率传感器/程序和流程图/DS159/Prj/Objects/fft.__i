@@ -1,0 +1,1 @@
+"..\Driver\Tool\fft.c" XSMALL INTR2 OPTIMIZE (SIZE) BROWSE INCDIR(..\App;..\Driver;..\Driver\Library;..\Driver\Tool) DEBUG PRINT(.\Listings\fft.lst) OBJECT(.\Objects\fft.obj)

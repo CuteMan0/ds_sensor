@@ -1,0 +1,43 @@
+C251 COMPILER V5.60.0,  DS159_BR_drive                                                     05/11/25  08:45:29  PAGE 1   
+
+
+C251 COMPILER V5.60.0, COMPILATION OF MODULE DS159_BR_drive
+OBJECT MODULE PLACED IN .\Objects\DS159_BR_drive.obj
+COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE ..\Driver\DS159_BR_drive.c XSMALL INTR2 BROWSE INCDIR(..\App;..\Driver
+                    -;..\Driver\Library;..\Driver\Tool) DEBUG PRINT(.\Listings\DS159_BR_drive.lst) OBJECT(.\Objects\DS159_BR_drive.obj) 
+
+stmt  level    source
+
+    1          #include "DS159_BR_drive.h"
+    2          
+    3          #include "stc32g.h"
+    4          #include "STC32G_ADC.h"
+    5          #include "STC32G_Delay.h"
+    6          #include "STC32G_GPIO.h"
+    7          #include "stc32_stc8_usb.h"
+    8          
+    9          #include "log.h"
+
+
+Module Information          Static   Overlayable
+------------------------------------------------
+  code size            =    ------     ------
+  ecode size           =    ------     ------
+  data size            =    ------     ------
+  idata size           =    ------     ------
+  pdata size           =    ------     ------
+  xdata size           =    ------     ------
+  xdata-const size     =    ------     ------
+  edata size           =    ------     ------
+  bit size             =    ------     ------
+  ebit size            =    ------     ------
+  bitaddressable size  =    ------     ------
+  ebitaddressable size =    ------     ------
+  far data size        =    ------     ------
+  huge data size       =    ------     ------
+  const size           =    ------     ------
+  hconst size          =    ------     ------
+End of Module Information.
+
+
+C251 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

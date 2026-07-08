@@ -1,20 +1,6 @@
-LTspice 26.0.1 for Windows
-Circuit: C:\Users\admin\Documents\LTspice\心率检测_滞回比较.net
-Start Time: Wed Jul  8 16:21:02 2026
-solver = Normal
-Maximum thread count: 4
-tnom = 27
-temp = 27
-method = trap
-Compress1stOrder = true
-Compress2ndOrder = true
-Direct Newton iteration failed to find operating point.
-Starting Gmin stepping
-Gmin stepping succeeded in finding the operating point.
-
-Total elapsed time: 4.655 seconds.
-
-Files loaded:
-C:\Users\admin\Documents\LTspice\心率检测_滞回比较.net
-C:\Users\admin\Documents\LTspice\lmv358a.lib
-
+LTspice 26.0.2 for Windows
+Circuit: C:\Users\Si\Desktop\ds_sensor\Hardware\DS157心率传感器\技术手册\心率检测_滞回比较.net
+Start Time: Wed Jul  8 19:20:05 2026
+C:\Users\Si\Desktop\ds_sensor\Hardware\DS157心率传感器\技术手册\心率检测_滞回比较.net(9): File "C:\Users\admin\Downloads\ECG-Preprocessing-Circuit-main\ECG Preprocessing\ecg.txt" not found.
+V1 IN 0 PWL file="C:\Users\admin\Downloads\ECG-Preprocessing-Circuit-main\ECG Preprocessing\ecg.txt" AC 1
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

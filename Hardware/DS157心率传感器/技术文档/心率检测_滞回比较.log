@@ -1,0 +1,20 @@
+LTspice 26.0.1 for Windows
+Circuit: C:\Users\admin\Desktop\WorkSpace\ds_sensor\Hardware\DS157心率传感器\技术文档\心率检测_滞回比较.net
+Start Time: Fri Jul 10 17:30:30 2026
+solver = Normal
+Maximum thread count: 4
+tnom = 27
+temp = 27
+method = trap
+Compress1stOrder = true
+Compress2ndOrder = true
+Direct Newton iteration failed to find operating point.
+Starting Gmin stepping
+Gmin stepping succeeded in finding the operating point.
+
+Total elapsed time: 5.505 seconds.
+
+Files loaded:
+C:\Users\admin\Desktop\WorkSpace\ds_sensor\Hardware\DS157心率传感器\技术文档\心率检测_滞回比较.net
+C:\Users\admin\Documents\LTspice\lmv358a.lib
+

@@ -7,8 +7,11 @@
 #include "LED_drive.h"
 #include "USB_CDC_drive.h"
 #include "STC32G_Delay.h"
+#include "ADC_drive.h"
 
 #include "log.h"
+
+ADC_Handle_t adc0;
 
 void main(void)
 {
@@ -24,9 +27,13 @@ void main(void)
     fft_init();
     max30102_init();
     
+    adc_init(&adc0,0,3.3);
+    
     while (1)
     {
-        task_update();
-        task_sensor();
+        printf("%f\n",adc_get(&adc0));
+        delay_ms(20);
+        
+
     }
 }

@@ -40,7 +40,7 @@
 #define MAX30102_MODE_SPO2 0x03
 #define MAX30102_MODE_MULTI_LED 0x07
 
-uint8_t max30102_init(void);
-void max30102_readFIFO(uint32_t *raw_red, uint32_t *raw_ir);
+uint8 max30102_init(void);
+void max30102_readFIFO(uint32 *raw_red, uint32 *raw_ir);
 
 #endif

@@ -33,8 +33,8 @@ void ds_update(float *dat)
     tick++;
     if (tick == 10)// 10*50ms
         LAMP_ON();
-    if (tick > 15)
-    {
+//    if (tick > 15)
+//    {
         adc_get(&adc0);
         adc_get(&adc1);
         adc_get(&adc8);
@@ -43,7 +43,7 @@ void ds_update(float *dat)
         temp = adc8.raw;
         temp = bsp_ntc_10k_b3950_temperature_get(temp);
         *dat = sig_channel - ref_channel;
-    }
+//    }
     if (tick == 20)
     {
         tick = 0;

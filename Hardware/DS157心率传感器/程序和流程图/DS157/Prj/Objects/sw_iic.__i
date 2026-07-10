@@ -1,1 +1,0 @@
-"..\Driver\sw_iic.c" XSMALL INTR2 OPTIMIZE (SIZE) BROWSE INCDIR(..\App;..\Driver;..\Driver\Library;..\Driver\Tool) DEBUG PRINT(.\Listings\sw_iic.lst) OBJECT(.\Objects\sw_iic.obj)

@@ -1,4 +1,4 @@
-C251 COMPILER V5.60.0,  STC32G_Delay                                                       06/07/26  10:29:46  PAGE 1   
+C251 COMPILER V5.60.0,  STC32G_Delay                                                       10/07/26  16:56:19  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE STC32G_Delay
@@ -67,7 +67,7 @@ Module Information          Static   Overlayable
   far data size        =    ------     ------
   huge data size       =    ------     ------
   const size           =    ------     ------
-C251 COMPILER V5.60.0,  STC32G_Delay                                                       06/07/26  10:29:46  PAGE 2   
+C251 COMPILER V5.60.0,  STC32G_Delay                                                       10/07/26  16:56:19  PAGE 2   
 
   hconst size          =    ------     ------
 End of Module Information.

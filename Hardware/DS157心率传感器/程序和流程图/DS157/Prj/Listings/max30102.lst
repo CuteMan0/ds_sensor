@@ -1,4 +1,4 @@
-C251 COMPILER V5.60.0,  max30102                                                           06/07/26  11:26:02  PAGE 1   
+C251 COMPILER V5.60.0,  max30102                                                           10/07/26  16:56:18  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE max30102
@@ -16,7 +16,7 @@ stmt  level    source
     6          // 传感器初始化标志
     7          static uint8_t g_max30102_inited = 0;
     8          
-    9          // 内部I2C读写辅助函数 (需要根据你的I2C库实现)
+    9          // 内部I2C读写函数 
    10          uint8_t max30102_readBytes(uint8_t reg_addr, uint8_t *buf, uint8_t len)
    11          {
    12   1          return soft_iic_read(MAX30102_I2C_ADDRESS,reg_addr,buf,len);
@@ -66,7 +66,7 @@ stmt  level    source
    56   1          
    57   1          max30102_writeByte(MAX30102_REG_FIFO_CONFIG, 0x0F);
    58   1      
-C251 COMPILER V5.60.0,  max30102                                                           06/07/26  11:26:02  PAGE 2   
+C251 COMPILER V5.60.0,  max30102                                                           10/07/26  16:56:18  PAGE 2   
 
    59   1          max30102_writeByte(MAX30102_REG_MODE_CONFIG, MAX30102_MODE_SPO2);
    60   1          
@@ -89,7 +89,7 @@ stmt  level    source
    77          
    78          
    79          /**
-   80           * @brief 从FIFO读取数据 (核心函数)
+   80           * @brief 从FIFO读取数据
    81           */
    82          void max30102_readFIFO(uint32_t *raw_red, uint32_t *raw_ir)
    83          {
@@ -136,7 +136,7 @@ Module Information          Static   Overlayable
   hconst size          =        11     ------
 End of Module Information.
 
-C251 COMPILER V5.60.0,  max30102                                                           06/07/26  11:26:02  PAGE 3   
+C251 COMPILER V5.60.0,  max30102                                                           10/07/26  16:56:18  PAGE 3   
 
 
 C251 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

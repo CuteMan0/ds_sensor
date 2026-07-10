@@ -1,4 +1,4 @@
-C251 COMPILER V5.60.0,  STC32G_ADC                                                         03/07/26  13:00:51  PAGE 1   
+C251 COMPILER V5.60.0,  STC32G_ADC                                                         10/07/26  16:56:19  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE STC32G_ADC
@@ -66,7 +66,7 @@ stmt  level    source
    54          // 返回: ADC转换结果.
    55          // 版本: V1.0, 2012-10-22
    56          //========================================================================
-C251 COMPILER V5.60.0,  STC32G_ADC                                                         03/07/26  13:00:51  PAGE 2   
+C251 COMPILER V5.60.0,  STC32G_ADC                                                         10/07/26  16:56:19  PAGE 2   
 
    57          u16     Get_ADCResult(u8 channel)       //channel = 0~15
    58          {

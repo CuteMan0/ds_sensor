@@ -1,18 +1,18 @@
-#include "max30102.h"
+#include "bsp_max30102.h"
 
-#include "sw_iic.h"
+#include "sw_iic_drive.h"
 #include "STC32G_Delay.h"
 
 // 传感器初始化标志
-static uint8_t g_max30102_inited = 0;
+static uint8 g_max30102_inited = 0;
 
 // 内部I2C读写函数
-uint8_t max30102_readBytes(uint8_t reg_addr, uint8_t *buf, uint8_t len)
+uint8 max30102_readBytes(uint8 reg_addr, uint8 *buf, uint8 len)
 {
     return soft_iic_read(MAX30102_I2C_ADDRESS, reg_addr, buf, len);
 }
 
-uint8_t max30102_writeByte(uint8_t reg_addr, uint8_t dat)
+uint8 max30102_writeByte(uint8 reg_addr, uint8 dat)
 {
     return soft_iic_write(MAX30102_I2C_ADDRESS, reg_addr, &dat, 1);
 }
@@ -21,9 +21,9 @@ uint8_t max30102_writeByte(uint8_t reg_addr, uint8_t dat)
  * @brief 初始化MAX30102
  * @return 0-成功, 非0-失败
  */
-uint8_t max30102_init(void)
+uint8 max30102_init(void)
 {
-    uint8_t res, part_id, prev, tmp;
+    uint8 res, part_id, prev, tmp;
 
     soft_i2c_init();
     // 检查器件ID
@@ -84,7 +84,7 @@ uint8_t max30102_init(void)
 /**
  * @brief 从FIFO读取数据
  */
-void max30102_readFIFO(uint32_t *raw_red, uint32_t *raw_ir)
+void max30102_readFIFO(uint32 *raw_red, uint32 *raw_ir)
 {
     u8 receive_data[6] = {0};
     u8 temp_data = 0;

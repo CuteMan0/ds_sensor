@@ -105,7 +105,7 @@ void main(void)
 #else
     task_register(task_sensor, 50, 3);
 #endif
-    task_register(task_printf, 300, 4);
+    task_register(task_printf, 50, 4);
     task_register(task_calibration_save, 1000, 1);
     task_register(task_key_scan, 20, 2);
     task_register(task_led_blink, 10, 2);

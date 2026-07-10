@@ -1,4 +1,4 @@
-C251 COMPILER V5.60.0,  main                                                               06/07/26  14:57:32  PAGE 1   
+C251 COMPILER V5.60.0,  main                                                               10/07/26  16:58:37  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE main
@@ -17,174 +17,60 @@ stmt  level    source
     7          #include "LED_drive.h"
     8          #include "USB_CDC_drive.h"
     9          #include "STC32G_Delay.h"
-   10          
-   11          #include "max30102.h"
-   12          
-   13          #include "fft.h"
-   14          #include "log.h"
-   15          #include "task_scheduler.h"
-   16          
-   17          #define PI 3.1415926f
-   18          #define FS 10.0f
-   19          #define N MAX_FFT_N
-   20          float xdata fifo_buf[MAX_FFT_N];
-   21          complex_t xdata fft_out[MAX_FFT_N];
-   22          float xdata mag[MAX_FFT_N];
-   23          
-   24          uint32_t red_fifo = 0;
-   25          uint32_t ir_fifo = 0;
-   26          
-   27          u8 data_ready;
-   28          
-   29          u16 fill = 0;
-   30          u16 k;
-   31          
-   32          float FFT_FreDetect(float *raw, float sample_rate)
-   33          {
-   34   1      #define THRESHOLD 100.0f
-   35   1          u16 i, max_bin;
-   36   1          float dc, freq, max_val, min_freq, max_freq, f;
-   37   1          float tmp[MAX_FFT_N];
-   38   1          
-   39   1          /* BPF */
-   40   1          min_freq = 0.66f;//  40BPM
-   41   1          max_freq = 4.0f; // 240BPM
-   42   1      
-   43   1          //去直流
-   44   1          dc = 0;
-   45   1          for (i = 0; i < MAX_FFT_N; i++)
-   46   1              dc += raw[i];
-   47   1          dc /= (float)MAX_FFT_N;
-   48   1          
-   49   1          for (i = 0; i < MAX_FFT_N; i++)
-   50   1              tmp[i] = raw[i] - dc;
-   51   1      
-   52   1          /* Hann */
-   53   1          for (i = 0; i < MAX_FFT_N; i++)
-   54   1              tmp[i] = tmp[i] * (0.5f - 0.5f * cos(2 * PI * i / (MAX_FFT_N - 1)));
-   55   1      
-   56   1          /* FFT */
-   57   1          fft_run(tmp, fft_out);
-   58   1          fft_abs(fft_out, mag);
-C251 COMPILER V5.60.0,  main                                                               06/07/26  14:57:32  PAGE 2   
-
-   59   1      
-   60   1          /* 频率峰值 */
-   61   1          max_val = 0;
-   62   1          max_bin = 0;
-   63   1          for (i = 1; i < MAX_FFT_N / 2; i++)
-   64   1          {
-   65   2              f = (float)i * sample_rate / (float)MAX_FFT_N;
-   66   2              if (f >= min_freq && f <= max_freq)
-   67   2              {
-   68   3                  if (mag[i] > max_val)
-   69   3                  {
-   70   4                      max_val = mag[i];
-   71   4                      max_bin = i;
-   72   4                  }
-   73   3              }
-   74   2          }
-   75   1      
-   76   1          if (0 == max_bin || THRESHOLD > max_val)
-   77   1              return 0.0f;
-   78   1      
-   79   1          freq = (float)max_bin * sample_rate / (float)MAX_FFT_N;
-   80   1          return freq;
-   81   1      }
-   82          
-   83          void task_sensor(void)
-   84          {
-   85   1          u16 i;
-   86   1          float f;
-   87   1          float heart_hz,heart_bpm = 0;
-   88   1      
-   89   1          if(!data_ready)
-   90   1              return;
-   91   1          data_ready = 0;
-   92   1      
-   93   1          heart_hz  = FFT_FreDetect(fifo_buf, FS);
-   94   1          heart_bpm = heart_hz * 60.0f;
-   95   1      
-   96   1          printf("Heart: %.1f BPM\r\n",heart_bpm);
-   97   1          
-   98   1          // 打印频谱
-   99   1          // VOFA+ FireWater协议：直接发送CSV格式数据
-  100   1      //    for (i = 0; i < MAX_FFT_N / 2; i++)
-  101   1      //    {
-  102   1      //        f = (float)i * FS / (float)MAX_FFT_N;
-  103   1      //            // 格式：频率,幅值
-  104   1      //            printf("%.2f\r\n",mag[i]);
-  105   1      //    }
-  106   1      
-  107   1      }
-*** WARNING C47 IN LINE 85 OF ..\main.c: 'i': unreferenced local variable
-*** WARNING C47 IN LINE 86 OF ..\main.c: 'f': unreferenced local variable
-  108          
-  109          void task_update(void)
-  110          {
-  111   1              max30102_readFIFO(&red_fifo,&ir_fifo);
-  112   1      
-  113   1              //填充FFT数组
-  114   1              if (fill < N)
-  115   1              {
-  116   2                  fifo_buf[fill] = red_fifo;
-  117   2                  fill++;
-  118   2      
-  119   2                  if (N == fill)
-  120   2                      data_ready = 1;
-  121   2              }
-  122   1              else
-C251 COMPILER V5.60.0,  main                                                               06/07/26  14:57:32  PAGE 3   
-
-  123   1              {
-  124   2                  for (k = 0; k < N - 1; k++)
-  125   2                      fifo_buf[k] = fifo_buf[k + 1];
-  126   2                  fifo_buf[N - 1] = red_fifo;
-  127   2                  
-  128   2                  data_ready = 1;
-  129   2              }
-  130   1      }
-  131          
-  132          void main(void)
-  133          {
-  134   1          WTST = 0;
-  135   1          EAXFR = 1;
-  136   1          CKCON = 0;
-  137   1      
-  138   1          USB_CDC_Initialization();
-  139   1          EA = 1;
-  140   1          while (DeviceState != DEVSTATE_CONFIGURED);
-  141   1          
-  142   1          led_init();
-  143   1          fft_init();
-  144   1          max30102_init();
-  145   1          
-  146   1          while (1)
-  147   1          {
-  148   2              task_update();
-  149   2              task_sensor();
-  150   2          }
-  151   1      }
+   10          #include "ADC_drive.h"
+   11          
+   12          #include "log.h"
+   13          
+   14          ADC_Handle_t adc0;
+   15          
+   16          void main(void)
+   17          {
+   18   1          WTST = 0;
+   19   1          EAXFR = 1;
+   20   1          CKCON = 0;
+   21   1      
+   22   1          USB_CDC_Initialization();
+   23   1          EA = 1;
+   24   1          while (DeviceState != DEVSTATE_CONFIGURED);
+   25   1          
+   26   1          led_init();
+   27   1          fft_init();
+*** WARNING C140 IN LINE 27 OF ..\main.c: 'fft_init' undefined; assuming 'extern int fft_init()'
+   28   1          max30102_init();
+*** WARNING C140 IN LINE 28 OF ..\main.c: 'max30102_init' undefined; assuming 'extern int max30102_init()'
+   29   1          
+   30   1          adc_init(&adc0,0,3.3);
+   31   1          
+   32   1          while (1)
+   33   1          {
+   34   2              printf("%f\n",adc_get(&adc0));
+   35   2              delay_ms(20);
+   36   2              
+   37   2      
+   38   2          }
+   39   1      }
 
 
 Module Information          Static   Overlayable
 ------------------------------------------------
-  code size            =       689     ------
+  code size            =        77     ------
   ecode size           =    ------     ------
   data size            =    ------     ------
   idata size           =    ------     ------
   pdata size           =    ------     ------
-  xdata size           =      4096     ------
+  xdata size           =    ------     ------
   xdata-const size     =    ------     ------
-  edata size           =        13       1032
+  edata size           =        11     ------
   bit size             =    ------     ------
   ebit size            =    ------     ------
   bitaddressable size  =    ------     ------
   ebitaddressable size =    ------     ------
   far data size        =    ------     ------
   huge data size       =    ------     ------
+C251 COMPILER V5.60.0,  main                                                               10/07/26  16:58:37  PAGE 2   
+
   const size           =    ------     ------
-  hconst size          =        40     ------
+  hconst size          =         4     ------
 End of Module Information.
 
 

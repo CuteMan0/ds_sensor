@@ -359,11 +359,6 @@
               <FileType>1</FileType>
               <FilePath>..\Driver\sw_iic.c</FilePath>
             </File>
-            <File>
-              <FileName>STC32G_Delay.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Driver\Library\STC32G_Delay.c</FilePath>
-            </File>
           </Files>
         </Group>
         <Group>
@@ -373,6 +368,16 @@
               <FileName>STC32G_ADC.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Driver\Library\STC32G_ADC.c</FilePath>
+            </File>
+            <File>
+              <FileName>STC32G_Delay.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Driver\Library\STC32G_Delay.c</FilePath>
+            </File>
+            <File>
+              <FileName>STC32G_NVIC.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Driver\Library\STC32G_NVIC.c</FilePath>
             </File>
             <File>
               <FileName>STC32G_GPIO.c</FileName>
@@ -399,16 +404,6 @@
         <Group>
           <GroupName>Tool</GroupName>
           <Files>
-            <File>
-              <FileName>task_scheduler.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Driver\Tool\task_scheduler.c</FilePath>
-            </File>
-            <File>
-              <FileName>fft.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Driver\Tool\fft.c</FilePath>
-            </File>
             <File>
               <FileName>log.c</FileName>
               <FileType>1</FileType>

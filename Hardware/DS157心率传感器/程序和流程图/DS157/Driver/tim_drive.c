@@ -21,7 +21,7 @@ void tim_init(TIM_Handle_t* htim)
     htim->ticks = 0;
 }
 
-float tim_get(TIM_Handle_t* htim)
+u16 tim_get(TIM_Handle_t* htim)
 {
     if (!htim)
 		return;

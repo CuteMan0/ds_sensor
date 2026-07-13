@@ -19,14 +19,17 @@ CPU DLL:         S251.DLL V3.129.0.0
 Dialog DLL:      DCORE51.DLL V2.81.6.0 
 <h2>Project:</h2>
 C:\Users\admin\Desktop\WorkSpace\ds_sensor\Hardware\DS157心率传感器\程序和流程图\DS157\Prj\DS157.uvproj
-Project File Date:  07/03/2026
+Project File Date:  07/13/2026
 
 <h2>Output:</h2>
 Build target 'HeartRate'
+compiling main.c...
 linking...
 *** WARNING L27: INCOMPATIBLE INTERRUPT FRAME SIZE
     MODULE:  ..\Driver\Library\stc_usb_cdc_32.LIB (usb)
     FRAME:   4 BYTES SAVED ON INTERRUPT
+*** WARNING L57: UNCALLED FUNCTION, IGNORED FOR OVERLAY PROCESS
+    NAME:    soft_i2c_delay/sw_iic
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
     NAME:    VPRINTF/VPRINTF
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
@@ -35,18 +38,10 @@ linking...
     NAME:    VSPRINTF/VSPRINTF
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
     NAME:    PUTCH/VSPRINTF
-*** WARNING L25: DATA TYPES DIFFERENT
-    SYMBOL:  max30102_init
-    MODULE:  .\Objects\main.obj (main)
-   DEFINED:  .\Objects\max30102.obj (max30102)
-*** WARNING L25: DATA TYPES DIFFERENT
-    SYMBOL:  fft_init
-    MODULE:  .\Objects\main.obj (main)
-   DEFINED:  .\Objects\fft.obj (fft)
-Program Size: data=8.4 edata+hdata=973 xdata=192 const=1169 code=6974
+Program Size: data=8.3 edata+hdata=386 xdata=192 const=225 code=6530
 creating hex file from ".\Objects\DS157HeartRate"...
-".\Objects\DS157HeartRate" - 0 Error(s), 7 Warning(s).
-Build Time Elapsed:  00:00:00
+".\Objects\DS157HeartRate" - 0 Error(s), 6 Warning(s).
+Build Time Elapsed:  00:00:01
 </pre>
 </body>
 </html>

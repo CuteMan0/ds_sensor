@@ -18,6 +18,6 @@ void tim_clr(TIM_Handle_t *htim);
 void tim_intr(TIM_Handle_t *htim, u8 State, u8 Priority);
 
 void tim_init(TIM_Handle_t* htim);
-float tim_get(TIM_Handle_t* htim);
+u16 tim_get(TIM_Handle_t* htim);
 
 #endif

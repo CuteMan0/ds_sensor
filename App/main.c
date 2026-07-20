@@ -39,7 +39,7 @@ void task_led_blink(void)
 void task_sensor(void)
 {
     ds_update(&dat_for_printf); // 传感器数据更新
-    // avg_filter_update(&filter, dat_for_printf);
+    avg_filter_update(&filter, dat_for_printf);
 }
 
 void task_printf(void)
@@ -65,7 +65,7 @@ void task_printf(void)
 #elif DS_SENSOR == 139
     printf("O2:%.2f%\n", dat_for_printf); // %
 #elif DS_SENSOR == 141
-    printf("CO2:%.2f\n", dat_for_printf); // ppm
+    printf("SIG:%.2f\n", dat_for_printf); // ppm
 #elif DS_SENSOR == 144
     printf("dO:%.2f\n", dat_for_printf); // ppm
 #elif DS_SENSOR == 145
@@ -86,6 +86,8 @@ void task_printf(void)
     printf("NH3:%.2f\n", dat_for_printf); // ppmu
 #elif DS_SENSOR == 164
     printf("CL2:%.2f\n", dat_for_printf); // ppm
+#elif DS_SENSOR == 165
+    printf("NH4:%.3f\n", dat_for_printf); // ppm
 #endif
 #endif
 }
@@ -103,9 +105,9 @@ void main(void)
 #if DS_SENSOR == 159
     task_register(task_sensor, 80, 3);
 #else
-    task_register(task_sensor, 50, 3);
+    task_register(task_sensor, 50, 3); // 传感器任务，周期50ms，优先级3
 #endif
-    task_register(task_printf, 50, 4);
+    task_register(task_printf, 30, 4);
     task_register(task_calibration_save, 1000, 1);
     task_register(task_key_scan, 20, 2);
     task_register(task_led_blink, 10, 2);

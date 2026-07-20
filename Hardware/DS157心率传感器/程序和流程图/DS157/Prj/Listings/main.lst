@@ -1,4 +1,4 @@
-C251 COMPILER V5.60.0,  main                                                               13/07/26  17:17:48  PAGE 1   
+C251 COMPILER V5.60.0,  main                                                               14/07/26  08:08:58  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE main
@@ -66,7 +66,7 @@ stmt  level    source
    56   1          TH0 = 0xA2;   // Initial timer value
    57   1          TF0 = 0;      // Clear TF0 flag
    58   1          TR0 = 1;      // Timer0 start run
-C251 COMPILER V5.60.0,  main                                                               13/07/26  17:17:48  PAGE 2   
+C251 COMPILER V5.60.0,  main                                                               14/07/26  08:08:58  PAGE 2   
 
    59   1          ET0 = 1;      // Enable timer0 interrupt
    60   1          
@@ -91,152 +91,151 @@ stmt  level    source
    79   4                      
    80   4                      // 打印滤波后的结果
    81   4                      filtered_bpm = get_filtered_bpm();
-   82   4                      printf("BPM: %u (raw: %u)\r\n", filtered_bpm, current_bpm);
+   82   4                      printf("BPM: %u\r\n", filtered_bpm);
    83   4                  }
    84   3                  else
    85   3                  {
    86   4                      // 无效数据，丢弃
-   87   4                      printf("Invalid BPM: %u\r\n", current_bpm);
+   87   4      //                printf("Invalid BPM: %u\r\n", current_bpm);
    88   4                  }
    89   3                  
    90   3                  detect_ready = 0;  // 清除标志
    91   3              }
-   92   2              delay_ms(10);
-   93   2          }
-   94   1      }
-   95          
-   96          void Timer0_Isr(void) interrupt 1
-   97          {
-   98   1          static u8 last_state, current_state = 0;
-   99   1          float adc_tmp;
-  100   1          
-  101   1          tick_counter++;  // tick计数器递增
-  102   1          
-  103   1          // 读取ADC（确保adc_get函数不依赖中断）
-  104   1          adc_tmp = adc_get(&adc0);
-  105   1          
-  106   1          // 判断当前是否超过阈值
-  107   1          current_state = (adc_tmp > VOL_TH) ? 1 : 0;
-  108   1          
-  109   1          // 检测上升沿（0->1 变化）
-  110   1          if (current_state == 1 && last_state == 0)
-  111   1          {
-  112   2              if (!first_trigger)  // 第一次上升沿
-  113   2              {
-  114   3                  first_trigger = 1;
-  115   3                  first_tick = tick_counter;
-  116   3              }
-  117   2              else if (!second_trigger)  // 第二次上升沿
-  118   2              {
-  119   3                  second_trigger = 1;
-  120   3                  second_tick = tick_counter;
-  121   3                  
-  122   3                  // 计算时间差
-  123   3                  delta_tick = second_tick - first_tick;
-  124   3                  
-C251 COMPILER V5.60.0,  main                                                               13/07/26  17:17:48  PAGE 3   
+   92   2          }
+   93   1      }
+   94          
+   95          void Timer0_Isr(void) interrupt 1
+   96          {
+   97   1          static u8 last_state, current_state = 0;
+   98   1          float adc_tmp;
+   99   1          
+  100   1          tick_counter++;  // tick计数器递增
+  101   1          
+  102   1          // 读取ADC（确保adc_get函数不依赖中断）
+  103   1          adc_tmp = adc_get(&adc0);
+  104   1          
+  105   1          // 判断当前是否超过阈值
+  106   1          current_state = (adc_tmp > VOL_TH) ? 1 : 0;
+  107   1          
+  108   1          // 检测上升沿（0->1 变化）
+  109   1          if (current_state == 1 && last_state == 0)
+  110   1          {
+  111   2              if (!first_trigger)  // 第一次上升沿
+  112   2              {
+  113   3                  first_trigger = 1;
+  114   3                  first_tick = tick_counter;
+  115   3              }
+  116   2              else if (!second_trigger)  // 第二次上升沿
+  117   2              {
+  118   3                  second_trigger = 1;
+  119   3                  second_tick = tick_counter;
+  120   3                  
+  121   3                  // 计算时间差
+  122   3                  delta_tick = second_tick - first_tick;
+  123   3                  
+  124   3                  // 设置检测完成标志
+C251 COMPILER V5.60.0,  main                                                               14/07/26  08:08:58  PAGE 3   
 
-  125   3                  // 设置检测完成标志
-  126   3                  detect_ready = 1;
-  127   3                  
-  128   3                  // 重置状态，准备下一次检测
-  129   3                  first_trigger = 0;
-  130   3                  second_trigger = 0;
-  131   3              }
-  132   2          }
-  133   1          // 更新上次状态
-  134   1          last_state = current_state;
-  135   1      }
-  136          
-  137          // 排序函数（冒泡排序，从小到大）
-  138          void sort_array(u16 arr[], u8 len)
-  139          {
-  140   1          u8 i, j;
-  141   1          u16 temp;
-  142   1          for (i = 0; i < len - 1; i++)
-  143   1          {
-  144   2              for (j = 0; j < len - 1 - i; j++)
-  145   2              {
-  146   3                  if (arr[j] > arr[j + 1])
-  147   3                  {
-  148   4                      temp = arr[j];
-  149   4                      arr[j] = arr[j + 1];
-  150   4                      arr[j + 1] = temp;
-  151   4                  }
-  152   3              }
-  153   2          }
-  154   1      }
-  155          
-  156          // 中值滤波+均值滤波函数
-  157          u16 median_mean_filter(u16 arr[], u8 len)
-  158          {
-  159   1          u8 i;
-  160   1          u32 sum = 0;
-  161   1          u16 sorted_arr[FILTER_SIZE];
-  162   1          
-  163   1          // 复制数组
-  164   1          for (i = 0; i < len; i++)
-  165   1          {
-  166   2              sorted_arr[i] = arr[i];
-  167   2          }
-  168   1          
-  169   1          // 排序
-  170   1          sort_array(sorted_arr, len);
-  171   1          
-  172   1          // 去掉最大值和最小值，对中间3个值求平均
-  173   1          for (i = 1; i < len - 1; i++)  // i从1到len-2
-  174   1          {
-  175   2              sum += sorted_arr[i];
-  176   2          }
-  177   1          
-  178   1          return (u16)(sum / (len - 2));  // 返回均值
-  179   1      }
-  180          
-  181          // 添加新BPM值到缓冲区
-  182          void add_bpm_value(u16 bpm_value)
-  183          {
-  184   1          bpm_buffer[buffer_index] = bpm_value;
-  185   1          buffer_index++;
-  186   1          
-  187   1          if (buffer_index >= FILTER_SIZE)
-  188   1          {
-  189   2              buffer_index = 0;
-  190   2              buffer_filled = 1;  // 标记已填满
-C251 COMPILER V5.60.0,  main                                                               13/07/26  17:17:48  PAGE 4   
+  125   3                  detect_ready = 1;
+  126   3                  
+  127   3                  // 重置状态，准备下一次检测
+  128   3                  first_trigger = 0;
+  129   3                  second_trigger = 0;
+  130   3              }
+  131   2          }
+  132   1          // 更新上次状态
+  133   1          last_state = current_state;
+  134   1      }
+  135          
+  136          // 排序函数（冒泡排序，从小到大）
+  137          void sort_array(u16 arr[], u8 len)
+  138          {
+  139   1          u8 i, j;
+  140   1          u16 temp;
+  141   1          for (i = 0; i < len - 1; i++)
+  142   1          {
+  143   2              for (j = 0; j < len - 1 - i; j++)
+  144   2              {
+  145   3                  if (arr[j] > arr[j + 1])
+  146   3                  {
+  147   4                      temp = arr[j];
+  148   4                      arr[j] = arr[j + 1];
+  149   4                      arr[j + 1] = temp;
+  150   4                  }
+  151   3              }
+  152   2          }
+  153   1      }
+  154          
+  155          // 中值滤波+均值滤波函数
+  156          u16 median_mean_filter(u16 arr[], u8 len)
+  157          {
+  158   1          u8 i;
+  159   1          u32 sum = 0;
+  160   1          u16 sorted_arr[FILTER_SIZE];
+  161   1          
+  162   1          // 复制数组
+  163   1          for (i = 0; i < len; i++)
+  164   1          {
+  165   2              sorted_arr[i] = arr[i];
+  166   2          }
+  167   1          
+  168   1          // 排序
+  169   1          sort_array(sorted_arr, len);
+  170   1          
+  171   1          // 去掉最大值和最小值，对中间3个值求平均
+  172   1          for (i = 1; i < len - 1; i++)  // i从1到len-2
+  173   1          {
+  174   2              sum += sorted_arr[i];
+  175   2          }
+  176   1          
+  177   1          return (u16)(sum / (len - 2));  // 返回均值
+  178   1      }
+  179          
+  180          // 添加新BPM值到缓冲区
+  181          void add_bpm_value(u16 bpm_value)
+  182          {
+  183   1          bpm_buffer[buffer_index] = bpm_value;
+  184   1          buffer_index++;
+  185   1          
+  186   1          if (buffer_index >= FILTER_SIZE)
+  187   1          {
+  188   2              buffer_index = 0;
+  189   2              buffer_filled = 1;  // 标记已填满
+  190   2          }
+C251 COMPILER V5.60.0,  main                                                               14/07/26  08:08:58  PAGE 4   
 
-  191   2          }
-  192   1      }
-  193          
-  194          // 获取滤波后的BPM值
-  195          u16 get_filtered_bpm(void)
-  196          {
-  197   1          if (buffer_filled)
-  198   1          {
-  199   2              return median_mean_filter(bpm_buffer, FILTER_SIZE);
-  200   2          }
-  201   1          else if (buffer_index > 0)
-  202   1          {
-  203   2              // 如果缓冲区未满，对已有数据滤波（但至少需要3个数据）
-  204   2              if (buffer_index >= 3)
-  205   2              {
-  206   3                  return median_mean_filter(bpm_buffer, buffer_index);
-  207   3              }
-  208   2              else
-  209   2              {
-  210   3                  // 数据太少，直接返回最新值
-  211   3                  return bpm_buffer[buffer_index - 1];
-  212   3              }
-  213   2          }
-  214   1          else
-  215   1          {
-  216   2              return 0;  // 无数据
-  217   2          }
-  218   1      }
+  191   1      }
+  192          
+  193          // 获取滤波后的BPM值
+  194          u16 get_filtered_bpm(void)
+  195          {
+  196   1          if (buffer_filled)
+  197   1          {
+  198   2              return median_mean_filter(bpm_buffer, FILTER_SIZE);
+  199   2          }
+  200   1          else if (buffer_index > 0)
+  201   1          {
+  202   2              // 如果缓冲区未满，对已有数据滤波（但至少需要3个数据）
+  203   2              if (buffer_index >= 3)
+  204   2              {
+  205   3                  return median_mean_filter(bpm_buffer, buffer_index);
+  206   3              }
+  207   2              else
+  208   2              {
+  209   3                  // 数据太少，直接返回最新值
+  210   3                  return bpm_buffer[buffer_index - 1];
+  211   3              }
+  212   2          }
+  213   1          else
+  214   1          {
+  215   2              return 0;  // 无数据
+  216   2          }
+  217   1      }
 
 
 Module Information          Static   Overlayable
 ------------------------------------------------
-  code size            =       651     ------
+  code size            =       626     ------
   ecode size           =    ------     ------
   data size            =    ------     ------
   idata size           =    ------     ------
@@ -251,7 +250,7 @@ Module Information          Static   Overlayable
   far data size        =    ------     ------
   huge data size       =    ------     ------
   const size           =    ------     ------
-  hconst size          =        92     ------
+  hconst size          =        64     ------
 End of Module Information.
 
 

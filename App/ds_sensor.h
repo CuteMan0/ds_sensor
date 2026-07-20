@@ -1,7 +1,7 @@
 #ifndef __DS_SENSOR_H
 #define __DS_SENSOR_H
 
-#define DS_SENSOR 141
+#define DS_SENSOR 165
 
 #if DS_SENSOR == 112 /*红外温度传感器 */
 #include "ds112_fir_meter.h"
@@ -65,6 +65,9 @@
 #endif
 #if DS_SENSOR == 164 /*氯气传感器*/
 #include "ds164_cl2_meter.h"
+#endif
+#if DS_SENSOR == 165 /*铵根离子传感器*/
+#include "ds165_nh4_meter.h"
 #endif
 
 #endif

@@ -79,17 +79,16 @@ void main(void)
                 
                 // 打印滤波后的结果
                 filtered_bpm = get_filtered_bpm();
-                printf("BPM: %u (raw: %u)\r\n", filtered_bpm, current_bpm);
+                printf("BPM: %u\r\n", filtered_bpm);
             }
             else
             {
                 // 无效数据，丢弃
-                printf("Invalid BPM: %u\r\n", current_bpm);
+//                printf("Invalid BPM: %u\r\n", current_bpm);
             }
             
             detect_ready = 0;  // 清除标志
         }
-        delay_ms(10);
     }
 }
 

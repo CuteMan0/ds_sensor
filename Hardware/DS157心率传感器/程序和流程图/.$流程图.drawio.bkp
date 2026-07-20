@@ -1,0 +1,89 @@
+<mxfile host="Electron">
+  <diagram name="第 1 页" id="TFYhNmKLNQeAH_LEH_iL">
+    <mxGraphModel dx="2403" dy="1105" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="UFiMJlaSDrCw3YCUFP1L-3" edge="1" parent="1" source="UFiMJlaSDrCw3YCUFP1L-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="UFiMJlaSDrCw3YCUFP1L-2" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="UFiMJlaSDrCw3YCUFP1L-1" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;" value="开始" vertex="1">
+          <mxGeometry height="60" width="120" x="110" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="UFiMJlaSDrCw3YCUFP1L-7" edge="1" parent="1" source="UFiMJlaSDrCw3YCUFP1L-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="UFiMJlaSDrCw3YCUFP1L-6" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="UFiMJlaSDrCw3YCUFP1L-2" parent="1" style="whiteSpace=wrap;html=1;" value="初始化（ADC、USB、TIM、缓冲区、标志位）" vertex="1">
+          <mxGeometry height="60" width="120" x="110" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="UFiMJlaSDrCw3YCUFP1L-9" edge="1" parent="1" source="UFiMJlaSDrCw3YCUFP1L-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="UFiMJlaSDrCw3YCUFP1L-8" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="UFiMJlaSDrCw3YCUFP1L-18" connectable="0" parent="UFiMJlaSDrCw3YCUFP1L-9" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="Y" vertex="1">
+          <mxGeometry relative="1" x="-0.1668" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="UFiMJlaSDrCw3YCUFP1L-6" parent="1" style="rhombus;whiteSpace=wrap;html=1;" value="&lt;div&gt;？&lt;/div&gt;读标志位 = 1" vertex="1">
+          <mxGeometry height="80" width="80" x="130" y="310" as="geometry" />
+        </mxCell>
+        <mxCell id="UFiMJlaSDrCw3YCUFP1L-11" edge="1" parent="1" source="UFiMJlaSDrCw3YCUFP1L-8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="UFiMJlaSDrCw3YCUFP1L-10" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="UFiMJlaSDrCw3YCUFP1L-8" parent="1" style="whiteSpace=wrap;html=1;" value="计算心率" vertex="1">
+          <mxGeometry height="60" width="120" x="110" y="480" as="geometry" />
+        </mxCell>
+        <mxCell id="UFiMJlaSDrCw3YCUFP1L-13" edge="1" parent="1" source="UFiMJlaSDrCw3YCUFP1L-10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="UFiMJlaSDrCw3YCUFP1L-12" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="UFiMJlaSDrCw3YCUFP1L-10" parent="1" style="rhombus;whiteSpace=wrap;html=1;" value="？&lt;div&gt;数据有效&lt;/div&gt;" vertex="1">
+          <mxGeometry height="80" width="80" x="130" y="610" as="geometry" />
+        </mxCell>
+        <mxCell id="UFiMJlaSDrCw3YCUFP1L-17" edge="1" parent="1" source="UFiMJlaSDrCw3YCUFP1L-12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="UFiMJlaSDrCw3YCUFP1L-16" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="UFiMJlaSDrCw3YCUFP1L-12" parent="1" style="whiteSpace=wrap;html=1;" value="加入缓冲区，并经过滤波后输出" vertex="1">
+          <mxGeometry height="60" width="120" x="110" y="780" as="geometry" />
+        </mxCell>
+        <mxCell id="UFiMJlaSDrCw3YCUFP1L-30" edge="1" parent="1" source="UFiMJlaSDrCw3YCUFP1L-16" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="170" y="1000" />
+              <mxPoint x="260" y="1000" />
+              <mxPoint x="260" y="270" />
+            </Array>
+            <mxPoint x="170" y="270" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="UFiMJlaSDrCw3YCUFP1L-16" parent="1" style="whiteSpace=wrap;html=1;" value="读标志位 = 0" vertex="1">
+          <mxGeometry height="60" width="120" x="110" y="920" as="geometry" />
+        </mxCell>
+        <mxCell id="UFiMJlaSDrCw3YCUFP1L-24" edge="1" parent="1" source="UFiMJlaSDrCw3YCUFP1L-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="240" y="350" />
+              <mxPoint x="240" y="280" />
+              <mxPoint x="176" y="280" />
+            </Array>
+            <mxPoint x="220" y="350.03" as="sourcePoint" />
+            <mxPoint x="170" y="280" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="UFiMJlaSDrCw3YCUFP1L-25" connectable="0" parent="UFiMJlaSDrCw3YCUFP1L-24" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="N" vertex="1">
+          <mxGeometry relative="1" x="-0.5694" y="2" as="geometry">
+            <mxPoint x="8" y="-9" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="UFiMJlaSDrCw3YCUFP1L-27" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;" value="结束" vertex="1">
+          <mxGeometry height="60" width="120" x="110" y="1060" as="geometry" />
+        </mxCell>
+        <mxCell id="UFiMJlaSDrCw3YCUFP1L-32" edge="1" parent="1" source="UFiMJlaSDrCw3YCUFP1L-27" style="endArrow=none;html=1;rounded=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;startArrow=classic;startFill=1;dashed=1;" target="UFiMJlaSDrCw3YCUFP1L-16" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="260" y="1000" as="sourcePoint" />
+            <mxPoint x="170" y="983" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

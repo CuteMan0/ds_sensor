@@ -3,7 +3,7 @@
 
 #include "ds_sensor.h"
 
-#if DS_SENSOR == 165
+#if (DS_SENSOR == 165 || DS_SENSOR == 166 || DS_SENSOR == 167 || DS_SENSOR == 168 || DS_SENSOR == 169 || DS_SENSOR == 170)
 
 #include "type_def.h"
 

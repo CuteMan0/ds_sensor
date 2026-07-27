@@ -1,6 +1,6 @@
 #include "ds165_nh4_meter.h"
 
-#if DS_SENSOR == 165
+#if (DS_SENSOR == 165 || DS_SENSOR == 166 || DS_SENSOR == 167 || DS_SENSOR == 168 || DS_SENSOR == 169 || DS_SENSOR == 170)
 
 #include "stc32g.h"
 #include "STC32G_Delay.h"
@@ -10,7 +10,12 @@
 #include "key_drive.h"
 #include "led_drive.h"
 
+
+#include "filter.h"
+
 #include <math.h>
+
+#define V_OFFSET 0.3f
 
 float ppm_1e2, ppm_1e3 = 0.0f;
 
@@ -55,6 +60,11 @@ static void Update_Cal_Sampling(float adc_vol);
 static void EEPROM_WriteFloat(u32 addr, float value);
 static float EEPROM_ReadFloat(u32 addr);
 
+#define NUM_BUF_AVG 64
+avg_filter_t avgfilter;
+avgf_data_t  avgbuffer[NUM_BUF_AVG];
+
+
 void ds_init(void)
 {
     adc_init(&adc0, 0, 2.5f);
@@ -71,13 +81,15 @@ void ds_init(void)
         k = 0.069f;
         d = 0.08f;
     }
+    
+    avg_filter_init(&avgfilter, avgbuffer, NUM_BUF_AVG);
 }
 
 void ds_update(float *dat)
 {
     float adc_vol = 0.0f;
 
-    adc_vol = adc_get(&adc0);
+    adc_vol = avg_filter_update(&avgfilter, adc_get(&adc0));
 
     // 处理采样状态（传入当前ADC值）
     Update_Cal_Sampling(adc_vol);

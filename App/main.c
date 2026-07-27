@@ -13,7 +13,7 @@
 #include "filter.h"
 #include "task_scheduler.h"
 
-#define NUM_BUF_AVG 20
+#define NUM_BUF_AVG 32
 avg_filter_t filter;
 avgf_data_t buffer[NUM_BUF_AVG];
 float dat_for_printf;
@@ -39,7 +39,7 @@ void task_led_blink(void)
 void task_sensor(void)
 {
     ds_update(&dat_for_printf); // 传感器数据更新
-    avg_filter_update(&filter, dat_for_printf);
+//    avg_filter_update(&filter, dat_for_printf);
 }
 
 void task_printf(void)
@@ -87,7 +87,19 @@ void task_printf(void)
 #elif DS_SENSOR == 164
     printf("CL2:%.2f\n", dat_for_printf); // ppm
 #elif DS_SENSOR == 165
-    printf("NH4:%.3f\n", dat_for_printf); // ppm
+printf("NH4:%.3f\n", dat_for_printf); // ppm
+#elif DS_SENSOR == 166
+printf("K:%.3f\n", dat_for_printf); // ppm
+#elif DS_SENSOR == 167
+printf("NO3:%.3f\n", dat_for_printf); // ppm
+#elif DS_SENSOR == 168
+printf("CL:%.3f\n", dat_for_printf); // ppm
+#elif DS_SENSOR == 169
+printf("Na:%.3f\n", dat_for_printf); // ppm
+#elif DS_SENSOR == 170
+printf("Ca:%.3f\n", dat_for_printf); // ppm
+#elif DS_SENSOR == 172
+printf("Counter:%.3f\n", dat_for_printf); // ppm
 #endif
 #endif
 }
@@ -107,10 +119,11 @@ void main(void)
 #else
     task_register(task_sensor, 50, 3); // 传感器任务，周期50ms，优先级3
 #endif
-    task_register(task_printf, 30, 4);
+    task_register(task_printf, 300, 4);
     task_register(task_calibration_save, 1000, 1);
     task_register(task_key_scan, 20, 2);
     task_register(task_led_blink, 10, 2);
+    
 
     while (1)
     {

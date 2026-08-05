@@ -1,0 +1,18 @@
+# 编译中间文件
+obj/
+
+# 编译产物
+*.OBJ
+*.ABS
+*.LST
+*.M51
+*.plg
+
+# 固件输出 (hex 一般不提交，但如需发布可注释此条)
+*.HEX
+
+# IDE / 编辑器
+.vscode/
+*.uvopt
+*.uvproj
+*.uvgui.*

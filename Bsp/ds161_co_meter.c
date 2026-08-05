@@ -14,7 +14,7 @@
 
 sbit sw = P2 ^ 4;
 volatile u8 heating_flag = 1;
-volatile u32 sys_tick = 0;
+volatile u32 heating_tick = 0;
 u32 last_heating_time = 0; // 上次加热时间
 ADC_Handle_t adc0;
 
@@ -72,7 +72,7 @@ void ds_update(float *dat)
 static void CO_HeatingControl(void)
 {
     u32 current_time; // 获取系统时间的函数
-    current_time = sys_tick;
+    current_time = heating_tick;
 
     if ((current_time - last_heating_time) >= HEAT_INTERVAL)
     {

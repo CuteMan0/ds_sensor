@@ -10,14 +10,29 @@
 #include "key_drive.h"
 #include "led_drive.h"
 
-
 #include "filter.h"
-
 #include <math.h>
 
-#define V_OFFSET 0.3f
+#if DS_SENSOR == 165
+#define INIT_K 0.045 // 默认标定斜率
+#define INIT_D 2.39f // 默认标定截距
+#elif DS_SENSOR == 166
+#define INIT_K 0.045 // 默认标定斜率 100 1.666
+#define INIT_D 2.39f // 默认标定截距 1000 1.075
+#elif DS_SENSOR == 167
+#define INIT_K 0.045 // 默认标定斜率
+#define INIT_D 2.39f // 默认标定截距
+#elif DS_SENSOR == 168
+#define INIT_K 0.045 // 默认标定斜率
+#define INIT_D 2.39f // 默认标定截距
+#elif DS_SENSOR == 169
+#define INIT_K 0.045 // 默认标定斜率
+#define INIT_D 2.39f // 默认标定截距
+#elif DS_SENSOR == 170
+#define INIT_K 0.045 // 默认标定斜率
+#define INIT_D 2.39f // 默认标定截距
+#endif
 
-float ppm_1e2, ppm_1e3 = 0.0f;
 
 union FloatUnion
 {
@@ -25,12 +40,8 @@ union FloatUnion
     u8 bytes[4]; // 4个字节 将float分解为字节数组
 };
 
-static float k = 0.069f; // 标定斜率
-static float d = 0.08f;  // 标定截距
-
-static u8 calibration_pending = 0; // 校准延迟处理变量
-static u8 led_flash = 0;           // LED闪烁标志
-static u8 flag_cal = 0;            // 校准标志：1=1000ppm校准, 0=100ppm校准
+static float k, d = 0;
+static u8 calibration_pending, led_flash, flag_cal = 0;           // 校准延迟处理变量、LED闪烁标志、校准标志：1=1000ppm校准, 0=100ppm校准           // 
 
 // 校准状态定义
 typedef enum
@@ -46,10 +57,8 @@ typedef enum
 
 // 全局变量
 static CalState_t cal_state = CAL_IDLE;
-static float cal_vol_100ppm = 0.0f;
-static float cal_vol_1000ppm = 0.0f;
+static float cal_vol_100ppm, cal_vol_1000ppm, cal_vol_sum = 0;
 static u8 cal_sample_cnt = 0;
-static float cal_vol_sum = 0.0f;
 
 ADC_Handle_t adc0;
 
@@ -64,7 +73,6 @@ static float EEPROM_ReadFloat(u32 addr);
 avg_filter_t avgfilter;
 avgf_data_t  avgbuffer[NUM_BUF_AVG];
 
-
 void ds_init(void)
 {
     adc_init(&adc0, 0, 2.5f);
@@ -78,8 +86,8 @@ void ds_init(void)
     if ((k != k) || (d != d) ||
         k < -1.0f || k > 1.0f)
     {
-        k = 0.069f;
-        d = 0.08f;
+        k = INIT_K;
+        d = INIT_D;
     }
     
     avg_filter_init(&avgfilter, avgbuffer, NUM_BUF_AVG);
@@ -89,7 +97,7 @@ void ds_update(float *dat)
 {
     float adc_vol = 0.0f;
 
-    adc_vol = avg_filter_update(&avgfilter, adc_get(&adc0));
+    adc_vol = (float)avg_filter_update(&avgfilter, adc_get(&adc0));
 
     // 处理采样状态（传入当前ADC值）
     Update_Cal_Sampling(adc_vol);
@@ -116,7 +124,7 @@ void ds_update(float *dat)
     if (CAL_IDLE != cal_state)
     {
         // 校准模式下返回实时 ADC 电压值
-        *dat = adc_vol * 1000; // mV
+        *dat = adc_vol; // mV
     }
     else
     {
@@ -134,9 +142,8 @@ void ds_update(float *dat)
 
 void Led_Task(void)
 {
-    static u8 cnt = 0;
+    static u8 cnt, flash_cnt = 0;
     static bit on = 0;
-    static u8 flash_cnt = 0;
 
     // 日常运行状态：3号灯常亮
     if (CAL_IDLE == cal_state && !led_flash)

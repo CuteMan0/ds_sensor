@@ -11,7 +11,7 @@
 
 #define GAIN 51.0f
 #define K_cal(vol) (k_val = (8.25f / (vol - zero_point))) // 饱和氧校准,确定斜率
-#define B_cal(vol) (zero_point = vol)                     // 饱和氧校准,确定截距
+#define B_cal(vol) (zero_point = vol)                     // 零氧校准,确定截距
 
 ADC_Handle_t adc0;
 static volatile u8 calibration_pending = 0; // 校准标志
@@ -59,31 +59,34 @@ void ds_update(float *dat)
         flag_key = 0;
         if (0 == flag_cal)
         {
-            B_cal(do_val); // 校准斜率
+            B_cal(do_val); // 校准截距
         }
         else
         {
-            K_cal(do_val); // 校准截距
+            K_cal(do_val); // 校准斜率
         }
         calibration_pending = 1;
     }
 
-    *dat = k_val * do_val;
+    *dat = k_val * (do_val - zero_point);
 }
 
 void ProcessCalibration(void)
 {
-    float tmp[2] = {0.26, 0.6}; // 初始值
+    u8 tmp[4];
 
     if (calibration_pending)
     {
         calibration_pending = 0;
 
-        tmp[0] = k_val;
-        tmp[1] = zero_point;
+        /* 以 u16×2 打包格式写入EEPROM，与 ds_init 读取格式一致 */
+        tmp[0] = (u8)((u16)(k_val * 1000) >> 8);
+        tmp[1] = (u8)((u16)(k_val * 1000) & 0xFF);
+        tmp[2] = (u8)((u16)(zero_point * 1000) >> 8);
+        tmp[3] = (u8)((u16)(zero_point * 1000) & 0xFF);
 
         EEPROM_write_n(0,
-                       (u8 *)&tmp,
+                       tmp,
                        sizeof(tmp));
         led_flash = 1;
     }

@@ -111,22 +111,49 @@ u8 soft_i2c_read_byte(bit ack)
 
 u8 soft_iic_read(u8 addr, u8 reg, u8 *buf, u16 len)
 {
-    u8 i;
+    u16 i;
+
+    if (!buf || len == 0)
+        return 1;
+
+    /* 发送设备地址（写）并检查 ACK */
     soft_i2c_start();
-    soft_i2c_write_byte(addr << 1); // 发送设备地址（写）
-    soft_i2c_write_byte(reg);       // 写寄存器地址
+    if (!soft_i2c_write_byte(addr << 1))
+        goto read_fail;
+
+    /* 发送寄存器地址并检查 ACK */
+    if (!soft_i2c_write_byte(reg))
+        goto read_fail;
+
+    /* 重复启动，发送设备地址（读）并检查 ACK */
     soft_i2c_start();
-    soft_i2c_write_byte(addr << 1 | 0x01); // 读设备地址
-    for (i = 0; i < len - 1; i++)
-        *(buf + i) = soft_i2c_read_byte(1); // 其他位ACK
-    *(buf + i) = soft_i2c_read_byte(0);     // 最后一位NACK
+    if (!soft_i2c_write_byte(addr << 1 | 0x01))
+        goto read_fail;
+
+    /* 连续读取 len 字节 */
+    for (i = 0; i < len; i++)
+    {
+        if (i < len - 1)
+            *(buf + i) = soft_i2c_read_byte(ACK); // 非最后字节：发送 ACK
+        else
+            *(buf + i) = soft_i2c_read_byte(NACK); // 最后字节：发送 NACK
+    }
+
     soft_i2c_stop();
-    return 0;
+    return 0; // 读取成功
+
+read_fail:
+    soft_i2c_stop();
+    return 1; // 读取失败（设备无应答）
 }
 
 u8 soft_iic_write(u8 addr, u8 reg, u8 *buf, u16 len)
 {
     u16 i;
+
+    if (!buf || len == 0)
+        return 1;
+
     soft_i2c_start();
     if (!soft_i2c_write_byte(addr << 1)) // 发送设备地址（写）
         goto stop_fail;

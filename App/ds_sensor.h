@@ -1,7 +1,7 @@
 #ifndef __DS_SENSOR_H
 #define __DS_SENSOR_H
 
-#define DS_SENSOR 172
+#define DS_SENSOR 112
 
 #if DS_SENSOR == 112 /*红外温度传感器 */
 #include "ds112_fir_meter.h"

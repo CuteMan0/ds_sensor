@@ -45,7 +45,7 @@ void ds_init(void)
     }
 }
 
-u8 ds_update(float *dat)
+void ds_update(float *dat)
 {
     float voltage, new_zero;
     float zero_voltage = zero_voltage_calibrated;
@@ -149,7 +149,6 @@ void Led_Task(void)
         {
 
             DIS_LED_Just_One_Enable(3);
-
         }
         else
         {

@@ -1,0 +1,310 @@
+C251 COMPILER V5.60.0,  ds627_MECons_drive                                                 05/08/26  16:30:00  PAGE 1   
+
+
+C251 COMPILER V5.60.0, COMPILATION OF MODULE ds627_MECons_drive
+OBJECT MODULE PLACED IN .\Objects\ds627_MECons_drive.obj
+COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE USER\ds627_MECons_drive.c XSMALL INTR2 BROWSE INCDIR(.\USER;.\Library)
+                    - DEBUG PRINT(.\Listings\ds627_MECons_drive.lst) OBJECT(.\Objects\ds627_MECons_drive.obj) 
+
+stmt  level    source
+
+    1          /**
+    2           * @file    ds627_MECons_drive.c
+    3           * @brief   DS627 机械能守恒演示器 驱动层实现
+    4           * @details 本文件实现了机械能守恒演示器的核心驱动功能，包括：
+    5           *          - 红外光电门传感器信号采集（外部中断 + 定时器测速）
+    6           *          - 旋臂经过各角度位置时的瞬时速度计算
+    7           *          - 各测量点的动能、势能及总机械能计算
+    8           *          - 通过USB串口输出测量数据
+    9           * @note    硬件平台：STC32G 系列单片机
+   10           */
+   11          
+   12          #include "DS627_MECons_drive.h"
+   13          
+   14          #include "math.h"
+   15          #include <string.h>
+   16          
+   17          #include "STC32G_Delay.h"
+   18          #include "STC32G_GPIO.h"
+   19          #include "STC32G_Exti.h"
+   20          #include "STC32G_NVIC.h"
+   21          #include "STC32G_Timer.h"
+   22          #include "stc32_stc8_usb.h"
+   23          
+   24          /*===========================================================================
+   25           * 物理常量与实验参数宏定义
+   26           *===========================================================================*/
+   27          #define LENGTH 0.27         // m  旋臂转动半径（质心到转轴距离）
+   28          #define NUMS 5              // 测量点数量（挡片个数）
+   29          #define RELEASE_ANGLE 60.0f // °  旋臂释放时的初始角度
+   30          #define M 0.03f             // kg 旋臂整体等效质量
+   31          #define G 9.80665f          // m/s^2 重力加速度标准值
+   32          #define PI 3.1415926f       // 圆周率
+   33          
+   34          /*===========================================================================
+   35           * 全局数据数组
+   36           *===========================================================================*/
+   37          
+   38          /** @brief 各测量点的瞬时速度 (m/s) */
+   39          float speed[NUMS] = {0};
+   40          
+   41          /** @brief 各测量点的总机械能 (J)，Ek + Ep */
+   42          float energy_dynamic[NUMS] = {0};
+   43          
+   44          /** @brief 各测量点对应的角度 (°) */
+   45          float theta[NUMS] =
+   46              {
+   47                  //    50,
+   48                  //    45,
+   49                  //    40,
+   50                  33, /**< 第4个挡片位置角度 */
+   51                  25, /**< 第5个挡片位置角度 */
+   52                  16, /**< 第6个挡片位置角度 */
+   53                  10, /**< 第7个挡片位置角度 */
+   54                  0   /**< 第8个挡片位置角度（最低点） */
+   55          };
+   56          
+   57          /*===========================================================================
+   58           * 数据结构定义
+C251 COMPILER V5.60.0,  ds627_MECons_drive                                                 05/08/26  16:30:00  PAGE 2   
+
+   59           *===========================================================================*/
+   60          
+   61          /**
+   62           * @brief 机械能守恒实验数据结构体
+   63           * @details 将速度、动能/总能、角度三个数组的指针封装在一起，
+   64           *          便于统一管理和传递实验数据。
+   65           */
+   66          typedef struct
+   67          {
+   68              float *pspeed;      /**< 指向各测量点速度数组的指针 */
+   69              float *penergy_dyn; /**< 指向各测量点总机械能数组的指针 */
+   70              float *ptheta;      /**< 指向各测量点角度数组的指针 */
+   71          } mecons_t;
+   72          
+   73          /** @brief 机械能守恒实验数据全局实例 */
+   74          mecons_t me_h;
+   75          
+   76          /*===========================================================================
+   77           * 硬件引脚定义
+   78           *===========================================================================*/
+   79          
+   80          /**
+   81           * @brief 红外对射管使能引脚
+   82           * @note  P2^0 = 1 时红外发射管发光;
+   83           *        P2^0 = 0 时被遮挡，触发外部中断 (下降沿)
+   84           */
+   85          sbit IR_EN = P2 ^ 0;
+   86          
+   87          /*===========================================================================
+   88           * 底层通信函数
+   89           *===========================================================================*/
+   90          
+   91          /**
+   92           * @brief   printf 重定向字符输出函数
+   93           * @param   c 要发送的单个字符
+   94           * @return  返回发送的字符
+   95           * @note    将标准输出重定向到 USB CDC 虚拟串口
+   96           */
+   97          char putchar(char c)
+   98          {
+   99   1          USB_SendData(&c, 1);
+  100   1          return c;
+  101   1      }
+  102          
+  103          /*===========================================================================
+  104           * 硬件初始化函数
+  105           *===========================================================================*/
+  106          
+  107          /**
+  108           * @brief  配置外部中断 INT0 (P3.2)
+  109           * @note   使用上升沿和下降沿均触发模式 (EXT_MODE_RiseFall),
+  110           *         用于检测红外光电门信号的变化;
+  111           *         中断优先级为 Priority_1
+  112           */
+  113          static void Exti_config(void)
+  114          {
+  115   1          EXTI_InitTypeDef Exti_InitStructure;
+  116   1      
+  117   1          Exti_InitStructure.EXTI_Mode = EXT_MODE_RiseFall;
+  118   1          Ext_Inilize(EXT_INT0, &Exti_InitStructure);
+  119   1          NVIC_INT0_Init(ENABLE, Priority_1);
+  120   1      }
+  121          
+  122          /**
+  123           * @brief  配置定时器 Timer0
+  124           * @note   模式: 16位自动重载;
+C251 COMPILER V5.60.0,  ds627_MECons_drive                                                 05/08/26  16:30:00  PAGE 3   
+
+  125           *         时钟源: 12T 分频（系统时钟/12）;
+  126           *         分频器 PS=19, 系统主频假定 24MHz 时，
+  127           *         计数周期 = 12/(24M) * (19+1) = 10us，即每 0.01ms 计数一次;
+  128           *         初始状态为关闭，测速时由中断服务程序启停
+  129           */
+  130          static void Timer_config(void)
+  131          {
+  132   1          TIM_InitTypeDef TIM_InitStructure;
+  133   1      
+  134   1          TIM_InitStructure.TIM_Mode = TIM_16BitAutoReload;
+  135   1          TIM_InitStructure.TIM_ClkSource = TIM_CLOCK_12T;
+  136   1          TIM_InitStructure.TIM_ClkOut = DISABLE;
+  137   1          TIM_InitStructure.TIM_Value = 0;
+  138   1          TIM_InitStructure.TIM_PS = 19;
+  139   1          TIM_InitStructure.TIM_Run = DISABLE;
+  140   1          Timer_Inilize(Timer0, &TIM_InitStructure);
+  141   1      }
+  142          
+  143          /**
+  144           * @brief  机械能守恒实验模块初始化
+  145           * @details 依次完成以下初始化工作：
+  146           *          1. 使能红外发射管 (IR_EN = 1)
+  147           *          2. 配置 P2.0 为推挽输出，P3.2 为带上拉输入
+  148           *          3. 延时 100ms 等待外设稳定
+  149           *          4. 配置外部中断 INT0
+  150           *          5. 配置定时器 Timer0
+  151           *          6. 将全局数据数组绑定到 me_h 结构体实例
+  152           */
+  153          void ME_Init(void)
+  154          {
+  155   1          /* 红外发射管使能，高电平发光 */
+  156   1          IR_EN = 1;
+  157   1          /* 配置 P2.0 为推挽输出模式，驱动红外发射管 */
+  158   1          P2_MODE_OUT_PP(GPIO_Pin_0);
+  159   1          /* 配置 P3.2 (INT0) 为带上拉输入模式，接收红外接收管信号 */
+  160   1          P3_MODE_IO_PU(GPIO_Pin_2);
+  161   1          P3_PULL_UP_ENABLE(GPIO_Pin_2);
+  162   1          /* 延时等待外设稳定 */
+  163   1          delay_ms(100);
+  164   1          /* 配置外部中断 */
+  165   1          Exti_config();
+  166   1          /* 配置定时器 */
+  167   1          Timer_config();
+  168   1      
+  169   1          /* 将全局数据数组的地址赋给结构体指针成员 */
+  170   1          me_h.penergy_dyn = energy_dynamic;
+  171   1          me_h.pspeed = speed;
+  172   1          me_h.ptheta = theta;
+  173   1      }
+  174          
+  175          /*===========================================================================
+  176           * 核心数据处理函数
+  177           *===========================================================================*/
+  178          
+  179          /**
+  180           * @brief  处理光电门测速数据并计算各点机械能
+  181           * @details 当外部中断 ISR 中设置 data_unlocked 标志后, 主循环调用本函数:
+  182           *          1. 根据计数值 tick_count 计算瞬时速度
+  183           *          2. 遍历所有已记录的测量点
+  184           *          3. 计算各点的动能 Ek = 0.5 * m * v^2
+  185           *          4. 计算各点的势能 Ep = m * g * r * (cosθ? - cosθ)
+  186           *             其中 θ? = 64° 为释放初始角度
+  187           *          5. 计算总机械能 E = Ek + Ep，验证机械能守恒
+  188           *          6. 通过 printf 输出各测量点的角度、速度、动能、势能、总机械能
+  189           * @note   数据就绪标志 data_unlocked 在外部中断 ISR 中置位，
+  190           *         本函数处理完毕后清除该标志。
+C251 COMPILER V5.60.0,  ds627_MECons_drive                                                 05/08/26  16:30:00  PAGE 4   
+
+  191           * @note   能量计算假设零势能面在转轴水平面上，
+  192           *         即最低点 (θ=0°) 处势能最低。
+  193           */
+  194          void ME_GetSpeed(void)
+  195          {
+  196   1          /** @brief 当前写入位置的环形缓冲区索引 */
+  197   1          static u8 pos = 0;
+  198   1          u8 i;
+  199   1      
+  200   1          /* 检查是否有新的测速数据就绪 */
+  201   1          if (data_unlcoked)
+  202   1          {
+  203   2              /* 计数值为 0 表示挡片通过时间极短或异常，跳过本次处理 */
+  204   2              if (tick_count == 0)
+  205   2              {
+  206   3                  data_unlcoked = 0;
+  207   3                  return;
+  208   3              }
+  209   2      
+  210   2              /*------------------------------------------------------------------
+  211   2               * 瞬时速度计算
+  212   2               *  挡片宽度: 5mm = 0.005m
+  213   2               *  tick_count 单位: 0.01ms (10us)
+  214   2               *  通过时间 t(s) = tick_count * 0.01ms = tick_count * 1e-5 s
+  215   2               *  瞬时速度 v = 挡片宽度 / 通过时间
+  216   2               *              = 0.005 / (tick_count * 1e-5)
+  217   2               *              = 500 / tick_count  (m/s)
+  218   2               *------------------------------------------------------------------*/
+  219   2              *(me_h.pspeed + pos) = 500 / (float)tick_count;
+  220   2      
+  221   2              /* 输出本次计数值对应的挡片通过时间 (单位: ms) */
+  222   2              printf("count=%.4f\r\n", tick_count * 0.01);
+  223   2      
+  224   2              /* 环形缓冲区索引递增，循环覆盖旧数据 */
+  225   2              pos = (pos + 1) % NUMS;
+  226   2      
+  227   2              /*------------------------------------------------------------------
+  228   2               * 遍历所有测量点，计算动能、势能、总机械能
+  229   2               *------------------------------------------------------------------*/
+  230   2              for (i = 0; i < NUMS; i++)
+  231   2              {
+  232   3                  /**
+  233   3                   * 动能计算: Ek = 0.5 * m * v^2
+  234   3                   * @note 旋臂为刚体，表达式采用 m*v^2 简化模型，
+  235   3                   *       将转动动能等效为质心平动动能
+  236   3                   */
+  237   3                  float kinetic = 0.5f * M * me_h.pspeed[i] * me_h.pspeed[i];
+  238   3      
+  239   3                  /** 角度转弧度: θ_rad = θ_deg * π / 180 */
+  240   3                  float theta_rad = me_h.ptheta[i] * PI / 180.0f;
+  241   3      
+  242   3                  /**
+  243   3                   * 势能计算（以转轴水平面为参考零势能面）
+  244   3                   * Ep = m * g * h
+  245   3                   * 高度变化: Δh = r * (cosθ? - cosθ)
+  246   3                   * 其中:
+  247   3                   *   θ? = 64° 释放初始角度 (最高点)
+  248   3                   *   θ   = 当前测量点角度
+  249   3                   *   当 θ < θ? 时，旋臂下降，cosθ > cosθ?，Ep 为正，合理
+  250   3                   */
+  251   3                  float potential = M * G * LENGTH *
+  252   3                                    (cos(RELEASE_ANGLE * PI / 180.0f) - cos(theta_rad));
+  253   3      
+  254   3                  /** 总机械能: E = Ek + Ep (理论上应保持不变，验证守恒) */
+  255   3                  me_h.penergy_dyn[i] = kinetic + potential;
+  256   3      
+C251 COMPILER V5.60.0,  ds627_MECons_drive                                                 05/08/26  16:30:00  PAGE 5   
+
+  257   3                  /* 格式化输出各测量点数据 */
+  258   3                  printf("%2d  %2.0fdeg  ", i + 1, me_h.ptheta[i]); /* 序号 & 角度 */
+  259   3                  printf("v=%6.3f ", me_h.pspeed[i]);               /* 瞬时速度 */
+  260   3                  printf("Ek=%7.4f ", kinetic);                     /* 动能 Ek */
+  261   3                  printf("Ep=%7.4f ", potential);                   /* 势能 Ep */
+  262   3                  printf("E=%7.4f\r\n", me_h.penergy_dyn[i]);       /* 总机械能 E */
+  263   3              }
+  264   2      
+  265   2              /* 数据处理完成，清除数据就绪标志 */
+  266   2              data_unlcoked = 0;
+  267   2          }
+  268   1      }
+
+
+Module Information          Static   Overlayable
+------------------------------------------------
+  code size            =       587     ------
+  ecode size           =    ------     ------
+  data size            =    ------     ------
+  idata size           =    ------     ------
+  pdata size           =    ------     ------
+  xdata size           =    ------     ------
+  xdata-const size     =    ------     ------
+  edata size           =        73         22
+  bit size             =    ------     ------
+  ebit size            =    ------     ------
+  bitaddressable size  =    ------     ------
+  ebitaddressable size =    ------     ------
+  far data size        =    ------     ------
+  huge data size       =    ------     ------
+  const size           =    ------     ------
+  hconst size          =       145     ------
+End of Module Information.
+
+
+C251 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

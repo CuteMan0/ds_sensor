@@ -21,12 +21,12 @@ static void Exti_config(void)
 }
 static void Timer_config(void) // 100us进IT
 {
-	AUXR &= 0xBF;			//Timer clock is 12T mode
-	TMOD &= 0x0F;			//Set timer work mode
-	TL1 = 0x38;				//Initial timer value
-	TH1 = 0xFF;				//Initial timer value
-	TF1 = 0;				//Clear TF1 flag
-	TR1 = 1;				//Timer1 start run
+    AUXR &= 0xBF; // Timer clock is 12T mode
+    TMOD &= 0x0F; // Set timer work mode
+    TL1 = 0x38;   // Initial timer value
+    TH1 = 0xFF;   // Initial timer value
+    TF1 = 0;      // Clear TF1 flag
+    TR1 = 1;      // Timer1 start run
 }
 void ds_init(void)
 {
@@ -41,7 +41,7 @@ void ds_init(void)
 
 void ds_update(float *dat)
 {
-        *dat = titra_count/2;//一次滴定会进入两次外部中断
+    *dat = titra_count / 4; // 一次滴定会进入两次外部中断
 }
 
 #endif

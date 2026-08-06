@@ -68,7 +68,7 @@
 ".\Objects\STC32G_UART_Isr.obj",
 ".\Objects\STC32G_USART_LIN.obj",
 ".\Objects\STC32G_WDT.obj",
-"..\Library\stc_usb_cdc_32.LIB",
+"..\Library\stc_usb_cdc_32g.LIB",
 ".\Objects\filter.obj",
 ".\Objects\iir.obj",
 ".\Objects\task_scheduler.obj",

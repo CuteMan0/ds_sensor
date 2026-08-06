@@ -2,18 +2,13 @@
 /* --- Web: www.STCAI.com ---------------------------------------------*/
 /*---------------------------------------------------------------------*/
 
-#include "STC32G_Exti.h"
-#include "STC32G_Timer.h"
-
-#include "ds_sensor.h"
+#include	"STC32G_Exti.h"
 
 //========================================================================
 //                               本地变量声明
 //========================================================================
 
 u8 WakeUpSource;
-
-u32 titra_count = 0;
 
 //========================================================================
 // 函数: INT0_ISR_Handler
@@ -22,13 +17,10 @@ u32 titra_count = 0;
 // 返回: none.
 // 版本: V1.0, 2020-09-23
 //========================================================================
-void INT0_ISR_Handler(void) interrupt INT0_VECTOR // 进中断时已经清除标志
+void INT0_ISR_Handler (void) interrupt INT0_VECTOR		//进中断时已经清除标志
 {
 	// TODO: 在此处添加用户代码
 //	P00 = ~P00;
-#if DS_SENSOR == 172
-    titra_count++;
-#endif
 	WakeUpSource = 1;
 }
 
@@ -39,10 +31,10 @@ void INT0_ISR_Handler(void) interrupt INT0_VECTOR // 进中断时已经清除标志
 // 返回: none.
 // 版本: V1.0, 2020-09-23
 //========================================================================
-void INT1_ISR_Handler(void) interrupt INT1_VECTOR // 进中断时已经清除标志
+void INT1_ISR_Handler (void) interrupt INT1_VECTOR		//进中断时已经清除标志
 {
 	// TODO: 在此处添加用户代码
-	//	P01 = ~P01;
+//	P01 = ~P01;
 	WakeUpSource = 2;
 }
 
@@ -53,10 +45,10 @@ void INT1_ISR_Handler(void) interrupt INT1_VECTOR // 进中断时已经清除标志
 // 返回: none.
 // 版本: V1.0, 2020-09-23
 //========================================================================
-void INT2_ISR_Handler(void) interrupt INT2_VECTOR // 进中断时已经清除标志
+void INT2_ISR_Handler (void) interrupt INT2_VECTOR		//进中断时已经清除标志
 {
 	// TODO: 在此处添加用户代码
-	//	P02 = ~P02;
+//	P02 = ~P02;
 	WakeUpSource = 3;
 }
 
@@ -67,10 +59,10 @@ void INT2_ISR_Handler(void) interrupt INT2_VECTOR // 进中断时已经清除标志
 // 返回: none.
 // 版本: V1.0, 2020-09-23
 //========================================================================
-void INT3_ISR_Handler(void) interrupt INT3_VECTOR // 进中断时已经清除标志
+void INT3_ISR_Handler (void) interrupt INT3_VECTOR		//进中断时已经清除标志
 {
 	// TODO: 在此处添加用户代码
-	//	P03 = ~P03;
+//	P03 = ~P03;
 	WakeUpSource = 4;
 }
 
@@ -81,9 +73,9 @@ void INT3_ISR_Handler(void) interrupt INT3_VECTOR // 进中断时已经清除标志
 // 返回: none.
 // 版本: V1.0, 2020-09-23
 //========================================================================
-void INT4_ISR_Handler(void) interrupt INT4_VECTOR // 进中断时已经清除标志
+void INT4_ISR_Handler (void) interrupt INT4_VECTOR		//进中断时已经清除标志
 {
 	// TODO: 在此处添加用户代码
-	//	P04 = ~P04;
+//	P04 = ~P04;
 	WakeUpSource = 5;
 }

@@ -3,13 +3,13 @@
 <pre>
 <h1>µVision Build Log</h1>
 <h2>Tool Versions:</h2>
-IDE-Version: ¦ÌVision V5.38.0.0
-Copyright (C) 2022 ARM Ltd and ARM Germany GmbH. All rights reserved.
-License Information: admin admin, admin, LIC=EXSKC-72IFI-VIK5P-MEF90-FX8R2-49ULC
+IDE-Version: ¦ÌVision V5.25.3.0
+Copyright (C) 2018 ARM Ltd and ARM Germany GmbH. All rights reserved.
+License Information: sx w,  , LIC=QFGU5-GIHWZ-IME9C-7Z602-NY0ST-6YV32
  
 Tool Versions:
 Toolchain:       PK251 Prof. Developers Kit  Version: 5.60.0.0
-Toolchain Path:  C:\Keil_v5\C251\BIN
+Toolchain Path:  C:\Wongsoft\Keil_v5\C251\BIN
 C Compiler:      C251.exe V5.60.0.0
 Assembler:       A251.exe V4.69.13.0
 Linker/Locator:  L251.exe V4.66.93.0
@@ -18,19 +18,45 @@ Hex Converter:   OH251.exe V1.47.0.0
 CPU DLL:         S251.DLL V3.129.0.0
 Dialog DLL:      DCORE51.DLL V2.81.6.0 
 <h2>Project:</h2>
-C:\Users\admin\Desktop\WorkSpace\ds_sensor\Keil\prj.uvproj
+C:\Users\Si\Desktop\ds_sensor\Keil\prj.uvproj
 Project File Date:  08/06/2026
 
 <h2>Output:</h2>
 Build target 'files'
+compiling main.c...
+..\App\main.c(4): warning C322: 'USB_INFO': unknown identifier
+compiling ds112_fir_meter.c...
+compiling ds131_ph_meter.c...
+compiling ds132_ec_meter.c...
+compiling ds133_multi_ec_meter.c...
+compiling ds135_tur_meter.c...
+compiling ds136_orp_meter.c...
+compiling ds137_so2_meter.c...
+compiling ds138_airC2H6O_meter.c...
+compiling ds139_o2_meter.c...
+compiling ds141_co2_meter.c...
+compiling ds144_do_meter.c...
+compiling ds145_dco2_meter.c...
+compiling ds151_soil_temp_meter.c...
+compiling ds153_h2_meter.c...
+compiling ds158_ecg_meter.c...
+compiling ds160_no2_meter.c...
+compiling ds161_co_meter.c...
+compiling ds162_ch4_meter.c...
+compiling ds163_nh3_meter.c...
+compiling ds164_cl2_meter.c...
+compiling ds165_nh4_meter.c...
+compiling ds172_titration_meter.c...
 linking...
 *** WARNING L27: INCOMPATIBLE INTERRUPT FRAME SIZE
-    MODULE:  ..\Library\stc_usb_cdc_32.LIB (usb)
+    MODULE:  ..\Library\stc_usb_cdc_32g.LIB (usb)
     FRAME:   4 BYTES SAVED ON INTERRUPT
-*** ERROR L104: MULTIPLE PUBLIC DEFINITIONS
-    SYMBOL:  usb_init
-    MODULE:  ..\Library\stc_usb_cdc_32.LIB (usb)
-   DEFINED:  .\Objects\main.obj (main)
+*** WARNING L57: UNCALLED FUNCTION, IGNORED FOR OVERLAY PROCESS
+    NAME:    ds18b20_read_temperature/bsp_ds18b20
+*** WARNING L57: UNCALLED FUNCTION, IGNORED FOR OVERLAY PROCESS
+    NAME:    ds18b20_init/bsp_ds18b20
+*** WARNING L57: UNCALLED FUNCTION, IGNORED FOR OVERLAY PROCESS
+    NAME:    ds18b20_start_conversion/bsp_ds18b20
 *** WARNING L57: UNCALLED FUNCTION, IGNORED FOR OVERLAY PROCESS
     NAME:    max30102_init/bsp_max30102
 *** WARNING L57: UNCALLED FUNCTION, IGNORED FOR OVERLAY PROCESS
@@ -54,9 +80,7 @@ linking...
 *** WARNING L57: UNCALLED FUNCTION, IGNORED FOR OVERLAY PROCESS
     NAME:    tcs3400_init/bsp_tcs3400
 *** WARNING L57: UNCALLED FUNCTION, IGNORED FOR OVERLAY PROCESS
-    NAME:    adc_init/adc_drive
-*** WARNING L57: UNCALLED FUNCTION, IGNORED FOR OVERLAY PROCESS
-    NAME:    adc_get/adc_drive
+    NAME:    ProcessCalibration/ds144_do_meter
 *** WARNING L57: UNCALLED FUNCTION, IGNORED FOR OVERLAY PROCESS
     NAME:    DIS_LED_ALL_on/led_drive
 *** WARNING L57: UNCALLED FUNCTION, IGNORED FOR OVERLAY PROCESS
@@ -65,8 +89,6 @@ linking...
     NAME:    DIS_LED_TOGGLE/led_drive
 *** WARNING L57: UNCALLED FUNCTION, IGNORED FOR OVERLAY PROCESS
     NAME:    DIS_LED_Enable/led_drive
-*** WARNING L57: UNCALLED FUNCTION, IGNORED FOR OVERLAY PROCESS
-    NAME:    DIS_LED_Just_One_Enable/led_drive
 *** WARNING L57: UNCALLED FUNCTION, IGNORED FOR OVERLAY PROCESS
     NAME:    tim_start/tim_drive
 *** WARNING L57: UNCALLED FUNCTION, IGNORED FOR OVERLAY PROCESS
@@ -109,10 +131,6 @@ linking...
     NAME:    DMA_SPI_Inilize/STC32G_DMA
 *** WARNING L57: UNCALLED FUNCTION, IGNORED FOR OVERLAY PROCESS
     NAME:    EEPROM_SectorErase/STC32G_EEPROM
-*** WARNING L57: UNCALLED FUNCTION, IGNORED FOR OVERLAY PROCESS
-    NAME:    EEPROM_read_n/STC32G_EEPROM
-*** WARNING L57: UNCALLED FUNCTION, IGNORED FOR OVERLAY PROCESS
-    NAME:    EEPROM_write_n/STC32G_EEPROM
 *** WARNING L57: UNCALLED FUNCTION, IGNORED FOR OVERLAY PROCESS
     NAME:    Ext_Inilize/STC32G_Exti
 *** WARNING L57: UNCALLED FUNCTION, IGNORED FOR OVERLAY PROCESS
@@ -254,11 +272,15 @@ linking...
 *** WARNING L57: UNCALLED FUNCTION, IGNORED FOR OVERLAY PROCESS
     NAME:    WDT_Clear/STC32G_WDT
 *** WARNING L57: UNCALLED FUNCTION, IGNORED FOR OVERLAY PROCESS
+    NAME:    set_usb_IN_callback/usb
+*** WARNING L57: UNCALLED FUNCTION, IGNORED FOR OVERLAY PROCESS
     NAME:    usb_OUT_done/usb
 *** WARNING L57: UNCALLED FUNCTION, IGNORED FOR OVERLAY PROCESS
     NAME:    usb_bulk_intr_out/usb
 *** WARNING L57: UNCALLED FUNCTION, IGNORED FOR OVERLAY PROCESS
-    NAME:    usb_init/usb
+    NAME:    set_usb_ispcmd/usb
+*** WARNING L57: UNCALLED FUNCTION, IGNORED FOR OVERLAY PROCESS
+    NAME:    set_usb_OUT_callback/usb
 *** WARNING L57: UNCALLED FUNCTION, IGNORED FOR OVERLAY PROCESS
     NAME:    LCD12864_DisplayClear/util
 *** WARNING L57: UNCALLED FUNCTION, IGNORED FOR OVERLAY PROCESS
@@ -294,8 +316,6 @@ linking...
 *** WARNING L57: UNCALLED FUNCTION, IGNORED FOR OVERLAY PROCESS
     NAME:    LED64_SendData/util
 *** WARNING L57: UNCALLED FUNCTION, IGNORED FOR OVERLAY PROCESS
-    NAME:    printf_hid/util
-*** WARNING L57: UNCALLED FUNCTION, IGNORED FOR OVERLAY PROCESS
     NAME:    SEG7_ShowLong/util
 *** WARNING L57: UNCALLED FUNCTION, IGNORED FOR OVERLAY PROCESS
     NAME:    LCD12864_ScrollRight/util
@@ -311,6 +331,8 @@ linking...
     NAME:    OLED12864_HorizontalMirror/util
 *** WARNING L57: UNCALLED FUNCTION, IGNORED FOR OVERLAY PROCESS
     NAME:    LCD12864_ShowPicture/util
+*** WARNING L57: UNCALLED FUNCTION, IGNORED FOR OVERLAY PROCESS
+    NAME:    printf_usb/util
 *** WARNING L57: UNCALLED FUNCTION, IGNORED FOR OVERLAY PROCESS
     NAME:    OLED12864_ScrollUp/util
 *** WARNING L57: UNCALLED FUNCTION, IGNORED FOR OVERLAY PROCESS
@@ -332,9 +354,21 @@ linking...
 *** WARNING L57: UNCALLED FUNCTION, IGNORED FOR OVERLAY PROCESS
     NAME:    LCD12864_CursorOff/util
 *** WARNING L57: UNCALLED FUNCTION, IGNORED FOR OVERLAY PROCESS
+    NAME:    LED40_ClrBit/util
+*** WARNING L57: UNCALLED FUNCTION, IGNORED FOR OVERLAY PROCESS
+    NAME:    LED64_ClrBit/util
+*** WARNING L57: UNCALLED FUNCTION, IGNORED FOR OVERLAY PROCESS
     NAME:    LCD12864_CursorMoveLeft/util
 *** WARNING L57: UNCALLED FUNCTION, IGNORED FOR OVERLAY PROCESS
+    NAME:    LED40_SetBit/util
+*** WARNING L57: UNCALLED FUNCTION, IGNORED FOR OVERLAY PROCESS
+    NAME:    LED64_SetBit/util
+*** WARNING L57: UNCALLED FUNCTION, IGNORED FOR OVERLAY PROCESS
+    NAME:    LED40_SetPort/util
+*** WARNING L57: UNCALLED FUNCTION, IGNORED FOR OVERLAY PROCESS
     NAME:    LCD12864_ScrollUp/util
+*** WARNING L57: UNCALLED FUNCTION, IGNORED FOR OVERLAY PROCESS
+    NAME:    LED64_SetPort/util
 *** WARNING L57: UNCALLED FUNCTION, IGNORED FOR OVERLAY PROCESS
     NAME:    LCD12864_CursorOn/util
 *** WARNING L57: UNCALLED FUNCTION, IGNORED FOR OVERLAY PROCESS
@@ -344,11 +378,13 @@ linking...
 *** WARNING L57: UNCALLED FUNCTION, IGNORED FOR OVERLAY PROCESS
     NAME:    notch_fixed_process/iir
 *** WARNING L57: UNCALLED FUNCTION, IGNORED FOR OVERLAY PROCESS
-    NAME:    task_delay/task_scheduler
+    NAME:    task_exit_critical/task_scheduler
+*** WARNING L57: UNCALLED FUNCTION, IGNORED FOR OVERLAY PROCESS
+    NAME:    task_timeout/task_scheduler
+*** WARNING L57: UNCALLED FUNCTION, IGNORED FOR OVERLAY PROCESS
+    NAME:    task_enter_critical/task_scheduler
 *** WARNING L57: UNCALLED FUNCTION, IGNORED FOR OVERLAY PROCESS
     NAME:    task_get_stats/task_scheduler
-*** WARNING L57: UNCALLED FUNCTION, IGNORED FOR OVERLAY PROCESS
-    NAME:    task_delay_us/task_scheduler
 *** WARNING L57: UNCALLED FUNCTION, IGNORED FOR OVERLAY PROCESS
     NAME:    task_set_idle_hook/task_scheduler
 *** WARNING L57: UNCALLED FUNCTION, IGNORED FOR OVERLAY PROCESS
@@ -359,27 +395,9 @@ linking...
     NAME:    fft_run/fft
 *** WARNING L57: UNCALLED FUNCTION, IGNORED FOR OVERLAY PROCESS
     NAME:    LUT_BinaryInterp_u16/lut
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  usb_init
-    MODULE:  .\Objects\main.obj (main)
-    ADDRESS: FF6A7FH
-*** ERROR L127: UNRESOLVED EXTERNAL SYMBOL
-    SYMBOL:  USER_STCISPCMD
-    MODULE:  ..\Library\stc_usb_cdc_32.LIB (usb)
-*** ERROR L128: REFERENCE MADE TO UNRESOLVED EXTERNAL
-    SYMBOL:  USER_STCISPCMD
-    MODULE:  ..\Library\stc_usb_cdc_32.LIB (usb)
-    ADDRESS: FF3BB4H
-*** ERROR L128: REFERENCE MADE TO UNRESOLVED EXTERNAL
-    SYMBOL:  USER_STCISPCMD
-    MODULE:  ..\Library\stc_usb_cdc_32.LIB (usb)
-    ADDRESS: FF3BC9H
-*** ERROR L128: REFERENCE MADE TO UNRESOLVED EXTERNAL
-    SYMBOL:  USER_STCISPCMD
-    MODULE:  ..\Library\stc_usb_cdc_32.LIB (usb)
-    ADDRESS: FF3C20H
-Program Size: data=12.5 edata+hdata=2233 xdata=1728 const=587 code=33244
-Target not created.
+Program Size: data=12.7 edata+hdata=2231 xdata=1728 const=659 code=34124
+creating hex file from ".\Objects\prj"...
+".\Objects\prj" - 0 Error(s), 174 Warning(s).
 Build Time Elapsed:  00:00:01
 </pre>
 </body>

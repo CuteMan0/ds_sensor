@@ -1,8 +1,34 @@
 #ifndef __DS_SENSOR_H
 #define __DS_SENSOR_H
 
-#define DS_SENSOR 151
+#include "task_scheduler.h"
+#include "filter.h"
 
+#define DS_SENSOR 144
+
+/* ============================================================
+ * 共享全局变量（由某个 .c 文件定义）
+ * ============================================================ */
+extern volatile float dat_for_printf;
+extern avg_filter_t filter;
+#define NUM_BUF_AVG 8
+extern avgf_data_t buffer[NUM_BUF_AVG];
+
+/* ============================================================
+ * 统一接口 — 每个 dsXX 文件必须实现以下 4 个函数：
+ *   ds_init()    — 传感器初始化（main 启动时调用一次）
+ *   ds_update()  — 传感器数据采集 + 滤波（task_sensor 调用）
+ *   ds_printf()  — 格式化打印（task_printf 调用，支持多值）
+ *   ds_calib()   — 校准保存（task_calibration_save 调用，无需校准则空函数）
+ * ============================================================ */
+void ds_init(void);
+void ds_update(void);
+void ds_printf(void);
+void ds_calib(void);
+
+/* ============================================================
+ * 按 DS_SENSOR 宏包含具体传感器头文件
+ * ============================================================ */
 #if DS_SENSOR == 112 /*红外温度传感器 */
 #include "ds112_fir_meter.h"
 #endif
@@ -69,10 +95,10 @@
 #if DS_SENSOR == 164 /*氯气传感器*/
 #include "ds164_cl2_meter.h"
 #endif
-#if (DS_SENSOR == 165 || DS_SENSOR == 166 || DS_SENSOR == 167 || DS_SENSOR == 168 || DS_SENSOR == 169 || DS_SENSOR == 170) /*铵根离子传感器*/
-#include "ds165_nh4_meter.h"
+#if (DS_SENSOR == 165 || DS_SENSOR == 166 || DS_SENSOR == 167 || DS_SENSOR == 168 || DS_SENSOR == 169 || DS_SENSOR == 170) /*离子传感器*/
+#include "ds165_170_ise_meter.h"
 #endif
-#if DS_SENSOR == 172 /*氯气传感器*/
+#if DS_SENSOR == 172 /*滴定计数器*/
 #include "ds172_titration_meter.h"
 #endif
 

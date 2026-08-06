@@ -1,3 +1,7 @@
+/*---------------------------------------------------------------------*/
+/* --- Web: www.STCAI.com ---------------------------------------------*/
+/*---------------------------------------------------------------------*/
+
 #include	"STC32G_I2C.h"
 
 //========================================================================
@@ -39,13 +43,13 @@ void I2C_ISR_Handler() interrupt I2C_VECTOR
 	else if (I2CSLST & 0x20)
 	{
 		I2CSLST &= ~0x20;                       //处理RECV事件，SLACKO设置为0
-		if (I2CIsr.isda)
+		if (!I2CIsr.isda)
 		{
-			I2CIsr.isda = 0;                    //处理RECV事件（RECV DEVICE ADDR）
+			I2CIsr.isda = 1;                    //处理RECV事件（RECV DEVICE ADDR）
 		}
-		else if (I2CIsr.isma)
+		else if (!I2CIsr.isma)
 		{
-			I2CIsr.isma = 0;                    //处理RECV事件（RECV MEMORY ADDR）
+			I2CIsr.isma = 1;                    //处理RECV事件（RECV MEMORY ADDR）
 			I2CIsr.addr = I2CRXD;
 			I2CTXD = I2C_Buffer[I2CIsr.addr];
 		}
@@ -69,8 +73,8 @@ void I2C_ISR_Handler() interrupt I2C_VECTOR
 	else if (I2CSLST & 0x08)
 	{
 		I2CSLST &= ~0x08;                       //处理STOP事件
-		I2CIsr.isda = 1;
-		I2CIsr.isma = 1;
+		I2CIsr.isda = 0;
+		I2CIsr.isma = 0;
 		DisplayFlag = 1;
 	}
 }

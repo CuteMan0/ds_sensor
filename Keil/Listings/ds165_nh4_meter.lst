@@ -1,10 +1,10 @@
-C251 COMPILER V5.60.0,  ds165_nh4_meter                                                    06/08/26  16:43:27  PAGE 1   
+C251 COMPILER V5.60.0,  ds165_nh4_meter                                                    06/08/26  21:49:27  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE ds165_nh4_meter
 OBJECT MODULE PLACED IN .\Objects\ds165_nh4_meter.obj
-COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE ..\Bsp\ds165_nh4_meter.c XSMALL INTR2 BROWSE INCDIR(..\App;..\Bsp;..\D
-                    -river;..\Library;..\Tool) DEBUG PRINT(.\Listings\ds165_nh4_meter.lst) OBJECT(.\Objects\ds165_nh4_meter.obj) 
+COMPILER INVOKED BY: C:\Wongsoft\Keil_v5\C251\BIN\C251.EXE ..\Bsp\ds165_nh4_meter.c XSMALL INTR2 BROWSE INCDIR(..\App;..
+                    -\Bsp;..\Driver;..\Library;..\Tool) DEBUG PRINT(.\Listings\ds165_nh4_meter.lst) OBJECT(.\Objects\ds165_nh4_meter.obj) 
 
 stmt  level    source
 
@@ -66,7 +66,7 @@ stmt  level    source
                    CAL_COMPUTE,
                    CAL_DONE
                } CalState_t;
-C251 COMPILER V5.60.0,  ds165_nh4_meter                                                    06/08/26  16:43:27  PAGE 2   
+C251 COMPILER V5.60.0,  ds165_nh4_meter                                                    06/08/26  21:49:27  PAGE 2   
 
                
                // 全局变量
@@ -107,7 +107,7 @@ stmt  level    source
                    avg_filter_init(&avgfilter, avgbuffer, NUM_BUF_AVG);
                }
                
-               void ds_update(float *dat)
+               void ds_update(void)
                {
                    float adc_vol = 0.0f;
                
@@ -134,24 +134,24 @@ stmt  level    source
                        Key_ShortPress_Handler();
                    }
                
-C251 COMPILER V5.60.0,  ds165_nh4_meter                                                    06/08/26  16:43:27  PAGE 3   
+C251 COMPILER V5.60.0,  ds165_nh4_meter                                                    06/08/26  21:49:27  PAGE 3   
 
                    // 根据状态返回不同数据
                    if (CAL_IDLE != cal_state)
                    {
                        // 校准模式下返回实时 ADC 电压值
-                       *dat = adc_vol; // mV
+                       dat_for_printf = adc_vol; // mV
                    }
                    else
                    {
                        // 正常模式下计算 ppm 值
                        if (k != 0.0f) // 避免除零
                        {
-                           *dat = pow(10.0f, (adc_vol - d) / k);
+                           dat_for_printf = pow(10.0f, (adc_vol - d) / k);
                        }
                        else
                        {
-                           *dat = 0.0f;
+                           dat_for_printf = 0.0f;
                        }
                    }
                }
@@ -202,7 +202,7 @@ stmt  level    source
                            {
                                // 等待状态：不限制闪烁次数，重置计数器
                                flash_cnt = 0;
-C251 COMPILER V5.60.0,  ds165_nh4_meter                                                    06/08/26  16:43:27  PAGE 4   
+C251 COMPILER V5.60.0,  ds165_nh4_meter                                                    06/08/26  21:49:27  PAGE 4   
 
                            }
                            else if (flash_cnt >= 6)
@@ -270,7 +270,7 @@ stmt  level    source
                        // 采样完成
                        if (cal_sample_cnt >= 20)
                        {
-C251 COMPILER V5.60.0,  ds165_nh4_meter                                                    06/08/26  16:43:27  PAGE 5   
+C251 COMPILER V5.60.0,  ds165_nh4_meter                                                    06/08/26  21:49:27  PAGE 5   
 
                            cal_vol_100ppm = cal_vol_sum / 20.0f;
                            cal_state = CAL_WAIT_1000PPM;
@@ -338,7 +338,7 @@ stmt  level    source
                        led_flash = 0;              // 停止闪烁
                        DIS_LED_Just_One_Enable(2); // 2号灯常亮表示采样中
                    }
-C251 COMPILER V5.60.0,  ds165_nh4_meter                                                    06/08/26  16:43:27  PAGE 6   
+C251 COMPILER V5.60.0,  ds165_nh4_meter                                                    06/08/26  21:49:27  PAGE 6   
 
                    else if (CAL_WAIT_1000PPM == cal_state)
                    {
@@ -383,6 +383,16 @@ stmt  level    source
                    return u.value;
                }
                
+               void ds_printf(void)
+               {
+                   printf("NH4:%.3f\n", dat_for_printf);
+               }
+               
+               void ds_calib(void)
+               {
+                   /* 无校准需求 */
+               }
+               
                #endif
 
 
@@ -397,6 +407,8 @@ Module Information          Static   Overlayable
   xdata-const size     =    ------     ------
   edata size           =    ------     ------
   bit size             =    ------     ------
+C251 COMPILER V5.60.0,  ds165_nh4_meter                                                    06/08/26  21:49:27  PAGE 7   
+
   ebit size            =    ------     ------
   bitaddressable size  =    ------     ------
   ebitaddressable size =    ------     ------

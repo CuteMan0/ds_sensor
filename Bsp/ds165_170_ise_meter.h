@@ -1,5 +1,5 @@
-#ifndef __DS165_NH4_METER_H
-#define __DS165_NH4_METER_H
+#ifndef __DS165_170_ISE_METER_H
+#define __DS165_170_ISE_METER_H
 
 #include "ds_sensor.h"
 
@@ -14,7 +14,7 @@
 
 第一次短按 → 2号灯常亮（正在采样100ppm）
 
-采样完成 → 3号灯闪烁（提示放1000ppm气体，等待第二次短按）
+采样完成 → 3号灯闪烁（提示1000ppm校准，等待第二次短按）
 
 第二次短按 → 3号灯常亮（正在采样1000ppm）
 
@@ -22,8 +22,10 @@
 */
 
 void ds_init(void);
-void ds_update(float *dat);
-void ProcessCalibration(void);
+void ds_update(void);
+void ds_printf(void);
+void ds_calib(void);
+
 void Led_Task(void);
 
 #endif

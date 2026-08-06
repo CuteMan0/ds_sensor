@@ -32,14 +32,26 @@ void ds_init(void)
     Tr_ON;
 }
 
-void ds_update(float *dat)
+void ds_update(void)
 {
     adc_vol = adc_get(&adc0);
 #if 1
-    *dat = CALC_K(x[1], x[0]) * adc_vol + CALC_B(x[0], CALC_K(x[1], x[0]));
+    dat_for_printf = CALC_K(x[1], x[0]) * adc_vol + CALC_B(x[0], CALC_K(x[1], x[0]));
 #else
-    *dat = adc_vol;
+    dat_for_printf = adc_vol;
 #endif
+    avg_filter_update(&filter, dat_for_printf);
+    task_delay_ms(50);
+}
+
+void ds_printf(void)
+{
+    printf("tur:%.6f\n", dat_for_printf);
+}
+
+void ds_calib(void)
+{
+    /* 无校准需求 */
 }
 
 #endif

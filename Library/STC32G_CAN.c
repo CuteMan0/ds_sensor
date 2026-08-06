@@ -152,18 +152,30 @@ void CanReadFifo(CAN_DataDef *CAN)
 }
 
 //========================================================================
-// 函数: u8 CanReadMsg(void)
+// 函数: u8 CanReadMsg(u8 CANx, CAN_DataDef *CAN)
 // 描述: CAN接收数据函数。
-// 参数: *CANx: 存放CAN总线读取数据..
+// 参数: CANx: 选择CAN通道.
+// 参数: *CAN: 存放CAN总线读取数据.
 // 返回: 帧个数.
-// 版本: VER2.0
-// 日期: 2023-01-31
+// 版本: VER3.0
+// 日期: 2025-06-23
 // 备注: 
 //========================================================================
-u8 CanReadMsg(CAN_DataDef *CAN)
+u8 CanReadMsg(u8 CANx, CAN_DataDef *CAN)
 {
     u8 i;
     u8 n=0;
+
+    if(CANx == CAN1)
+    {
+        CANSEL = 0;         //选择CAN1模块
+    }
+    else if(CANx == CAN2)
+    {
+        CANSEL = 1;         //选择CAN2模块
+    }
+    else
+        return(-1);         //参数错误，直接退出
 
     do{
         CanReadFifo(&CAN[n++]);  //读取接收缓冲区数据
@@ -174,29 +186,33 @@ u8 CanReadMsg(CAN_DataDef *CAN)
 }
 
 //========================================================================
-// 函数: void CanSendMsg(CAN_DataDef *CAN)
+// 函数: void CanSendMsg(u8 CANx, CAN_DataDef *CAN)
 // 描述: CAN发送标准帧函数。
-// 参数: *CANx: 存放CAN总线发送数据..
+// 参数: CANx: 选择CAN通道.
+// 参数: *CAN: 存放CAN总线读取数据.
 // 返回: none.
-// 版本: VER1.0
-// 日期: 2020-11-19
+// 版本: VER3.0
+// 日期: 2025-06-23
 // 备注: 
 //========================================================================
-void CanSendMsg(CAN_DataDef *CAN)
+void CanSendMsg(u8 CANx, CAN_DataDef *CAN)
 {
     u32 CanID;
     u8 RX_Index,i;
 
-    if(CANSEL)  //判断是否CAN2
+    i = 200;
+    if(CANx == CAN1)
     {
-        i = 200;
+        CANSEL = 0;     //选择CAN1模块
+        while((--i) && (B_Can1Send));  //等待CAN1上次发送完成
+    }
+    else if(CANx == CAN2)
+    {
+        CANSEL = 1;     //选择CAN2模块
         while((--i) && (B_Can2Send));  //等待CAN2上次发送完成
     }
     else
-    {
-        i = 200;
-        while((--i) && (B_Can1Send));  //等待CAN1上次发送完成
-    }
+        return;         //参数错误，直接退出
 
     if(CAN->FF)     //判断是否扩展帧
     {
@@ -237,12 +253,12 @@ void CanSendMsg(CAN_DataDef *CAN)
     }
     CanWriteReg(CMR ,0x04);		//发起一次帧传输
     
-    if(CANSEL)  //判断是否CAN2
-    {
-        B_Can2Send = 1;     //设置CAN2发送忙标志
-    }
-    else
+    if(CANx == CAN1)
     {
         B_Can1Send = 1;     //设置CAN1发送忙标志
+    }
+    else if(CANx == CAN2)
+    {
+        B_Can2Send = 1;     //设置CAN2发送忙标志
     }
 }

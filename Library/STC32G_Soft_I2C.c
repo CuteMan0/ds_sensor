@@ -14,7 +14,7 @@ sbit    SCL = P0^0; //定义SCL
 // 返回: none.
 // 版本: V1.0, 2020-09-15
 //========================================================================
-void I2C_Delay(void) //for normal MCS51, delay (2 * dly + 4) T, for STC12Cxxxx delay (4 * dly + 10) T
+void I2C_Delay(void)
 {
 	u8  dly;
 	dly = MAIN_Fosc / 2000000UL;        //按2us计算

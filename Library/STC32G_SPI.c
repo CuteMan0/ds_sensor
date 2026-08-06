@@ -1,3 +1,7 @@
+/*---------------------------------------------------------------------*/
+/* --- Web: www.STCAI.com ---------------------------------------------*/
+/*---------------------------------------------------------------------*/
+
 #include	"STC32G_SPI.h"
 
 u8 	SPI_RxTimerOut;
@@ -14,23 +18,17 @@ bit B_SPI_Busy; //发送忙标志
 //========================================================================
 void	SPI_Init(SPI_InitTypeDef *SPIx)
 {
-		if(SPIx->SPI_SSIG == ENABLE)	//片选位, ENABLE(忽略SS引脚功能), DISABLE(SS确定主机从机)
-		{		
-				SSIG = 1; 	//conform Master or Slave by SPI_Mode(ignore SS)
-		}
-		else
-		{			
-				SSIG = 0; 	//conform Master or Slave by SS pin.
-		}
-		SPI_Start(SPIx->SPI_Enable);					//u8	SPI_Enable; //SPI启动, ENABLE,DISABLE
-		SPI_FirstBit_Set(SPIx->SPI_FirstBit);	//u8	SPI_FirstBit; //SPI_MSB, SPI_LSB
-		SPI_Mode_Set(SPIx->SPI_Mode);					//u8	SPI_Mode; //SPI_Mode_Master, SPI_Mode_Slave
-		SPI_CPOL_Set(SPIx->SPI_CPOL);					//u8	SPI_CPOL; //SPI_CPOL_High,   SPI_CPOL_Low
-		SPI_CPHA_Set(SPIx->SPI_CPHA);					//u8	SPI_CPHA; //SPI_CPHA_1Edge,  SPI_CPHA_2Edge
-		SPI_Clock_Select(SPIx->SPI_Speed);		//u8	SPI_Speed; //SPI_Speed_4, SPI_Speed_8, SPI_Speed_16, SPI_Speed_2
+	if(SPIx->SPI_SSIG == ENABLE)			SSIG = 1; 	//conform Master or Slave by SPI_Mode(ignore SS)
+	else									SSIG = 0; 	//conform Master or Slave by SS pin.
+	SPI_Start(SPIx->SPI_Enable);
+	SPI_FirstBit_Set(SPIx->SPI_FirstBit);
+	SPI_Mode_Set(SPIx->SPI_Mode);
+	SPI_CPOL_Set(SPIx->SPI_CPOL);
+	SPI_CPHA_Set(SPIx->SPI_CPHA);
+	SPI_Clock_Select(SPIx->SPI_Speed);
 	
-		SPI_RxTimerOut = 0;
-		B_SPI_Busy = 0;
+	SPI_RxTimerOut = 0;
+	B_SPI_Busy = 0;
 }
 
 //========================================================================

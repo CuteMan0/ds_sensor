@@ -86,10 +86,10 @@ void ds_init(void)
     }
 }
 
-void ds_update(float *dat)
+void ds_update(void)
 {
     float adc_vol = 0.0f;
-    *dat = 0.0f;
+
 
     if (2 == flag_key) // 长按，开始EEPROM备份
     {
@@ -102,7 +102,19 @@ void ds_update(float *dat)
     Auto_Switcher(); // 自动切换量程
 
     adc_vol = (adc_get(&adc0) / 5.0f + offset_vol) / 2.0f;
-    *dat = adc_vol * Q / (res_fb * VIN * G_20MS); // k = Q/(R*|Vin|)*Vout
+    dat_for_printf = adc_vol * Q / (res_fb * VIN * G_20MS); // k = Q/(R*|Vin|)*Vout
+    avg_filter_update(&filter, dat_for_printf);
+    task_delay_ms(50);
+}
+
+void ds_printf(void)
+{
+    printf("EC:%.4f\n", dat_for_printf); // mS/cm
+}
+
+void ds_calib(void)
+{
+    ProcessCalibration();
 }
 
 void ProcessCalibration(void)

@@ -28,7 +28,7 @@ void ds_init(void)
     adc_init(&adc0, 0, 3.3f);
 }
 
-void ds_update(float *dat)
+void ds_update(void)
 {
     u16 ch4_val, adc_vol_mv = 0.0f;
 
@@ -43,7 +43,19 @@ void ds_update(float *dat)
         ch4_val = 0;
     }
 
-    *dat = (float)ch4_val;
+    dat_for_printf = (float)ch4_val;
+    avg_filter_update(&filter, dat_for_printf);
+    task_delay_ms(50);
+}
+
+void ds_printf(void)
+{
+    printf("CH4:%.2f\n", dat_for_printf);
+}
+
+void ds_calib(void)
+{
+    /* 无校准需求 */
 }
 
 #endif

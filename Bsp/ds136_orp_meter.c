@@ -15,7 +15,7 @@ void ds_init(void)
     horp_handle.vol = 0.0f;
 }
 
-void ds_update(float *dat)
+void ds_update(void)
 {
     horp_handle.vol = 2010 - 1333.33f * adc_get(&adc0);
 
@@ -27,7 +27,19 @@ void ds_update(float *dat)
 #define CLAMP_SIMPLE(val, lo, hi) \
     (((val) < (lo)) ? (lo) : (((val) > (hi)) ? (hi) : (val)))
 
-    *dat = CLAMP_SIMPLE(horp_handle.vol, -2000, 2000);
+    dat_for_printf = CLAMP_SIMPLE(horp_handle.vol, -2000, 2000);
+    avg_filter_update(&filter, dat_for_printf);
+    task_delay_ms(50);
+}
+
+void ds_printf(void)
+{
+    printf("ORG:%.1f\n", dat_for_printf);
+}
+
+void ds_calib(void)
+{
+    /* 无校准需求 */
 }
 
 #endif

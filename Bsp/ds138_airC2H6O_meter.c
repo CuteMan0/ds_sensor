@@ -45,7 +45,7 @@ void ds_init(void)
     }
 }
 
-void ds_update(float *dat)
+void ds_update(void)
 {
     float voltage, new_zero;
     float zero_voltage = zero_voltage_calibrated;
@@ -74,43 +74,44 @@ void ds_update(float *dat)
     // 边界检查：低于校准后的零点
     if (voltage <= zero_voltage)
     {
-        *dat = concentration_table[0];
-        return 1;
+        dat_for_printf = concentration_table[0];
     }
-
     // 边界检查：高于最大电压
-    if (voltage >= voltage_table[TABLE_SIZE - 1])
+    else if (voltage >= voltage_table[TABLE_SIZE - 1])
     {
-        *dat = concentration_table[TABLE_SIZE - 1];
-        return 2;
+        dat_for_printf = concentration_table[TABLE_SIZE - 1];
     }
-
     // 特殊处理：电压在零点到第一个电压点之间
-    if (voltage < voltage_table[0])
+    else if (voltage < voltage_table[0])
     {
         // 零点到第一个点之间线性插值
         float ratio = (voltage - zero_voltage) / (voltage_table[0] - zero_voltage);
-        *dat = ratio * concentration_table[0]; // 0到5ppm之间
-        return 3;
+        dat_for_printf = ratio * concentration_table[0]; // 0到5ppm之间
     }
-
-    // 正常查表：找到电压所在的区间
-    for (i = 0; i < TABLE_SIZE - 1; i++)
+    else
     {
-        if (voltage >= voltage_table[i] && voltage <= voltage_table[i + 1])
+        // 正常查表：找到电压所在的区间
+        u8 found = 0;
+        for (i = 0; i < TABLE_SIZE - 1; i++)
         {
-            // 线性插值计算浓度
-            float voltage_diff = voltage_table[i + 1] - voltage_table[i];
-            float concentration_diff = concentration_table[i + 1] - concentration_table[i];
-            float ratio = (voltage - voltage_table[i]) / voltage_diff;
+            if (voltage >= voltage_table[i] && voltage <= voltage_table[i + 1])
+            {
+                // 线性插值计算浓度
+                float voltage_diff = voltage_table[i + 1] - voltage_table[i];
+                float concentration_diff = concentration_table[i + 1] - concentration_table[i];
+                float ratio = (voltage - voltage_table[i]) / voltage_diff;
 
-            *dat = concentration_table[i] + ratio * concentration_diff;
-            return 4;
+                dat_for_printf = concentration_table[i] + ratio * concentration_diff;
+                found = 1;
+                break;
+            }
         }
+        if (!found)
+            dat_for_printf = concentration_table[TABLE_SIZE - 1];
     }
 
-    *dat = concentration_table[TABLE_SIZE - 1];
-    return 5;
+    avg_filter_update(&filter, dat_for_printf);
+    task_delay_ms(50);
 }
 
 void ProcessCalibration(void)
@@ -168,6 +169,16 @@ void Led_Task(void)
             DIS_LED_Just_One_Enable(3);
         }
     }
+}
+
+void ds_printf(void)
+{
+    printf("airC2H6O:%.1f\n", dat_for_printf);
+}
+
+void ds_calib(void)
+{
+    ProcessCalibration();
 }
 
 #endif

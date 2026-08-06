@@ -1,9 +1,12 @@
 #include "task_scheduler.h"
 
-#include "STC32G_Timer.h"
+#include "config.h"
+
+#define TIMER0_RELOAD 0xA240 // 1ms@24MHz, 1T mode
 
 static TaskScheduler_t scheduler;
 static volatile u32 sys_tick_ms = 0;
+static volatile u32 sys_tick_us = 0; // ISR 中 += 1000
 
 //------------------------------------------------------------
 // 初始化任务调度器
@@ -12,8 +15,10 @@ void task_scheduler_init(void)
 {
     u8 i;
     scheduler.task_count = 0;
+    scheduler.current_task = 0xFF; // 无任务在运行
     scheduler.idle_hook = 0;
     sys_tick_ms = 0;
+    sys_tick_us = 0;
 
     for (i = 0; i < MAX_TASKS; i++)
     {
@@ -24,17 +29,19 @@ void task_scheduler_init(void)
         scheduler.tasks[i].stats.exec_cnt = 0;
         scheduler.tasks[i].stats.overrun_cnt = 0;
         scheduler.tasks[i].stats.last_dur_us = 0;
+        scheduler.tasks[i].running = 0;
+        scheduler.tasks[i].wake_tick = 0; // 0 表示立即可调度
     }
 
     // 1ms@24.000MHz
     TM0PS = 0x00; // Set timer clock prescaler
-    AUXR |= 0x80; // imer clock is 1T mode
+    AUXR |= 0x80; // Timer clock is 1T mode
     TMOD &= 0xF0; // Set timer work mode
-    TL0 = 0x40;   // Initial timer value
-    TH0 = 0xA2;   // Initial timer value
-    TF0 = 0;      // Clear TF0 flag
-    TR0 = 1;      // Timer0 start run
-    ET0 = 1;      // Enable timer0 interrupt
+    TL0 = (u8)(TIMER0_RELOAD & 0xFF);
+    TH0 = (u8)(TIMER0_RELOAD >> 8);
+    TF0 = 0; // Clear TF0 flag
+    TR0 = 1; // Timer0 start run
+    ET0 = 1; // Enable timer0 interrupt
 }
 
 //------------------------------------------------------------
@@ -58,44 +65,9 @@ u32 task_get_tick_ms(void)
 }
 
 //------------------------------------------------------------
-// 获取微秒级时间戳（基于 ms tick + Timer0 当前计数值）
-// 精度：约 1us（24MHz 1T 模式）
+// 注册一个任务（RTOS 风格，不需要 period_ms）
 //------------------------------------------------------------
-u32 task_get_tick_us(void)
-{
-    u32 t_ms, elapsed_ticks;
-    u16 t0_val;
-    u8 ea_save = EA;
-
-    EA = 0;
-    t_ms = sys_tick_ms;
-    // 读取 Timer0 当前计数值（16位自动重装，从 TL0/TH0 到 0xFFFF 溢出）
-    t0_val = (TH0 << 8) | TL0;
-    // 检查是否在读取期间发生溢出
-    if (TF0)
-    {
-        // 溢出已发生但 ISR 尚未执行，补偿 1ms
-        t0_val = (TH0 << 8) | TL0;
-        if ((u16)(0xA240 - t0_val) > 0xA240 / 2)
-        {
-            // 确实刚溢出，补偿
-            t_ms++;
-        }
-    }
-    EA = ea_save;
-
-    // 计算从重装值到当前值的 ticks（向下计数）
-    // 重装值 ≈ 0xA240，满值 0xFFFF，每个 tick = 1/24 μs ≈ 0.0417μs
-    // 简化：ticks 直接对应 us 近似值
-    elapsed_ticks = (u16)(t0_val - 0xA240);
-    // 24MHz 1T: 1 tick = 1/24 us.  elapsed_ticks / 24 = elapsed_us
-    return t_ms * 1000 + elapsed_ticks / 24;
-}
-
-//------------------------------------------------------------
-// 注册一个周期任务
-//------------------------------------------------------------
-u8 task_register(TaskFunc_t func, u32 period_ms, u8 priority)
+u8 task_register(TaskFunc_t func, u8 priority)
 {
     u8 id = scheduler.task_count;
     if (id >= MAX_TASKS)
@@ -103,8 +75,8 @@ u8 task_register(TaskFunc_t func, u32 period_ms, u8 priority)
 
     scheduler.tasks[id].id = id;
     scheduler.tasks[id].priority = priority;
-    scheduler.tasks[id].period_ms = period_ms;
-    scheduler.tasks[id].last_tick = 0;
+    scheduler.tasks[id].wake_tick = 0; // 首次立即可调度
+    scheduler.tasks[id].running = 0;
     scheduler.tasks[id].func = func;
 
     scheduler.task_count++;
@@ -117,6 +89,19 @@ u8 task_register(TaskFunc_t func, u32 period_ms, u8 priority)
 void task_scheduler_tick_isr(void)
 {
     sys_tick_ms++;
+    sys_tick_us += 1000;
+}
+
+//------------------------------------------------------------
+// 挂起当前任务 n 毫秒（只能在任务函数内调用）
+//------------------------------------------------------------
+void task_delay_ms(u32 ms)
+{
+    u8 id = scheduler.current_task;
+    if (id >= scheduler.task_count)
+        return; // 安全保护：不在任务上下文中调用则忽略
+
+    scheduler.tasks[id].wake_tick = task_get_tick_ms() + ms;
 }
 
 //------------------------------------------------------------
@@ -130,45 +115,44 @@ const TaskStats_t *task_get_stats(u8 task_id)
 }
 
 //------------------------------------------------------------
-// 非阻塞微秒延迟
-// 返回: 1=还在等待，0=超时已到
+// 非阻塞超时检查
+// 返回: 1=等待中, 0=超时到
+// 用法: static u32 tmo = 0; if (!task_timeout(&tmo, 500)) { ... }
 //------------------------------------------------------------
-u8 task_delay_us(u32 *t_next, u32 delay_us)
-{
-    u32 now = task_get_tick_us();
-
-    if (*t_next == 0)
-    {
-        *t_next = now + delay_us;
-        return 1;
-    }
-
-    // 纯 u32 比较，利用无符号回绕
-    if ((u32)(now - *t_next) >= 0x80000000UL) // now < t_next 等价
-        return 1;                              // 还没到
-
-    *t_next = now + delay_us;
-    return 0; // 超时到达
-}
-
-//------------------------------------------------------------
-// 非阻塞毫秒延迟（兼容旧 API）
-//------------------------------------------------------------
-u8 task_delay(u32 *t_next, u32 delay_ms)
+u8 task_timeout(u32 *t_next, u32 timeout_ms)
 {
     u32 now = task_get_tick_ms();
 
     if (*t_next == 0)
     {
-        *t_next = now + delay_ms;
+        *t_next = now + timeout_ms;
         return 1;
     }
 
+    // 无符号回绕安全比较：now < t_next
     if ((u32)(now - *t_next) >= 0x80000000UL)
         return 1;
 
-    *t_next = now + delay_ms;
+    *t_next = now + timeout_ms;
     return 0;
+}
+
+//------------------------------------------------------------
+// 进入临界区：关中断，保存并返回 EA 状态
+//------------------------------------------------------------
+u8 task_enter_critical(void)
+{
+    u8 s = EA;
+    EA = 0;
+    return s;
+}
+
+//------------------------------------------------------------
+// 退出临界区：恢复 EA 状态
+//------------------------------------------------------------
+void task_exit_critical(u8 ea_save)
+{
+    EA = ea_save;
 }
 
 //------------------------------------------------------------
@@ -179,35 +163,24 @@ void task_scheduler_run(void)
     u8 i, j;
     Task_t *ready_list[MAX_TASKS];
     u8 ready_count = 0;
-    u32 now, now_us, start_us, dur_us, elapsed;
+    u32 now, now_us, start_us, dur_us;
 
     now = task_get_tick_ms();
 
-    // 扫描到期任务
+    // 扫描就绪任务：wake_tick <= now
     for (i = 0; i < scheduler.task_count; i++)
     {
         Task_t *t = &scheduler.tasks[i];
 
-        // 首次调度：last_tick==0 时直接触发
-        if (t->last_tick == 0)
+        // 无符号回绕安全：now >= wake_tick 等价于 (now - wake_tick) < 0x80000000UL
+        if ((u32)(now - t->wake_tick) < 0x80000000UL)
         {
-            t->last_tick = now;
-            ready_list[ready_count++] = t;
-            continue;
-        }
-
-        // 时间到？
-        elapsed = now - t->last_tick;
-        if (elapsed >= t->period_ms)
-        {
-            // 积压检测：如果流逝时间超过 2 倍周期，说明任务被严重延迟
-            if (elapsed >= t->period_ms * 2)
+            // 积压检测：wake_tick 落后超过 1ms 说明被延迟了
+            // （注意：这里只检测“就绪后有没有被调度延迟”，不是周期积压）
+            if ((u32)(now - t->wake_tick) > 1)
             {
                 t->stats.overrun_cnt++;
             }
-
-            // 重置 last_tick 为 now，放弃追赶，避免连续多次执行
-            t->last_tick = now;
             ready_list[ready_count++] = t;
         }
     }
@@ -226,14 +199,28 @@ void task_scheduler_run(void)
         }
     }
 
-    // 执行就绪任务并统计耗时
+    // 执行就绪任务并统计耗时（精度 1ms）
     for (i = 0; i < ready_count; i++)
     {
         Task_t *t = ready_list[i];
-        start_us = task_get_tick_us();
-        t->func();
-        now_us = task_get_tick_us();
+
+        // 标记任务正在运行，记录当前任务 ID 给 task_delay_ms 使用
+        t->running = 1;
+        scheduler.current_task = t->id;
+
+        EA = 0;
+        start_us = sys_tick_us;
+        EA = 1;
+
+        t->func(); // 任务内可能调用 task_delay_ms() 设置 wake_tick
+
+        EA = 0;
+        now_us = sys_tick_us;
+        EA = 1;
+
         dur_us = now_us - start_us;
+
+        t->running = 0;
 
         // 更新统计
         t->stats.last_dur_us = dur_us;
@@ -243,8 +230,10 @@ void task_scheduler_run(void)
             t->stats.max_us = dur_us;
         if (dur_us < t->stats.min_us)
             t->stats.min_us = dur_us;
-        // avg 通过 total/exec_cnt 计算即可
+        t->stats.avg_us = t->stats.total_us / t->stats.exec_cnt;
     }
+
+    scheduler.current_task = 0xFF; // 无任务运行
 
     // 无任务就绪时调用空闲钩子
     if (ready_count == 0 && scheduler.idle_hook)

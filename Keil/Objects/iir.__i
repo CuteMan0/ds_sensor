@@ -1,0 +1,1 @@
+"..\Tool\iir.c" XSMALL INTR2 BROWSE INCDIR(..\App;..\Bsp;..\Driver;..\Library;..\Tool) DEBUG PRINT(.\Listings\iir.lst) OBJECT(.\Objects\iir.obj)

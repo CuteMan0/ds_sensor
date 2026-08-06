@@ -5,10 +5,11 @@
 
 #if DS_SENSOR == 151
 
-#include "type_def.h"
-
 void ds_init(void);
-void ds_update(float *dat);
+void ds_update(void);
+void ds_printf(void);
+void ds_calib(void);
 
-#endif
-#endif
+#endif /* DS_SENSOR == 151 */
+
+#endif /* __DS151_SOIL_TEMP_METER_H */

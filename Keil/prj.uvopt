@@ -1039,8 +1039,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\Library\stc_usb_cdc_32.LIB</PathWithFileName>
-      <FilenameWithoutPath>stc_usb_cdc_32.LIB</FilenameWithoutPath>
+      <PathWithFileName>..\Library\stc_usb_cdc_32g.LIB</PathWithFileName>
+      <FilenameWithoutPath>stc_usb_cdc_32g.LIB</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -1048,7 +1048,7 @@
 
   <Group>
     <GroupName>Tool</GroupName>
-    <tvExp>0</tvExp>
+    <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>

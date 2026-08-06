@@ -35,7 +35,7 @@ void ds_init(void)
     }
 }
 
-void ds_update(float *dat)
+void ds_update(void)
 {
     float do_val = 0.0f;
 
@@ -68,7 +68,9 @@ void ds_update(float *dat)
         calibration_pending = 1;
     }
 
-    *dat = k_val * (do_val - zero_point);
+    dat_for_printf = k_val * (do_val - zero_point);
+    avg_filter_update(&filter, dat_for_printf);
+    task_delay_ms(50);
 }
 
 void ProcessCalibration(void)
@@ -145,6 +147,16 @@ void Led_Task(void)
             }
         }
     }
+}
+
+void ds_printf(void)
+{
+    printf("dO:%.2f\n", dat_for_printf);
+}
+
+void ds_calib(void)
+{
+    /* 无校准需求 */
 }
 
 #endif

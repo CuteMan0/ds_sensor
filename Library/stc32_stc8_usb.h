@@ -1,31 +1,12 @@
 #ifndef __USB_H__
 #define __USB_H__
 
+#include "type_def.h"
+
 //使用串口“printf”打印信息需屏蔽以下两个定义
 //#define PRINTF_SEGLED         //printf输出重定向到ISP下载软件中的7段数码管
-//#define PRINTF_HID            //printf输出直接重定向到USB HID接口
-
-typedef bit BOOL;
-typedef unsigned char BYTE;
-typedef unsigned int WORD;
-typedef unsigned long DWORD;
-
-//typedef unsigned char u8;
-//typedef unsigned int u16;
-//typedef unsigned long u32;
-
-typedef unsigned char uchar;
-typedef unsigned int uint;
-typedef unsigned int ushort;
-typedef unsigned long ulong;
-
-typedef unsigned char uint8_t;
-typedef unsigned int uint16_t;
-typedef unsigned long uint32_t;
-
-#ifndef NULL
- #define NULL ((void *) 0)
-#endif
+//#define PRINTF_HID            //printf输出直接重定向到USB口
+//#define PRINTF_USB            //printf输出直接重定向到USB口
 
 #define DEVSTATE_ATTACHED       0
 #define DEVSTATE_POWERED        1
@@ -35,12 +16,15 @@ typedef unsigned long uint32_t;
 #define DEVSTATE_SUSPENDED      5
 
 void usb_init();
-//void usb_IN();                //USB HID
-//void usb_IN(WORD size);       //USB CDC
 void usb_OUT_done();
 void USB_SendData(BYTE *dat, int size);
 
-BOOL usb_OUT_callback();        //包含中断模式的CDC库时，需要编写此回调函数代码，查询模式则不需要
+void set_usb_OUT_callback(void (*pfn)(void));   //如果需要实现USB接收中断，需要调用此函数来设置回调函数
+void set_usb_IN_callback(void (*pfn)(void));    //如果需要实现USB发送中断，需要调用此函数来设置回调函数
+void set_usb_ispcmd(char *cmd);                 //设置不停电下载的用户自定义命令，不设置时默认下载命令为“@STCISP#”
+
+//设置usb寄存器操作函数等待NOP数，STC32G144K246系列系统时钟处于高频时建议设置为40左右，在usb_init之后调用
+void set_usb_wait_time(u8);
 
 int SEG7_ShowString(const char *fmt, ...);
 void SEG7_ShowLong(long n, char radix);
@@ -48,7 +32,14 @@ void SEG7_ShowFloat(float f);
 void SEG7_ShowCode(BYTE *cod);
 
 void LED40_SendData(BYTE *dat, BYTE size);
+void LED40_SetPort(BYTE port, BYTE dat);
+void LED40_SetBit(BYTE port, BYTE bt);
+void LED40_ClrBit(BYTE port, BYTE bt);
+
 void LED64_SendData(BYTE *dat, BYTE size);
+void LED64_SetPort(BYTE port, BYTE dat);
+void LED64_SetBit(BYTE port, BYTE bt);
+void LED64_ClrBit(BYTE port, BYTE bt);
 
 void LCD12864_DisplayOff();
 void LCD12864_DisplayOn();
@@ -83,12 +74,14 @@ void OLED12864_ScrollStart();
 void OLED12864_ScrollStop();
 void OLED12864_ShowPicture(BYTE x, BYTE y, BYTE cx, BYTE cy, BYTE *dat);
 
-int printf_hid (const char *fmt, ...);
+int printf_usb (const char *fmt, ...);
 
 #if defined PRINTF_SEGLED
 #define printf  SEG7_ShowString
-#elif defined PRINTF_HID
-#define printf  printf_hid
+#elif defined PRINTF_USB
+#define printf  printf_usb
+#elif defined  PRINTF_HID
+#define printf  printf_usb
 #endif
 
 

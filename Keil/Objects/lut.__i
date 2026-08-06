@@ -1,0 +1,1 @@
+"..\Tool\lut.c" XSMALL INTR2 BROWSE INCDIR(..\App;..\Bsp;..\Driver;..\Library;..\Tool) DEBUG PRINT(.\Listings\lut.lst) OBJECT(.\Objects\lut.obj)

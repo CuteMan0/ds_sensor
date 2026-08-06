@@ -1,4 +1,4 @@
-#include "ds165_nh4_meter.h"
+#include "ds165_170_ise_meter.h"
 
 #if (DS_SENSOR == 165 || DS_SENSOR == 166 || DS_SENSOR == 167 || DS_SENSOR == 168 || DS_SENSOR == 169 || DS_SENSOR == 170)
 
@@ -33,7 +33,6 @@
 #define INIT_D 2.39f // 默认标定截距
 #endif
 
-
 union FloatUnion
 {
     float value;
@@ -41,7 +40,7 @@ union FloatUnion
 };
 
 static float k, d = 0;
-static u8 calibration_pending, led_flash, flag_cal = 0;           // 校准延迟处理变量、LED闪烁标志、校准标志：1=1000ppm校准, 0=100ppm校准           // 
+static u8 calibration_pending, led_flash, flag_cal = 0; // 校准延迟处理变量、LED闪烁标志、校准标志：1=1000ppm校准, 0=100ppm校准           //
 
 // 校准状态定义
 typedef enum
@@ -71,7 +70,7 @@ static float EEPROM_ReadFloat(u32 addr);
 
 #define NUM_BUF_AVG 64
 avg_filter_t avgfilter;
-avgf_data_t  avgbuffer[NUM_BUF_AVG];
+avgf_data_t avgbuffer[NUM_BUF_AVG];
 
 void ds_init(void)
 {
@@ -89,11 +88,11 @@ void ds_init(void)
         k = INIT_K;
         d = INIT_D;
     }
-    
+
     avg_filter_init(&avgfilter, avgbuffer, NUM_BUF_AVG);
 }
 
-void ds_update(float *dat)
+void ds_update(void)
 {
     float adc_vol = 0.0f;
 
@@ -124,18 +123,18 @@ void ds_update(float *dat)
     if (CAL_IDLE != cal_state)
     {
         // 校准模式下返回实时 ADC 电压值
-        *dat = adc_vol; // mV
+        dat_for_printf = adc_vol; // mV
     }
     else
     {
         // 正常模式下计算 ppm 值
         if (k != 0.0f) // 避免除零
         {
-            *dat = pow(10.0f, (adc_vol - d) / k);
+            dat_for_printf = pow(10.0f, (adc_vol - d) / k);
         }
         else
         {
-            *dat = 0.0f;
+            dat_for_printf = 0.0f;
         }
     }
 }
@@ -359,6 +358,16 @@ static float EEPROM_ReadFloat(u32 addr)
     union FloatUnion u;
     EEPROM_read_n(addr, u.bytes, 4);
     return u.value;
+}
+
+void ds_printf(void)
+{
+    printf("NH4:%.3f\n", dat_for_printf);
+}
+
+void ds_calib(void)
+{
+    /* 无校准需求 */
 }
 
 #endif

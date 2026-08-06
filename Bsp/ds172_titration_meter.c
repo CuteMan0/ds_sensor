@@ -39,9 +39,21 @@ void ds_init(void)
     Timer_config();
 }
 
-void ds_update(float *dat)
+void ds_update(void)
 {
-    *dat = titra_count / 4; // 一次滴定会进入两次外部中断
+    dat_for_printf = titra_count / 4; // 一次滴定会进入两次外部中断
+    avg_filter_update(&filter, dat_for_printf);
+    task_delay_ms(50);
+}
+
+void ds_printf(void)
+{
+    printf("Counter:%.3f\n", dat_for_printf);
+}
+
+void ds_calib(void)
+{
+    /* 无校准需求 */
 }
 
 #endif

@@ -1,3 +1,7 @@
+/*---------------------------------------------------------------------*/
+/* --- Web: www.STCAI.com ---------------------------------------------*/
+/*---------------------------------------------------------------------*/
+
 #ifndef	__STC32G_SPI_H
 #define	__STC32G_SPI_H
 
@@ -27,7 +31,7 @@
 #define	SPI_BUF_LENTH	128
 #define	SPI_BUF_type	edata
 
-sbit  SPI_SS    = P5^4;
+sbit  SPI_SS    = P1^2;
 sbit  SPI_MOSI  = P1^3;
 sbit  SPI_MISO  = P1^4;
 sbit  SPI_SCLK  = P1^5;

@@ -1,10 +1,10 @@
-C251 COMPILER V5.60.0,  led_drive                                                          06/08/26  15:59:02  PAGE 1   
+C251 COMPILER V5.60.0,  led_drive                                                          06/08/26  21:48:47  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE led_drive
 OBJECT MODULE PLACED IN .\Objects\led_drive.obj
-COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE ..\Driver\led_drive.c XSMALL INTR2 BROWSE INCDIR(..\App;..\Bsp;..\Driv
-                    -er;..\Library;..\Tool) DEBUG PRINT(.\Listings\led_drive.lst) OBJECT(.\Objects\led_drive.obj) 
+COMPILER INVOKED BY: C:\Wongsoft\Keil_v5\C251\BIN\C251.EXE ..\Driver\led_drive.c XSMALL INTR2 BROWSE INCDIR(..\App;..\Bs
+                    -p;..\Driver;..\Library;..\Tool) DEBUG PRINT(.\Listings\led_drive.lst) OBJECT(.\Objects\led_drive.obj) 
 
 stmt  level    source
 
@@ -66,7 +66,7 @@ stmt  level    source
    56   1          Range3_LED = 0; // 熄熄灭Range3_LED
    57   1      }
    58          
-C251 COMPILER V5.60.0,  led_drive                                                          06/08/26  15:59:02  PAGE 2   
+C251 COMPILER V5.60.0,  led_drive                                                          06/08/26  21:48:47  PAGE 2   
 
    59          //========================================================================
    60          // 函数: void DIS_LED_Enable(unsigned char LED_num)
@@ -134,7 +134,7 @@ stmt  level    source
   122   2          case 2:
   123   2              Range2_LED = 1;
   124   2              break; // 点亮Range2_LED;
-C251 COMPILER V5.60.0,  led_drive                                                          06/08/26  15:59:02  PAGE 3   
+C251 COMPILER V5.60.0,  led_drive                                                          06/08/26  21:48:47  PAGE 3   
 
   125   2          case 3:
   126   2              Range3_LED = 1;

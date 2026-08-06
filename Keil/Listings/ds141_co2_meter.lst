@@ -1,10 +1,10 @@
-C251 COMPILER V5.60.0,  ds141_co2_meter                                                    06/08/26  16:43:25  PAGE 1   
+C251 COMPILER V5.60.0,  ds141_co2_meter                                                    06/08/26  21:49:26  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE ds141_co2_meter
 OBJECT MODULE PLACED IN .\Objects\ds141_co2_meter.obj
-COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE ..\Bsp\ds141_co2_meter.c XSMALL INTR2 BROWSE INCDIR(..\App;..\Bsp;..\D
-                    -river;..\Library;..\Tool) DEBUG PRINT(.\Listings\ds141_co2_meter.lst) OBJECT(.\Objects\ds141_co2_meter.obj) 
+COMPILER INVOKED BY: C:\Wongsoft\Keil_v5\C251\BIN\C251.EXE ..\Bsp\ds141_co2_meter.c XSMALL INTR2 BROWSE INCDIR(..\App;..
+                    -\Bsp;..\Driver;..\Library;..\Tool) DEBUG PRINT(.\Listings\ds141_co2_meter.lst) OBJECT(.\Objects\ds141_co2_meter.obj) 
 
 stmt  level    source
 
@@ -16,8 +16,18 @@ stmt  level    source
                {
                }
                
-               void ds_update(float *dat)
+               void ds_update(void)
                {
+               }
+               
+               void ds_printf(void)
+               {
+                   printf("未在此工程实现", dat_for_printf);
+               }
+               
+               void ds_calib(void)
+               {
+                   /* 无校准需求 */
                }
                
                #endif

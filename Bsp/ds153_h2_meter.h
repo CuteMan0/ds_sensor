@@ -9,6 +9,8 @@
 #include <stdio.h>
 
 void ds_init(void);
-void ds_update(float *dat);
+void ds_update(void);
+void ds_printf(void);
+void ds_calib(void);
 #endif
 #endif

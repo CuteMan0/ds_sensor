@@ -131,11 +131,11 @@ void ds_init(void)
         Q_0P2MS = cal.q02 / 1000.0f;
 }
 
-void ds_update(float *dat)
+void ds_update(void)
 {
     float adc_vol = 0.0f;
     float q, gain;
-    *dat = 0.0f;
+    dat_for_printf = 0.0f;
 
     if (2 == flag_key) // 长按，开始EEPROM备份
     {
@@ -174,7 +174,9 @@ void ds_update(float *dat)
     adc_vol = (adc_get(&adc0) / 5.0f + offset_vol) / 2.0f;
     q = Q_val[ec_range];                        // 根据量程选择Q值
     gain = G_val[ec_range];                     // 根据量程选择增益
-    *dat = adc_vol * q / (res_fb * VIN * gain); // k = Q/(R*|Vin|)*Vout,Vin = Vp * 2/pi
+    dat_for_printf = adc_vol * q / (res_fb * VIN * gain); // k = Q/(R*|Vin|)*Vout,Vin = Vp * 2/pi
+    avg_filter_update(&filter, dat_for_printf);
+    task_delay_ms(50);
 }
 
 void ProcessCalibration(void)
@@ -528,6 +530,16 @@ void Range_5(void)
     {
         eCurrentEvent = EVT_UnderRange;
     }
+}
+
+void ds_printf(void)
+{
+    printf("EC:%.4f\n", dat_for_printf);
+}
+
+void ds_calib(void)
+{
+    ProcessCalibration();
 }
 
 #endif

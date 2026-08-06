@@ -1,10 +1,10 @@
-C251 COMPILER V5.60.0,  STC32G_Clock                                                       06/08/26  15:59:04  PAGE 1   
+C251 COMPILER V5.60.0,  STC32G_Clock                                                       06/08/26  21:48:48  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE STC32G_Clock
 OBJECT MODULE PLACED IN .\Objects\STC32G_Clock.obj
-COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE ..\Library\STC32G_Clock.c XSMALL INTR2 BROWSE INCDIR(..\App;..\Bsp;..\
-                    -Driver;..\Library;..\Tool) DEBUG PRINT(.\Listings\STC32G_Clock.lst) OBJECT(.\Objects\STC32G_Clock.obj) 
+COMPILER INVOKED BY: C:\Wongsoft\Keil_v5\C251\BIN\C251.EXE ..\Library\STC32G_Clock.c XSMALL INTR2 BROWSE INCDIR(..\App;.
+                    -.\Bsp;..\Driver;..\Library;..\Tool) DEBUG PRINT(.\Listings\STC32G_Clock.lst) OBJECT(.\Objects\STC32G_Clock.obj) 
 
 stmt  level    source
 
@@ -66,7 +66,7 @@ stmt  level    source
    56          // 参数: clksrc: 系统时钟选择, MCLKSEL_HIRC/MCLKSEL_XIRC/MCLKSEL_X32K/MCLKSEL_I32K/MCLKSEL_PLL/MCLKSEL_PL
              -L2/MCLKSEL_I48M.
    57          // 参数: pllsel: PLL时钟选择, PLL_96M/PLL_144M.
-C251 COMPILER V5.60.0,  STC32G_Clock                                                       06/08/26  15:59:04  PAGE 2   
+C251 COMPILER V5.60.0,  STC32G_Clock                                                       06/08/26  21:48:48  PAGE 2   
 
    58          // 参数: div: 高速IO时钟分频系数.
    59          // 返回: none.

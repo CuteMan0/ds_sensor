@@ -85,7 +85,7 @@ extern CAN_DataDef CAN2_Rx[8];
 
 u8 CanReadReg(u8 addr);
 void CAN_Inilize(u8 CANx, CAN_InitTypeDef *CAN);
-u8 CanReadMsg(CAN_DataDef *CAN);
-void CanSendMsg(CAN_DataDef *CAN);
+u8 CanReadMsg(u8 CANx, CAN_DataDef *CAN);
+void CanSendMsg(u8 CANx, CAN_DataDef *CAN);
 
 #endif

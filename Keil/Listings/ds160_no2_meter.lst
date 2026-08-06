@@ -1,10 +1,10 @@
-C251 COMPILER V5.60.0,  ds160_no2_meter                                                    06/08/26  16:43:26  PAGE 1   
+C251 COMPILER V5.60.0,  ds160_no2_meter                                                    06/08/26  21:49:27  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE ds160_no2_meter
 OBJECT MODULE PLACED IN .\Objects\ds160_no2_meter.obj
-COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE ..\Bsp\ds160_no2_meter.c XSMALL INTR2 BROWSE INCDIR(..\App;..\Bsp;..\D
-                    -river;..\Library;..\Tool) DEBUG PRINT(.\Listings\ds160_no2_meter.lst) OBJECT(.\Objects\ds160_no2_meter.obj) 
+COMPILER INVOKED BY: C:\Wongsoft\Keil_v5\C251\BIN\C251.EXE ..\Bsp\ds160_no2_meter.c XSMALL INTR2 BROWSE INCDIR(..\App;..
+                    -\Bsp;..\Driver;..\Library;..\Tool) DEBUG PRINT(.\Listings\ds160_no2_meter.lst) OBJECT(.\Objects\ds160_no2_meter.obj) 
 
 stmt  level    source
 
@@ -38,7 +38,7 @@ stmt  level    source
                    adc_init(&adc0, 0, 3.3f);
                }
                
-               void ds_update(float *dat)
+               void ds_update(void)
                {
                    float ratio, rs = 0.0f;
                    u16 ppm = 0;
@@ -59,16 +59,28 @@ stmt  level    source
                                                   ratio);
                    }
                
-                   *dat = (float)ppm;
+                   dat_for_printf = (float)ppm;
+                   avg_filter_update(&filter, dat_for_printf);
+                   task_delay_ms(50);
                }
+               void ds_printf(void)
+               {
+                   printf("NO2:%.2f\n", dat_for_printf);
+C251 COMPILER V5.60.0,  ds160_no2_meter                                                    06/08/26  21:49:27  PAGE 2   
+
+               }
+               
+               void ds_calib(void)
+               {
+                   /* 无校准需求 */
+               }
+               
                #endif
 
 
 Module Information          Static   Overlayable
 ------------------------------------------------
   code size            =    ------     ------
-C251 COMPILER V5.60.0,  ds160_no2_meter                                                    06/08/26  16:43:26  PAGE 2   
-
   ecode size           =    ------     ------
   data size            =    ------     ------
   idata size           =    ------     ------

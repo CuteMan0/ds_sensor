@@ -1,3 +1,7 @@
+/*---------------------------------------------------------------------*/
+/* --- Web: www.STCAI.com ---------------------------------------------*/
+/*---------------------------------------------------------------------*/
+
 #ifndef	__STC32G_I2C_H
 #define	__STC32G_I2C_H
 
@@ -75,17 +79,6 @@ extern u8 I2C_BUF_type I2C_Buffer[I2C_BUF_LENTH];
 extern bit DisplayFlag;
 
 void I2C_Init(I2C_InitTypeDef *I2Cx);
-
-u8 Get_MSBusy_Status(void);
-void Wait();
-void Start();
-void SendData(char dat);
-void RecvACK();
-char RecvData();
-void SendACK();
-void SendNAK();
-void Stop();
-void SendCmdData(u8 cmd, u8 dat);
 void I2C_WriteNbyte(u8 dev_addr, u8 mem_addr, u8 *p, u8 number);
 void I2C_ReadNbyte(u8 dev_addr, u8 mem_addr, u8 *p, u8 number);
 u8 Get_MSBusy_Status(void);

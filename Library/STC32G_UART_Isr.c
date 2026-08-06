@@ -1,5 +1,8 @@
+/*---------------------------------------------------------------------*/
+/* --- Web: www.STCAI.com ---------------------------------------------*/
+/*---------------------------------------------------------------------*/
+
 #include "STC32G_UART.h"
-#include "STC32G_NVIC.h"
 
 bit B_ULinRX1_Flag;
 bit B_ULinRX2_Flag;
@@ -67,48 +70,46 @@ void UART1_ISR_Handler (void) interrupt UART1_VECTOR
 #ifdef UART2
 void UART2_ISR_Handler (void) interrupt UART2_VECTOR
 {
-    u8 Status;
+	u8 Status;
 
-    if(S2RI)
-    {
-        CLR_RI2();
+	if(S2RI)
+	{
+		CLR_RI2();
 
-        //--------USART LIN---------------
-        Status = USART2CR5;
-        if(Status & 0x02)     //if LIN header is detected
-        {
-            B_ULinRX2_Flag = 1;
-        }
+		//--------USART LIN---------------
+		Status = USART2CR5;
+		if(Status & 0x02)     //if LIN header is detected
+		{
+			B_ULinRX2_Flag = 1;
+		}
 
-        if(Status & 0xc0)     //if LIN break is detected / LIN header error is detected
-        {
-            COM2.RX_Cnt = 0;
-        }
-        USART2CR5 &= ~0xcb;   //Clear flag
-        //--------------------------------
-
+		if(Status & 0xc0)     //if LIN break is detected / LIN header error is detected
+		{
+			COM2.RX_Cnt = 0;
+		}
+		USART2CR5 &= ~0xcb;   //Clear flag
+		//--------------------------------
+		
         if(COM2.RX_Cnt >= COM_RX2_Lenth)	COM2.RX_Cnt = 0;
         RX2_Buffer[COM2.RX_Cnt++] = S2BUF;
-        
         COM2.RX_TimeOut = TimeOutSet2;
-        NVIC_Timer0_Init(ENABLE, Priority_0);//10ms中断，判断超时
-    }
+	}
 
-    if(S2TI)
-    {
-        CLR_TI2();
-        
+	if(S2TI)
+	{
+		CLR_TI2();
+		
         #if(UART_QUEUE_MODE == 1)   //判断是否使用队列模式
-        if(COM2.TX_send != COM2.TX_write)
-        {
-            S2BUF = TX2_Buffer[COM2.TX_send];
-            if(++COM2.TX_send >= COM_TX2_Lenth)		COM2.TX_send = 0;
-        }
-        else	COM2.B_TX_busy = 0;
+		if(COM2.TX_send != COM2.TX_write)
+		{
+		 	S2BUF = TX2_Buffer[COM2.TX_send];
+			if(++COM2.TX_send >= COM_TX2_Lenth)		COM2.TX_send = 0;
+		}
+		else	COM2.B_TX_busy = 0;
         #else
         COM2.B_TX_busy = 0;     //使用阻塞方式发送直接清除繁忙标志
         #endif
-    }
+	}
 }
 #endif
 

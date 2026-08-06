@@ -43,7 +43,7 @@ void ds_init(void)
     Timer3_Init();
 }
 
-void ds_update(float *dat)
+void ds_update(void)
 {
     u16 adc_vol_mv = 0.0f;
     static u16 co_val = 0.0f;
@@ -60,12 +60,14 @@ void ds_update(float *dat)
                                       sizeof(mp7_lut) / sizeof(mp7_lut[0]),
                                       adc_vol_mv);
 
-        *dat = (float)co_val;
+        dat_for_printf = (float)co_val;
     }
+    avg_filter_update(&filter, dat_for_printf);
+    task_delay_ms(50);
     else
     {
         DIS_LED_Just_One_Enable(1); // 加热指示灯
-        *dat = (float)co_val;       // 加热期间返回上次有效值
+        dat_for_printf = (float)co_val;       // 加热期间返回上次有效值
     }
 }
 
@@ -98,6 +100,27 @@ static void Timer3_Init(void) // 10毫秒@24.000MHz
     T3H = 0xB1;    // 设置定时初始值
     T4T3M |= 0x08; // 定时器3开始计时
     IE2 |= 0x20;   // 使能定时器3中断
+}
+
+void ds_printf(void)
+{
+    printf("CO:%.2f\n", dat_for_printf);
+}
+
+void ds_calib(void)
+{
+    /* 无校准需求 */
+}
+
+void Timer3_ISR_Handler(void) interrupt TMR3_VECTOR // 进中断时已经清除标志
+{
+    static u16 tick = 0;
+    tick++;
+    if (tick == 100)
+    {
+        tick = 0;
+        heating_tick++;
+    }
 }
 
 #endif

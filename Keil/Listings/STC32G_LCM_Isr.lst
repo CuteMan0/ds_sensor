@@ -1,10 +1,10 @@
-C251 COMPILER V5.60.0,  STC32G_LCM_Isr                                                     06/08/26  16:02:56  PAGE 1   
+C251 COMPILER V5.60.0,  STC32G_LCM_Isr                                                     06/08/26  21:48:48  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE STC32G_LCM_Isr
 OBJECT MODULE PLACED IN .\Objects\STC32G_LCM_Isr.obj
-COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE ..\Library\STC32G_LCM_Isr.c XSMALL INTR2 BROWSE INCDIR(..\App;..\Bsp;.
-                    -.\Driver;..\Library;..\Tool) DEBUG PRINT(.\Listings\STC32G_LCM_Isr.lst) OBJECT(.\Objects\STC32G_LCM_Isr.obj) 
+COMPILER INVOKED BY: C:\Wongsoft\Keil_v5\C251\BIN\C251.EXE ..\Library\STC32G_LCM_Isr.c XSMALL INTR2 BROWSE INCDIR(..\App
+                    -;..\Bsp;..\Driver;..\Library;..\Tool) DEBUG PRINT(.\Listings\STC32G_LCM_Isr.lst) OBJECT(.\Objects\STC32G_LCM_Isr.obj) 
 
 stmt  level    source
 

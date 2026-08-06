@@ -1,10 +1,10 @@
-C251 COMPILER V5.60.0,  ds137_so2_meter                                                    06/08/26  16:43:25  PAGE 1   
+C251 COMPILER V5.60.0,  ds137_so2_meter                                                    06/08/26  21:49:26  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE ds137_so2_meter
 OBJECT MODULE PLACED IN .\Objects\ds137_so2_meter.obj
-COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE ..\Bsp\ds137_so2_meter.c XSMALL INTR2 BROWSE INCDIR(..\App;..\Bsp;..\D
-                    -river;..\Library;..\Tool) DEBUG PRINT(.\Listings\ds137_so2_meter.lst) OBJECT(.\Objects\ds137_so2_meter.obj) 
+COMPILER INVOKED BY: C:\Wongsoft\Keil_v5\C251\BIN\C251.EXE ..\Bsp\ds137_so2_meter.c XSMALL INTR2 BROWSE INCDIR(..\App;..
+                    -\Bsp;..\Driver;..\Library;..\Tool) DEBUG PRINT(.\Listings\ds137_so2_meter.lst) OBJECT(.\Objects\ds137_so2_meter.obj) 
 
 stmt  level    source
 
@@ -24,13 +24,25 @@ stmt  level    source
                    adc_init(&adc0, 0, 3.3f);
                }
                
-               void ds_update(float *dat)
+               void ds_update(void)
                {
                    float ppm = 0.0f;
                
                    ppm = adc_get(&adc0) / (SEN * RF) * 1e3;
                
-                   *dat = (ppm > 0.0f) ? ppm : 0.0f;
+                   dat_for_printf = (ppm > 0.0f) ? ppm : 0.0f;
+                   avg_filter_update(&filter, dat_for_printf);
+                   task_delay_ms(50);
+               }
+               
+               void ds_printf(void)
+               {
+                   printf("SO2:%.2f\n", dat_for_printf);
+               }
+               
+               void ds_calib(void)
+               {
+                   /* 无校准需求 */
                }
                
                #endif
@@ -55,6 +67,8 @@ Module Information          Static   Overlayable
   const size           =    ------     ------
   hconst size          =    ------     ------
 End of Module Information.
+
+C251 COMPILER V5.60.0,  ds137_so2_meter                                                    06/08/26  21:49:26  PAGE 2   
 
 
 C251 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

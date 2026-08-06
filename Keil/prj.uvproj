@@ -690,9 +690,9 @@
               <FilePath>..\Library\STC32G_WDT.c</FilePath>
             </File>
             <File>
-              <FileName>stc_usb_cdc_32.LIB</FileName>
+              <FileName>stc_usb_cdc_32g.LIB</FileName>
               <FileType>4</FileType>
-              <FilePath>..\Library\stc_usb_cdc_32.LIB</FilePath>
+              <FilePath>..\Library\stc_usb_cdc_32g.LIB</FilePath>
             </File>
           </Files>
         </Group>

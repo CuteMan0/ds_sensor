@@ -1,1 +1,0 @@
-"USER\DS144_do_drive.c" XSMALL INTR2 BROWSE INCDIR(.\USER;.\Library) DEBUG PRINT(.\Listings\DS144_do_drive.lst) OBJECT(.\Objects\DS144_do_drive.obj)

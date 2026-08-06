@@ -1,1 +1,0 @@
-"USER\filter.c" XSMALL INTR2 BROWSE INCDIR(.\USER;.\Library) DEBUG PRINT(.\Listings\filter.lst) OBJECT(.\Objects\filter.obj)

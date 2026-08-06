@@ -1,0 +1,85 @@
+C251 COMPILER V5.60.0,  ds172_titration_meter                                              06/08/26  16:43:27  PAGE 1   
+
+
+C251 COMPILER V5.60.0, COMPILATION OF MODULE ds172_titration_meter
+OBJECT MODULE PLACED IN .\Objects\ds172_titration_meter.obj
+COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE ..\Bsp\ds172_titration_meter.c XSMALL INTR2 BROWSE INCDIR(..\App;..\Bs
+                    -p;..\Driver;..\Library;..\Tool) DEBUG PRINT(.\Listings\ds172_titration_meter.lst) OBJECT(.\Objects\ds172_titration_meter
+                    -.obj) 
+
+stmt  level    source
+
+    1          #include "ds172_titration_meter.h"
+    2          
+    3          #if DS_SENSOR == 172
+               
+               #include "stc32g.h"
+               #include "STC32G_Delay.h"
+               #include "STC32G_GPIO.h"
+               #include "STC32G_Exti.h"
+               #include "STC32G_NVIC.h"
+               #include "STC32G_Timer.h"
+               
+               sbit IR_EN = P2 ^ 0; // 被阻挡发光（Low）
+               
+               static void Exti_config(void)
+               {
+                   EXTI_InitTypeDef Exti_InitStructure; // 结构定义
+               
+                   Exti_InitStructure.EXTI_Mode = EXT_MODE_RiseFall; // 中断模式,   EXT_MODE_RiseFall,EXT_MODE_Fall
+                   Ext_Inilize(EXT_INT0, &Exti_InitStructure);       // 初始化
+                   NVIC_INT0_Init(ENABLE, Priority_3);               // 中断使能, ENABLE/DISABLE; 优先级(低到高) Priorit
+             -y_0,Priority_1,Priority_2,Priority_3
+               }
+               static void Timer_config(void) // 100us进IT
+               {
+                   AUXR &= 0xBF; // Timer clock is 12T mode
+                   TMOD &= 0x0F; // Set timer work mode
+                   TL1 = 0x38;   // Initial timer value
+                   TH1 = 0xFF;   // Initial timer value
+                   TF1 = 0;      // Clear TF1 flag
+                   TR1 = 1;      // Timer1 start run
+               }
+               void ds_init(void)
+               {
+                   IR_EN = 1;
+                   P2_MODE_OUT_PP(GPIO_Pin_0);
+                   P3_MODE_IO_PU(GPIO_Pin_2);
+                   P3_PULL_UP_ENABLE(GPIO_Pin_2);
+                   delay_ms(100);
+                   Exti_config();
+                   Timer_config();
+               }
+               
+               void ds_update(float *dat)
+               {
+                   *dat = titra_count / 4; // 一次滴定会进入两次外部中断
+               }
+               
+               #endif
+
+
+Module Information          Static   Overlayable
+------------------------------------------------
+  code size            =    ------     ------
+  ecode size           =    ------     ------
+  data size            =    ------     ------
+  idata size           =    ------     ------
+  pdata size           =    ------     ------
+  xdata size           =    ------     ------
+C251 COMPILER V5.60.0,  ds172_titration_meter                                              06/08/26  16:43:27  PAGE 2   
+
+  xdata-const size     =    ------     ------
+  edata size           =    ------     ------
+  bit size             =    ------     ------
+  ebit size            =    ------     ------
+  bitaddressable size  =    ------     ------
+  ebitaddressable size =    ------     ------
+  far data size        =    ------     ------
+  huge data size       =    ------     ------
+  const size           =    ------     ------
+  hconst size          =    ------     ------
+End of Module Information.
+
+
+C251 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

@@ -5,33 +5,40 @@
 
 /* ============================================================
  * 1-Wire GPIO 引脚配置（解耦：修改宏即可换引脚）
+ *
+ * DS18B20_DQ_PORT       — 实际的 sfr 端口名（用于 C 代码中 |= / &= / & 操作）
+ * DS18B20_DQ_PORT_NUM   — 端口数字编号（0~7，用于预处理器 #if 分支）
+ * DS18B20_DQ_PIN_NUM    — 引脚位号（0~7）
+ * DS18B20_DQ_PIN_MASK   — 引脚位掩码（1 << n）
  * ============================================================ */
-#define DS18B20_DQ_PORT P3
-#define DS18B20_DQ_PIN  (1 << 2)   // P3.2
+#define DS18B20_DQ_PORT      P1
+#define DS18B20_DQ_PORT_NUM  1
+#define DS18B20_DQ_PIN_NUM   1
+#define DS18B20_DQ_PIN_MASK  (1 << DS18B20_DQ_PIN_NUM)
 
 /* ============================================================
  * DS18B20 ROM 命令
  * ============================================================ */
-#define DS18B20_CMD_SEARCH_ROM       0xF0
-#define DS18B20_CMD_READ_ROM         0x33
-#define DS18B20_CMD_MATCH_ROM        0x55
-#define DS18B20_CMD_SKIP_ROM         0xCC
-#define DS18B20_CMD_ALARM_SEARCH     0xEC
+#define DS18B20_CMD_SEARCH_ROM 0xF0
+#define DS18B20_CMD_READ_ROM 0x33
+#define DS18B20_CMD_MATCH_ROM 0x55
+#define DS18B20_CMD_SKIP_ROM 0xCC
+#define DS18B20_CMD_ALARM_SEARCH 0xEC
 
 /* ============================================================
  * DS18B20 功能命令
  * ============================================================ */
-#define DS18B20_CMD_CONVERT_T        0x44
+#define DS18B20_CMD_CONVERT_T 0x44
 #define DS18B20_CMD_WRITE_SCRATCHPAD 0x4E
-#define DS18B20_CMD_READ_SCRATCHPAD  0xBE
-#define DS18B20_CMD_COPY_SCRATCHPAD  0x48
-#define DS18B20_CMD_RECALL_E2        0xB8
+#define DS18B20_CMD_READ_SCRATCHPAD 0xBE
+#define DS18B20_CMD_COPY_SCRATCHPAD 0x48
+#define DS18B20_CMD_RECALL_E2 0xB8
 #define DS18B20_CMD_READ_POWER_SUPPLY 0xB4
 
 /* ============================================================
  * 温度分辨率配置
  * ============================================================ */
-#define DS18B20_RES_9BIT  0x1F
+#define DS18B20_RES_9BIT 0x1F
 #define DS18B20_RES_10BIT 0x3F
 #define DS18B20_RES_11BIT 0x5F
 #define DS18B20_RES_12BIT 0x7F
@@ -39,9 +46,9 @@
 /* ============================================================
  * 返回值定义
  * ============================================================ */
-#define DS18B20_OK           0
-#define DS18B20_ERR_PRESENCE 1   // 未检测到存在脉冲
-#define DS18B20_ERR_CRC      2   // CRC 校验失败
+#define DS18B20_OK 0
+#define DS18B20_ERR_PRESENCE 1 // 未检测到存在脉冲
+#define DS18B20_ERR_CRC 2      // CRC 校验失败
 
 /* ============================================================
  * API 声明

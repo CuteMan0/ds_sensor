@@ -1,0 +1,55 @@
+C251 COMPILER V5.60.0,  ds151_soil_temp_meter                                              06/08/26  16:46:30  PAGE 1   
+
+
+C251 COMPILER V5.60.0, COMPILATION OF MODULE ds151_soil_temp_meter
+OBJECT MODULE PLACED IN .\Objects\ds151_soil_temp_meter.obj
+COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE ..\Bsp\ds151_soil_temp_meter.c XSMALL INTR2 BROWSE INCDIR(..\App;..\Bs
+                    -p;..\Driver;..\Library;..\Tool) DEBUG PRINT(.\Listings\ds151_soil_temp_meter.lst) OBJECT(.\Objects\ds151_soil_temp_meter
+                    -.obj) 
+
+stmt  level    source
+
+    1          #include "ds151_soil_temp_meter.h"
+    2          
+    3          #if DS_SENSOR == 151
+    4          
+    5          #include "bsp_ds18b20.h"
+    6          #include "STC32G_Delay.h"
+    7          
+    8          void ds_init(void)
+    9          {
+   10   1          ds18b20_init();
+   11   1      }
+   12          
+   13          void ds_update(float *dat)
+   14          {
+   15   1          ds18b20_start_conversion(DS18B20_RES_12BIT);
+   16   1          delay_ms(750);
+   17   1          ds18b20_read_temperature(dat);
+   18   1      }
+   19          
+   20          #endif
+
+
+Module Information          Static   Overlayable
+------------------------------------------------
+  code size            =        27     ------
+  ecode size           =    ------     ------
+  data size            =    ------     ------
+  idata size           =    ------     ------
+  pdata size           =    ------     ------
+  xdata size           =    ------     ------
+  xdata-const size     =    ------     ------
+  edata size           =    ------     ------
+  bit size             =    ------     ------
+  ebit size            =    ------     ------
+  bitaddressable size  =    ------     ------
+  ebitaddressable size =    ------     ------
+  far data size        =    ------     ------
+  huge data size       =    ------     ------
+  const size           =    ------     ------
+  hconst size          =    ------     ------
+End of Module Information.
+
+
+C251 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

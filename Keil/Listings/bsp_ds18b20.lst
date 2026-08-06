@@ -1,0 +1,317 @@
+C251 COMPILER V5.60.0,  bsp_ds18b20                                                        06/08/26  15:58:57  PAGE 1   
+
+
+C251 COMPILER V5.60.0, COMPILATION OF MODULE bsp_ds18b20
+OBJECT MODULE PLACED IN .\Objects\bsp_ds18b20.obj
+COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE ..\Bsp\bsp_ds18b20.c XSMALL INTR2 BROWSE INCDIR(..\App;..\Bsp;..\Drive
+                    -r;..\Library;..\Tool) DEBUG PRINT(.\Listings\bsp_ds18b20.lst) OBJECT(.\Objects\bsp_ds18b20.obj) 
+
+stmt  level    source
+
+    1          /**
+    2           * @file    bsp_ds18b20.c
+    3           * @brief   DS18B20 数字温度传感器驱动（1-Wire 解耦实现）
+    4           * @note    通过头文件宏定义即可切换 GPIO 引脚
+    5           *          STC32G @ 24MHz
+    6           */
+    7          
+    8          #include "bsp_ds18b20.h"
+    9          
+   10          #include "stc32g.h"
+   11          #include "STC32G_GPIO.h"
+   12          #include "STC32G_Delay.h"
+   13          
+   14          /* ============================================================
+   15           * 1-Wire 底层宏（依赖头文件中的 DS18B20_DQ_PORT / DS18B20_DQ_PIN_MASK）
+   16           *
+   17           * 使用 STC32G_GPIO 库宏操作 GPIO 模式
+   18           * 注意：#if 分支使用数字常量 DS18B20_DQ_PORT_NUM（0~7），
+   19           *       因为 P0~P7 是 sfr 声明，预处理器无法求值。
+   20           * ============================================================ */
+   21          #define DQ_HIGH() (DS18B20_DQ_PORT |= (DS18B20_DQ_PIN_MASK))
+   22          #define DQ_LOW()  (DS18B20_DQ_PORT &= ~(DS18B20_DQ_PIN_MASK))
+   23          #define DQ_READ   (DS18B20_DQ_PORT & (DS18B20_DQ_PIN_MASK))
+   24          
+   25          /* GPIO 模式切换宏：用数字端口编号做预处理器分支 */
+   26          #if DS18B20_DQ_PORT_NUM == 0
+                   #define DQ_OUT()   P0_MODE_OUT_PP(DS18B20_DQ_PIN_MASK)
+                   #define DQ_IN()    P0_MODE_IN_HIZ(DS18B20_DQ_PIN_MASK)
+                   #define DQ_INIT()  { P0_MODE_IO_PU(DS18B20_DQ_PIN_MASK); P0_PULL_UP_ENABLE(DS18B20_DQ_PIN_MASK); P0_D
+             -IGIT_IN_ENABLE(DS18B20_DQ_PIN_MASK); }
+               #elif DS18B20_DQ_PORT_NUM == 1
+   31              #define DQ_OUT()   P1_MODE_OUT_PP(DS18B20_DQ_PIN_MASK)
+   32              #define DQ_IN()    P1_MODE_IN_HIZ(DS18B20_DQ_PIN_MASK)
+   33              #define DQ_INIT()  { P1_MODE_IO_PU(DS18B20_DQ_PIN_MASK); P1_PULL_UP_ENABLE(DS18B20_DQ_PIN_MASK); P1_D
+             -IGIT_IN_ENABLE(DS18B20_DQ_PIN_MASK); }
+   34          #elif DS18B20_DQ_PORT_NUM == 2
+                   #define DQ_OUT()   P2_MODE_OUT_PP(DS18B20_DQ_PIN_MASK)
+                   #define DQ_IN()    P2_MODE_IN_HIZ(DS18B20_DQ_PIN_MASK)
+                   #define DQ_INIT()  { P2_MODE_IO_PU(DS18B20_DQ_PIN_MASK); P2_PULL_UP_ENABLE(DS18B20_DQ_PIN_MASK); P2_D
+             -IGIT_IN_ENABLE(DS18B20_DQ_PIN_MASK); }
+               #elif DS18B20_DQ_PORT_NUM == 3
+                   #define DQ_OUT()   P3_MODE_OUT_PP(DS18B20_DQ_PIN_MASK)
+                   #define DQ_IN()    P3_MODE_IN_HIZ(DS18B20_DQ_PIN_MASK)
+                   #define DQ_INIT()  { P3_MODE_IO_PU(DS18B20_DQ_PIN_MASK); P3_PULL_UP_ENABLE(DS18B20_DQ_PIN_MASK); P3_D
+             -IGIT_IN_ENABLE(DS18B20_DQ_PIN_MASK); }
+               #elif DS18B20_DQ_PORT_NUM == 4
+                   #define DQ_OUT()   P4_MODE_OUT_PP(DS18B20_DQ_PIN_MASK)
+                   #define DQ_IN()    P4_MODE_IN_HIZ(DS18B20_DQ_PIN_MASK)
+                   #define DQ_INIT()  { P4_MODE_IO_PU(DS18B20_DQ_PIN_MASK); P4_PULL_UP_ENABLE(DS18B20_DQ_PIN_MASK); P4_D
+             -IGIT_IN_ENABLE(DS18B20_DQ_PIN_MASK); }
+               #elif DS18B20_DQ_PORT_NUM == 5
+                   #define DQ_OUT()   P5_MODE_OUT_PP(DS18B20_DQ_PIN_MASK)
+                   #define DQ_IN()    P5_MODE_IN_HIZ(DS18B20_DQ_PIN_MASK)
+                   #define DQ_INIT()  { P5_MODE_IO_PU(DS18B20_DQ_PIN_MASK); P5_PULL_UP_ENABLE(DS18B20_DQ_PIN_MASK); P5_D
+             -IGIT_IN_ENABLE(DS18B20_DQ_PIN_MASK); }
+               #elif DS18B20_DQ_PORT_NUM == 6
+                   #define DQ_OUT()   P6_MODE_OUT_PP(DS18B20_DQ_PIN_MASK)
+                   #define DQ_IN()    P6_MODE_IN_HIZ(DS18B20_DQ_PIN_MASK)
+C251 COMPILER V5.60.0,  bsp_ds18b20                                                        06/08/26  15:58:57  PAGE 2   
+
+                   #define DQ_INIT()  { P6_MODE_IO_PU(DS18B20_DQ_PIN_MASK); P6_PULL_UP_ENABLE(DS18B20_DQ_PIN_MASK); P6_D
+             -IGIT_IN_ENABLE(DS18B20_DQ_PIN_MASK); }
+               #elif DS18B20_DQ_PORT_NUM == 7
+                   #define DQ_OUT()   P7_MODE_OUT_PP(DS18B20_DQ_PIN_MASK)
+                   #define DQ_IN()    P7_MODE_IN_HIZ(DS18B20_DQ_PIN_MASK)
+                   #define DQ_INIT()  { P7_MODE_IO_PU(DS18B20_DQ_PIN_MASK); P7_PULL_UP_ENABLE(DS18B20_DQ_PIN_MASK); P7_D
+             -IGIT_IN_ENABLE(DS18B20_DQ_PIN_MASK); }
+               #else
+                   #error "DS18B20_DQ_PORT_NUM: unsupported port number (supported: 0~7)"
+               #endif
+   61          
+   62          /* ============================================================
+   63           * 1-Wire 精确延时（基于 STC32G_Delay.h 中的 delay_us）
+   64           * ============================================================ */
+   65          
+   66          /* 约 1μs 短延时 */
+   67          #define ow_delay_1us()  delay_us(1)
+   68          /* 约 15μs 延时 */
+   69          #define ow_delay_15us() delay_us(15)
+   70          /* 约 45μs 延时 */
+   71          #define ow_delay_45us() delay_us(45)
+   72          /* 约 60μs 延时 */
+   73          #define ow_delay_60us() delay_us(60)
+   74          /* 约 480μs 延时 */
+   75          #define ow_delay_480us() delay_us(480)
+   76          
+   77          /* ============================================================
+   78           * 1-Wire 总线复位 & 存在脉冲检测
+   79           * ============================================================ */
+   80          static u8 ow_reset(void)
+   81          {
+   82   1          u8 presence;
+   83   1      
+   84   1          DQ_OUT();
+   85   1          DQ_LOW();
+   86   1          ow_delay_480us(); /* 拉低 480μs */
+   87   1          DQ_HIGH();
+   88   1          ow_delay_60us();  /* 释放总线 60μs */
+   89   1      
+   90   1          DQ_IN();
+   91   1          presence = (DQ_READ == 0) ? 1 : 0; /* 0 = 器件应答（拉低） */
+   92   1          ow_delay_480us(); /* 等待完整复位时序结束 */
+   93   1      
+   94   1          return presence;  /* 返回 1 = 检测到器件, 0 = 无器件 */
+   95   1      }
+   96          
+   97          /* ============================================================
+   98           * 1-Wire 位读写
+   99           * ============================================================ */
+  100          
+  101          /* 向总线写入 1 bit */
+  102          static void ow_write_bit(bit b)
+  103          {
+  104   1          DQ_OUT();
+  105   1          DQ_LOW();
+  106   1          ow_delay_1us(); /* 拉低 >1μs 表示写时序开始 */
+  107   1      
+  108   1          if (b)
+  109   1              DQ_HIGH();  /* 写 1: 立即释放总线 */
+  110   1      
+  111   1          ow_delay_60us(); /* 主机至少保持/释放 60μs */
+  112   1          DQ_HIGH();
+  113   1          ow_delay_1us();  /* 恢复间隔 >1μs */
+  114   1      }
+  115          
+  116          /* 从总线读取 1 bit */
+C251 COMPILER V5.60.0,  bsp_ds18b20                                                        06/08/26  15:58:57  PAGE 3   
+
+  117          static bit ow_read_bit(void)
+  118          {
+  119   1          bit b;
+  120   1      
+  121   1          DQ_OUT();
+  122   1          DQ_LOW();
+  123   1          ow_delay_1us();  /* 拉低 >1μs 表示读时序开始 */
+  124   1          DQ_HIGH();
+  125   1          ow_delay_1us();  /* 释放总线等待器件驱动 */
+  126   1      
+  127   1          DQ_IN();
+  128   1          ow_delay_15us();  /* 15μs 内采样 */
+  129   1          b = (DQ_READ != 0) ? 1 : 0;
+  130   1          ow_delay_45us();  /* 等待完整读时序结束 */
+  131   1      
+  132   1          return b;
+  133   1      }
+  134          
+  135          /* ============================================================
+  136           * 1-Wire 字节读写
+  137           * ============================================================ */
+  138          
+  139          static void ow_write_byte(u8 byte)
+  140          {
+  141   1          u8 i;
+  142   1          for (i = 0; i < 8; i++)
+  143   1          {
+  144   2              ow_write_bit(byte & 0x01);
+  145   2              byte >>= 1;
+  146   2          }
+  147   1      }
+  148          
+  149          static u8 ow_read_byte(void)
+  150          {
+  151   1          u8 i, byte = 0;
+  152   1          for (i = 0; i < 8; i++)
+  153   1          {
+  154   2              if (ow_read_bit())
+  155   2                  byte |= (1 << i);
+  156   2          }
+  157   1          return byte;
+  158   1      }
+  159          
+  160          /* ============================================================
+  161           * DS18B20 CRC8 校验（Dallas CRC-8: x^8 + x^5 + x^4 + 1）
+  162           * ============================================================ */
+  163          static u8 ds18b20_crc8(const u8 *dat, u8 len)
+  164          {
+  165   1          u8 crc = 0;
+  166   1          u8 i, j;
+  167   1      
+  168   1          for (i = 0; i < len; i++)
+  169   1          {
+  170   2              u8 inbyte = dat[i];
+  171   2              for (j = 0; j < 8; j++)
+  172   2              {
+  173   3                  u8 mix = (crc ^ inbyte) & 0x01;
+  174   3                  crc >>= 1;
+  175   3                  if (mix)
+  176   3                      crc ^= 0x8C; /* 多项式 0x31 反转 → 0x8C */
+  177   3                  inbyte >>= 1;
+  178   3              }
+  179   2          }
+  180   1          return crc;
+  181   1      }
+  182          
+C251 COMPILER V5.60.0,  bsp_ds18b20                                                        06/08/26  15:58:57  PAGE 4   
+
+  183          /* ============================================================
+  184           * 公开 API 实现
+  185           * ============================================================ */
+  186          
+  187          /**
+  188           * @brief 初始化 DS18B20 总线和 GPIO
+  189           */
+  190          void ds18b20_init(void)
+  191          {
+  192   1          /* 使用 STC32G_GPIO 库宏配置 DQ 引脚为准双向口 + 上拉 + 数字输入使能 */
+  193   1          DQ_INIT();
+  194   1          DQ_HIGH();  /* 总线空闲高电平 */
+  195   1      }
+  196          
+  197          /**
+  198           * @brief 启动一次温度转换（跳过 ROM 匹配，单器件总线）
+  199           * @param resolution DS18B20_RES_9BIT ~ DS18B20_RES_12BIT
+  200           */
+  201          void ds18b20_start_conversion(u8 resolution)
+  202          {
+  203   1          /* 1. 复位并等待存在脉冲 */
+  204   1          ow_reset();
+  205   1      
+  206   1          /* 2. SKIP ROM (0xCC) */
+  207   1          ow_write_byte(DS18B20_CMD_SKIP_ROM);
+  208   1      
+  209   1          /* 3. 写入暂存器配置分辨率 */
+  210   1          ow_write_byte(DS18B20_CMD_WRITE_SCRATCHPAD);
+  211   1          ow_write_byte(0x00);        /* TH 寄存器（未使用） */
+  212   1          ow_write_byte(0x00);        /* TL 寄存器（未使用） */
+  213   1          ow_write_byte(resolution);  /* 配置寄存器：分辨率 */
+  214   1      
+  215   1          /* 4. 复位 */
+  216   1          ow_reset();
+  217   1      
+  218   1          /* 5. SKIP ROM (0xCC) */
+  219   1          ow_write_byte(DS18B20_CMD_SKIP_ROM);
+  220   1      
+  221   1          /* 6. CONVERT T (0x44) — 启动温度转换 */
+  222   1          ow_write_byte(DS18B20_CMD_CONVERT_T);
+  223   1      }
+  224          
+  225          /**
+  226           * @brief 读取温度值
+  227           * @param celsius [out] 温度 °C
+  228           * @return DS18B20_OK / DS18B20_ERR_PRESENCE / DS18B20_ERR_CRC
+  229           */
+  230          u8 ds18b20_read_temperature(float *celsius)
+  231          {
+  232   1          u8 buf[9];
+  233   1          u8 crc;
+  234   1      
+  235   1          if (!celsius)
+  236   1              return DS18B20_ERR_PRESENCE;
+  237   1      
+  238   1          /* 1. 复位并检测存在脉冲 */
+  239   1          if (!ow_reset())
+  240   1              return DS18B20_ERR_PRESENCE;
+  241   1      
+  242   1          /* 2. SKIP ROM (0xCC) */
+  243   1          ow_write_byte(DS18B20_CMD_SKIP_ROM);
+  244   1      
+  245   1          /* 3. READ SCRATCHPAD (0xBE) — 读取 9 字节暂存器 */
+  246   1          ow_write_byte(DS18B20_CMD_READ_SCRATCHPAD);
+  247   1      
+  248   1          /* 4. 读取 9 字节 */
+C251 COMPILER V5.60.0,  bsp_ds18b20                                                        06/08/26  15:58:57  PAGE 5   
+
+  249   1          {
+  250   2              u8 i;
+  251   2              for (i = 0; i < 9; i++)
+  252   2                  buf[i] = ow_read_byte();
+  253   2          }
+  254   1      
+  255   1          /* 5. CRC 校验（暂存器前 8 字节的 CRC 应等于第 9 字节） */
+  256   1          crc = ds18b20_crc8(buf, 8);
+  257   1          if (crc != buf[8])
+  258   1              return DS18B20_ERR_CRC;
+  259   1      
+  260   1          /* 6. 解析温度 */
+  261   1          {
+  262   2              int16 raw = (int16)((u16)buf[1] << 8 | buf[0]);
+  263   2              *celsius = raw * 0.0625f;
+  264   2          }
+  265   1      
+  266   1          return DS18B20_OK;
+  267   1      }
+
+
+Module Information          Static   Overlayable
+------------------------------------------------
+  code size            =       484     ------
+  ecode size           =    ------     ------
+  data size            =    ------     ------
+  idata size           =    ------     ------
+  pdata size           =    ------     ------
+  xdata size           =    ------     ------
+  xdata-const size     =    ------     ------
+  edata size           =    ------         10
+  bit size             =    ------          2
+  ebit size            =    ------     ------
+  bitaddressable size  =    ------     ------
+  ebitaddressable size =    ------     ------
+  far data size        =    ------     ------
+  huge data size       =    ------     ------
+  const size           =    ------     ------
+  hconst size          =    ------     ------
+End of Module Information.
+
+
+C251 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

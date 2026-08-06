@@ -9,17 +9,27 @@
 //                               类型定义
 //========================================================================
 
-typedef unsigned char u8;  //  8 bits
-typedef unsigned int u16;  // 16 bits
-typedef unsigned long u32; // 32 bits
+typedef bit BOOL;
+typedef unsigned char BYTE;
+typedef unsigned int WORD;
+typedef unsigned long DWORD;
 
-typedef signed char int8;  //  8 bits
-typedef signed int int16;  // 16 bits
-typedef signed long int32; // 32 bits
+typedef unsigned char u8;
+typedef unsigned int u16;
+typedef unsigned long u32;
 
-typedef unsigned char uint8;  //  8 bits
-typedef unsigned int uint16;  // 16 bits
-typedef unsigned long uint32; // 32 bits
+typedef unsigned char uchar;
+typedef unsigned int uint;
+typedef unsigned int ushort;
+typedef unsigned long ulong;
+
+typedef unsigned char uint8_t;
+typedef unsigned int uint16_t;
+typedef unsigned long uint32_t;
+
+#ifndef NULL
+ #define NULL ((void *) 0)
+#endif
 
 //===================================================
 

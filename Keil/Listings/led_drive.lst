@@ -1,0 +1,187 @@
+C251 COMPILER V5.60.0,  led_drive                                                          06/08/26  15:59:02  PAGE 1   
+
+
+C251 COMPILER V5.60.0, COMPILATION OF MODULE led_drive
+OBJECT MODULE PLACED IN .\Objects\led_drive.obj
+COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE ..\Driver\led_drive.c XSMALL INTR2 BROWSE INCDIR(..\App;..\Bsp;..\Driv
+                    -er;..\Library;..\Tool) DEBUG PRINT(.\Listings\led_drive.lst) OBJECT(.\Objects\led_drive.obj) 
+
+stmt  level    source
+
+    1          #include "led_drive.h"
+    2          
+    3          #include "STC32G_GPIO.h"
+    4          #include "STC32G_Delay.h"
+    5          
+    6          //========================================================================
+    7          // 函数: void RGB_LCD_GPIO_config(void)
+    8          // 描述: LED灯驱动IO口配置.
+    9          // 参数: none.
+   10          // 返回: none.
+   11          // 版本: V1.0, 2024-06-26
+   12          void DIS_LED_GPIO_config(void)
+   13          {
+   14   1          P2_MODE_OUT_PP(GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3); // P2.1 P2.2 P2.3设置为推挽输出
+   15   1      
+   16   1          P3_MODE_OUT_PP(GPIO_Pin_6); // P0.3 P0.4设置成推挽输出
+   17   1      }
+   18          
+   19          //========================================================================
+   20          // 函数: void DIS_LED_init(void)
+   21          // 描述: LED灯初始化.
+   22          // 参数: none.
+   23          // 返回: none.
+   24          // 版本: V1.0, 2024-06-26
+   25          void DIS_LED_init(void)
+   26          {
+   27   1          DIS_LED_GPIO_config();
+   28   1          Range1_LED = 0;
+   29   1          Range2_LED = 0;
+   30   1          Range3_LED = 1;
+   31   1      }
+   32          
+   33          //========================================================================
+   34          // 函数: void DIS_LED_ALL_on(void)
+   35          // 描述: LED灯全亮.
+   36          // 参数: none.
+   37          // 返回: none.
+   38          // 版本: V1.0, 2024-06-26
+   39          void DIS_LED_ALL_on(void)
+   40          {
+   41   1          Range1_LED = 1; // 点亮Range1_LED
+   42   1          Range2_LED = 1; // 点亮Range2_LED
+   43   1          Range3_LED = 1; // 点亮Range3_LED
+   44   1      }
+   45          
+   46          //========================================================================
+   47          // 函数: void DIS_LED_ALL_off(void)
+   48          // 描述: LED灯全灭.
+   49          // 参数: none.
+   50          // 返回: none.
+   51          // 版本: V1.0, 2024-06-26
+   52          void DIS_LED_ALL_off(void)
+   53          {
+   54   1          Range1_LED = 0; // 熄灭Range1_LED
+   55   1          Range2_LED = 0; // 熄灭Range2_LED
+   56   1          Range3_LED = 0; // 熄熄灭Range3_LED
+   57   1      }
+   58          
+C251 COMPILER V5.60.0,  led_drive                                                          06/08/26  15:59:02  PAGE 2   
+
+   59          //========================================================================
+   60          // 函数: void DIS_LED_Enable(unsigned char LED_num)
+   61          // 描述: 点亮任意LED.
+   62          // 参数: none.
+   63          // 返回: none.
+   64          // 版本: V1.0, 2024-06-26
+   65          void DIS_LED_Enable(unsigned char LED_num)
+   66          {
+   67   1          switch (LED_num)
+   68   1          {
+   69   2          case 1:
+   70   2              Range1_LED = 1;
+   71   2              break; // 点亮Range1_LED;
+   72   2          case 2:
+   73   2              Range2_LED = 1;
+   74   2              break; // 点亮Range2_LED;
+   75   2          case 3:
+   76   2              Range3_LED = 1;
+   77   2              break; // 点亮Range3_LED;
+   78   2              //                              default:        ;
+   79   2          }
+   80   1      }
+   81          
+   82          //========================================================================
+   83          // 函数: void DIS_LED_Disable(unsigned char LED_num)
+   84          // 描述: 熄灭任意LED.
+   85          // 参数: none.
+   86          // 返回: none.
+   87          // 版本: V1.0, 2024-06-26
+   88          void DIS_LED_Disable(unsigned char LED_num)
+   89          {
+   90   1          switch (LED_num)
+   91   1          {
+   92   2          case 1:
+   93   2              Range1_LED = 0;
+   94   2              break; // 熄灭Range1_LED ;
+   95   2          case 2:
+   96   2              Range2_LED = 0;
+   97   2              break; // 熄灭Range2_LED ;
+   98   2          case 3:
+   99   2              Range3_LED = 0;
+  100   2              break; // 熄熄灭Range3_LED ;
+  101   2              //                              default:        ;
+  102   2          }
+  103   1      }
+  104          
+  105          //========================================================================
+  106          // 函数: void DIS_LED_Just_One_Enable(void)
+  107          // 描述: 仅点亮一个LED.
+  108          // 参数: none.
+  109          // 返回: none.
+  110          // 版本: V1.0, 2024-06-26
+  111          void DIS_LED_Just_One_Enable(unsigned char LED_num)
+  112          {
+  113   1          DIS_LED_ALL_off(); // 熄灭所有DIS_LED;
+  114   1          switch (LED_num)
+  115   1          {
+  116   2          case 0:
+  117   2              DIS_LED_ALL_off();
+  118   2              break; // 熄灭所有DIS_LED;
+  119   2          case 1:
+  120   2              Range1_LED = 1;
+  121   2              break; // 点亮Range1_LED;
+  122   2          case 2:
+  123   2              Range2_LED = 1;
+  124   2              break; // 点亮Range2_LED;
+C251 COMPILER V5.60.0,  led_drive                                                          06/08/26  15:59:02  PAGE 3   
+
+  125   2          case 3:
+  126   2              Range3_LED = 1;
+  127   2              break; // 点亮Range3_LED;
+  128   2              //                              default:        ;
+  129   2          }
+  130   1      }
+  131          
+  132          void DIS_LED_TOGGLE(unsigned char LED_num)
+  133          {
+  134   1          switch (LED_num)
+  135   1          {
+  136   2          case 0:
+  137   2              DIS_LED_ALL_off();
+  138   2              break; // 熄灭所有DIS_LED;
+  139   2          case 1:
+  140   2              Range1_LED = !Range1_LED;
+  141   2              break;
+  142   2          case 2:
+  143   2              Range2_LED = !Range2_LED;
+  144   2              break;
+  145   2          case 3:
+  146   2              Range3_LED = !Range3_LED;
+  147   2              break;
+  148   2          }
+  149   1      }
+
+
+Module Information          Static   Overlayable
+------------------------------------------------
+  code size            =       177     ------
+  ecode size           =    ------     ------
+  data size            =    ------     ------
+  idata size           =    ------     ------
+  pdata size           =    ------     ------
+  xdata size           =    ------     ------
+  xdata-const size     =    ------     ------
+  edata size           =    ------     ------
+  bit size             =    ------     ------
+  ebit size            =    ------     ------
+  bitaddressable size  =    ------     ------
+  ebitaddressable size =    ------     ------
+  far data size        =    ------     ------
+  huge data size       =    ------     ------
+  const size           =    ------     ------
+  hconst size          =    ------     ------
+End of Module Information.
+
+
+C251 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

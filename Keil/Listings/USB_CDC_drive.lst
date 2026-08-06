@@ -1,0 +1,13 @@
+C251 COMPILER V5.60.0,  USB_CDC_drive                                                      06/08/26  17:26:40  PAGE 1   
+
+
+C251 COMPILER V5.60.0, COMPILATION OF MODULE USB_CDC_drive
+OBJECT MODULE PLACED IN .\Objects\USB_CDC_drive.obj
+COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE ..\Driver\USB_CDC_drive.c XSMALL INTR2 BROWSE INCDIR(..\App;..\Bsp;..\
+                    -Driver;..\Library;..\Tool) DEBUG PRINT(.\Listings\USB_CDC_drive.lst) OBJECT(.\Objects\USB_CDC_drive.obj) 
+
+stmt  level    source
+
+*** ERROR C318 OF ..\Driver\USB_CDC_drive.c: can't open file '..\Driver\USB_CDC_drive.c'
+
+C251 COMPILATION COMPLETE.  0 WARNING(S),  1 ERROR(S)

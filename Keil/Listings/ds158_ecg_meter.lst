@@ -1,0 +1,59 @@
+C251 COMPILER V5.60.0,  ds158_ecg_meter                                                    06/08/26  16:43:26  PAGE 1   
+
+
+C251 COMPILER V5.60.0, COMPILATION OF MODULE ds158_ecg_meter
+OBJECT MODULE PLACED IN .\Objects\ds158_ecg_meter.obj
+COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE ..\Bsp\ds158_ecg_meter.c XSMALL INTR2 BROWSE INCDIR(..\App;..\Bsp;..\D
+                    -river;..\Library;..\Tool) DEBUG PRINT(.\Listings\ds158_ecg_meter.lst) OBJECT(.\Objects\ds158_ecg_meter.obj) 
+
+stmt  level    source
+
+    1          #include "ds158_ecg_meter.h"
+    2          
+    3          #if DS_SENSOR == 158
+               
+               #include "adc_drive.h"
+               
+               #define DC_REF 0.0f
+               
+               ADC_Handle_t adc0;
+               
+               const float x[2] = {0.88f, 2.85f}; // 10NTU 和 200NTU 对应的电压值
+               
+               void ds_init(void)
+               {
+                   adc_init(&adc0, 0, 3.3f);
+               }
+               
+               void ds_update(float *dat)
+               {
+                   float ecg = 0.0f;
+                   ecg = adc_get(&adc0);
+                   *dat = ecg - DC_REF;
+               }
+               
+               #endif
+
+
+Module Information          Static   Overlayable
+------------------------------------------------
+  code size            =    ------     ------
+  ecode size           =    ------     ------
+  data size            =    ------     ------
+  idata size           =    ------     ------
+  pdata size           =    ------     ------
+  xdata size           =    ------     ------
+  xdata-const size     =    ------     ------
+  edata size           =    ------     ------
+  bit size             =    ------     ------
+  ebit size            =    ------     ------
+  bitaddressable size  =    ------     ------
+  ebitaddressable size =    ------     ------
+  far data size        =    ------     ------
+  huge data size       =    ------     ------
+  const size           =    ------     ------
+  hconst size          =    ------     ------
+End of Module Information.
+
+
+C251 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

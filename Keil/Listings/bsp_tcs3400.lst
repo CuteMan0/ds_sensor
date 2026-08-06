@@ -1,0 +1,143 @@
+C251 COMPILER V5.60.0,  bsp_tcs3400                                                        06/08/26  15:58:58  PAGE 1   
+
+
+C251 COMPILER V5.60.0, COMPILATION OF MODULE bsp_tcs3400
+OBJECT MODULE PLACED IN .\Objects\bsp_tcs3400.obj
+COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE ..\Bsp\bsp_tcs3400.c XSMALL INTR2 BROWSE INCDIR(..\App;..\Bsp;..\Drive
+                    -r;..\Library;..\Tool) DEBUG PRINT(.\Listings\bsp_tcs3400.lst) OBJECT(.\Objects\bsp_tcs3400.obj) 
+
+stmt  level    source
+
+    1          #include "bsp_tcs3400.h"
+    2          
+    3          #include "STC32G_Delay.h"
+    4          
+    5          #include "sw_iic_drive.h"
+    6          
+    7          void tcs3400_write_register(u8 reg, u8 val)
+    8          {
+    9   1          soft_i2c_start();
+   10   1          soft_i2c_write_byte(TCS3400_I2C_ADDR << 1); // 写地址
+   11   1          soft_i2c_write_byte(TCS3400_ENABLE | reg);
+   12   1          soft_i2c_write_byte(val);
+   13   1          soft_i2c_stop();
+   14   1      }
+   15          
+   16          void tcs3400_read_register(u8 reg, u8 *val)
+   17          {
+   18   1          soft_i2c_start();
+   19   1          soft_i2c_write_byte(TCS3400_I2C_ADDR << 1); // 写地址
+   20   1          soft_i2c_write_byte(reg);
+   21   1          soft_i2c_start();                                 // 重启
+   22   1          soft_i2c_write_byte((TCS3400_I2C_ADDR << 1) | 1); // 读地址
+   23   1          *val = soft_i2c_read_byte(NACK);                  // 读 + NACK
+   24   1          soft_i2c_stop();
+   25   1      }
+   26          
+   27          // 先写目标寄存器再读数据
+   28          int8 tcs3400_read_data(u8 dev_addr, u8 reg_addr, u8 *dat, u16 len)
+   29          {
+   30   1          u16 i;
+   31   1          soft_i2c_start();
+   32   1          if (!soft_i2c_write_byte(dev_addr << 1)) // 写地址
+   33   1          {
+   34   2              soft_i2c_stop();
+   35   2              return -1;
+   36   2          }
+   37   1          if (!soft_i2c_write_byte(reg_addr)) // 写寄存器
+   38   1          {
+   39   2              soft_i2c_stop();
+   40   2              return -2;
+   41   2          }
+   42   1          soft_i2c_start();
+   43   1      
+   44   1          if (!soft_i2c_write_byte((dev_addr << 1) | 0x01)) // 读地址
+   45   1          {
+   46   2              soft_i2c_stop();
+   47   2              return -3;
+   48   2          }
+   49   1          for (i = 0; i < len; i++)
+   50   1          {
+   51   2              dat[i] = soft_i2c_read_byte(i < (len - 1)); // 最后一个发NACK
+   52   2          }
+   53   1          soft_i2c_stop();
+   54   1          return 0;
+   55   1      }
+   56          
+   57          void tcs3400_init(void)
+   58          {
+C251 COMPILER V5.60.0,  bsp_tcs3400                                                        06/08/26  15:58:58  PAGE 2   
+
+   59   1          tcs3400_write_register(TCS3400_ENABLE, 0x00);
+   60   1          // 设置积分时间
+   61   1          tcs3400_write_register(TCS3400_ATIME, 0xFF); // 1024 step
+   62   1          // 设置增益
+   63   1          tcs3400_write_register(TCS3400_CONTROL, 0x00); // 1x
+   64   1          tcs3400_write_register(TCS3400_PERS, 0x0F);
+   65   1      
+   66   1          //    // 设置最小门限
+   67   1          //    tcs3400_write_register(TCS3400_AILTL, 0x00);  // AILTL
+   68   1          //    tcs3400_write_register(TCS3400_AILTH, 0x00);  // AILTH
+   69   1          //    // 设置最大门限
+   70   1          //    tcs3400_write_register(TCS3400_AIHTL, 0xFF);  // AIHTL
+   71   1          //    tcs3400_write_register(TCS3400_AIHTH, 0xFF);  // AIHTH
+   72   1      
+   73   1          // 启用传感器和ADC
+   74   1          tcs3400_write_register(TCS3400_ENABLE, TCS3400_ENABLE_PON);
+   75   1          delay_ms(3);
+   76   1          tcs3400_write_register(TCS3400_ENABLE, TCS3400_ENABLE_PON | TCS3400_ENABLE_AEN);
+   77   1      
+   78   1          delay_ms(150);
+   79   1      }
+   80          
+   81          void tcs3400_read_color(tcs3400_data_t *dev)
+   82          {
+   83   1          u8 status = 0;
+   84   1          u8 buf[8] = {0};
+   85   1          float rgb_sum = 0.0f;
+   86   1      
+   87   1          do
+   88   1          {
+   89   2              tcs3400_read_register(TCS3400_STATUS, &status);
+   90   2          } while (!(status & 0x01));
+   91   1      
+   92   1          tcs3400_read_data(TCS3400_I2C_ADDR, TCS3400_CDATAL, buf, 8);
+   93   1      
+   94   1          //    dev->clear = (buf[1] << 8) | buf[0];
+   95   1          dev->red = (buf[3] << 8) | buf[2];
+   96   1          dev->green = (buf[5] << 8) | buf[4];
+   97   1          dev->blue = (buf[7] << 8) | buf[6];
+   98   1          rgb_sum = dev->red + dev->green + dev->blue;
+   99   1          if (rgb_sum != 0.0f)
+  100   1          {
+  101   2              dev->red = dev->red / rgb_sum * 100.0f;
+  102   2              dev->green = dev->green / rgb_sum * 100.0f;
+  103   2              dev->blue = dev->blue / rgb_sum * 100.0f;
+  104   2          }
+  105   1      }
+
+
+Module Information          Static   Overlayable
+------------------------------------------------
+  code size            =       550     ------
+  ecode size           =    ------     ------
+  data size            =    ------     ------
+  idata size           =    ------     ------
+  pdata size           =    ------     ------
+  xdata size           =    ------     ------
+  xdata-const size     =    ------     ------
+  edata size           =    ------         20
+  bit size             =    ------     ------
+  ebit size            =    ------     ------
+  bitaddressable size  =    ------     ------
+  ebitaddressable size =    ------     ------
+  far data size        =    ------     ------
+  huge data size       =    ------     ------
+  const size           =    ------     ------
+  hconst size          =         8     ------
+C251 COMPILER V5.60.0,  bsp_tcs3400                                                        06/08/26  15:58:58  PAGE 3   
+
+End of Module Information.
+
+
+C251 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

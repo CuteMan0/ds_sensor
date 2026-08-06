@@ -1,11 +1,11 @@
 // working @ 24 MHz
-#include "main.h"
+#define USB_INFO 1
+#include "stc32g.h"
 //------------------------------STC lib--------------------------
 #if USB_INFO
 #include "stc32_stc8_usb.h"
 #endif
 //------------------------------bsp lib------------------------------
-#include "USB_CDC_drive.h"
 #include "led_drive.h"
 #include "key_drive.h"
 //------------------------------  Task  ------------------------------
@@ -13,10 +13,36 @@
 #include "filter.h"
 #include "task_scheduler.h"
 
-#define NUM_BUF_AVG 32
+#define NUM_BUF_AVG 8
 avg_filter_t filter;
 avgf_data_t buffer[NUM_BUF_AVG];
 volatile float dat_for_printf;
+
+#if USB_INFO
+#include "STC32G_GPIO.h"
+
+char putchar(char c)
+{
+    USB_SendData(&c, 1);
+    return c;
+}
+
+void USB_init(void)
+{
+    P3_MODE_IN_HIZ(GPIO_Pin_0 | GPIO_Pin_1) // 需要将 P3.0/P3.1设置为高阻输入模式
+    IRC48MCR = 0x80;                        // 使能内部 48M 的 USB 专用 IRC
+    while (!(IRC48MCR & 0x01));
+    USBCLK = 0x00; // 设置 USB 时钟源为内部 48M 的 USB 专用 IRC
+    USBCON = 0x90; // 使能 USB 功能
+
+    usb_init(); // 调用 USB CDC 初始化库函数
+
+    EUSB = 1; // 使能 USB 中断
+    EA = 1;
+    while (DeviceState != DEVSTATE_CONFIGURED);
+    printf("USB init OK!\n");
+}
+#endif
 
 void task_calibration_save(void)
 {
@@ -70,6 +96,8 @@ void task_printf(void)
     printf("dO:%.2f\n", dat_for_printf); // ppm
 #elif DS_SENSOR == 145
     printf("dCO2:%.2f\n", dat_for_printf); // ppm
+#elif DS_SENSOR == 151
+    printf("temp:%.2fC\n", dat_for_printf); // ℃
 #elif DS_SENSOR == 153
     printf("H2:%.2f\n", dat_for_printf); // ppm
 #elif DS_SENSOR == 157
@@ -79,11 +107,11 @@ void task_printf(void)
 #elif DS_SENSOR == 160
     printf("NO2:%.2f\n", dat_for_printf); // ppm
 #elif DS_SENSOR == 161
-    printf("CO:%.2f\n", dat_for_printf); // ppmf
+    printf("CO:%.2f\n", dat_for_printf); // ppm
 #elif DS_SENSOR == 162
     printf("CH4:%.2f\n", dat_for_printf); // ppm
 #elif DS_SENSOR == 163
-    printf("NH3:%.2f\n", dat_for_printf); // ppmu
+    printf("NH3:%.2f\n", dat_for_printf); // ppm
 #elif DS_SENSOR == 164
     printf("CL2:%.2f\n", dat_for_printf); // ppm
 #elif DS_SENSOR == 165
@@ -104,16 +132,26 @@ void task_printf(void)
 #endif
 }
 
-void main(void)
+void STC_init(void)
 {
-    startup();
+    WTST = 0;
+    EAXFR = 1;
+    CKCON = 0;
 
+#if USB_INFO
+    USB_init();
+#endif
     DIS_LED_init();
     KEY_GPIO_init();
+}
 
+void main(void)
+{
+    STC_init();
     ds_init(); // 传感器初始化
     avg_filter_init(&filter, buffer, NUM_BUF_AVG);
     task_scheduler_init();
+
 #if DS_SENSOR == 159
     task_register(task_sensor, 80, 3);
 #else
@@ -131,9 +169,10 @@ void main(void)
 }
 
 #if DS_SENSOR == 161
+#include "ds161_co_meter.h"
 void Timer3_ISR_Handler(void) interrupt TMR3_VECTOR // 进中断时已经清除标志
 {
-#include "ds161_co_meter.h"
+
     static u16 tick = 0;
     tick++;
     if (tick == 100)
@@ -148,26 +187,3 @@ void Timer0_ISR_Handler(void) interrupt TMR0_VECTOR
 {
     task_scheduler_tick_isr(); // 用于任务框架的时基
 }
-
-void startup(void)
-{
-    WTST = 0;
-    EAXFR = 1;
-    CKCON = 0;
-
-#if USB_INFO
-    USB_CDC_Initialization();
-    EA = 1;
-    while (DeviceState != DEVSTATE_CONFIGURED)
-        ;
-    printf("USB Ready!\n");
-#endif
-}
-
-#if USB_INFO
-char putchar(char c)
-{
-    USB_SendData(&c, 1);
-    return c;
-}
-#endif

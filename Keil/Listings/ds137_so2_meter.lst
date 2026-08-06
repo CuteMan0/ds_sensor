@@ -1,0 +1,60 @@
+C251 COMPILER V5.60.0,  ds137_so2_meter                                                    06/08/26  16:43:25  PAGE 1   
+
+
+C251 COMPILER V5.60.0, COMPILATION OF MODULE ds137_so2_meter
+OBJECT MODULE PLACED IN .\Objects\ds137_so2_meter.obj
+COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE ..\Bsp\ds137_so2_meter.c XSMALL INTR2 BROWSE INCDIR(..\App;..\Bsp;..\D
+                    -river;..\Library;..\Tool) DEBUG PRINT(.\Listings\ds137_so2_meter.lst) OBJECT(.\Objects\ds137_so2_meter.obj) 
+
+stmt  level    source
+
+    1          #include "ds137_so2_meter.h"
+    2          
+    3          #if DS_SENSOR == 137
+               
+               #include "adc_drive.h"
+               
+               #define SEN 0.6f // 0.6uA/ppm  (range: 0-150ppm)
+               #define RF 26.7f // 26.7kOhm
+               
+               ADC_Handle_t adc0;
+               
+               void ds_init(void)
+               {
+                   adc_init(&adc0, 0, 3.3f);
+               }
+               
+               void ds_update(float *dat)
+               {
+                   float ppm = 0.0f;
+               
+                   ppm = adc_get(&adc0) / (SEN * RF) * 1e3;
+               
+                   *dat = (ppm > 0.0f) ? ppm : 0.0f;
+               }
+               
+               #endif
+
+
+Module Information          Static   Overlayable
+------------------------------------------------
+  code size            =    ------     ------
+  ecode size           =    ------     ------
+  data size            =    ------     ------
+  idata size           =    ------     ------
+  pdata size           =    ------     ------
+  xdata size           =    ------     ------
+  xdata-const size     =    ------     ------
+  edata size           =    ------     ------
+  bit size             =    ------     ------
+  ebit size            =    ------     ------
+  bitaddressable size  =    ------     ------
+  ebitaddressable size =    ------     ------
+  far data size        =    ------     ------
+  huge data size       =    ------     ------
+  const size           =    ------     ------
+  hconst size          =    ------     ------
+End of Module Information.
+
+
+C251 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

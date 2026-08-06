@@ -1,3 +1,7 @@
+/*---------------------------------------------------------------------*/
+/* --- Web: www.STCAI.com ---------------------------------------------*/
+/*---------------------------------------------------------------------*/
+
 #include "STC32G_DMA.h"
 #include "STC32G_UART.h"
 
@@ -93,7 +97,8 @@ void DMA_UART_Inilize(u8 UARTx, DMA_UART_InitTypeDef *DMA)
 	{
 		DMA_UR1T_STA = 0x00;
 		DMA_UR1R_STA = 0x00;
-		DMA_UR1T_AMT = DMA->DMA_TX_Length;
+		DMA_UR1T_AMT = (u8)DMA->DMA_TX_Length;
+		DMA_UR1T_AMTH = (u8)(DMA->DMA_TX_Length>>8);
 		DMA_UR1T_TXAH = (u8)(DMA->DMA_TX_Buffer>>8);
 		DMA_UR1T_TXAL = (u8)(DMA->DMA_TX_Buffer);
 		DMA_UR1R_RXAH = (u8)(DMA->DMA_RX_Buffer>>8);
@@ -112,7 +117,8 @@ void DMA_UART_Inilize(u8 UARTx, DMA_UART_InitTypeDef *DMA)
 	{
 		DMA_UR2T_STA = 0x00;
 		DMA_UR2R_STA = 0x00;
-		DMA_UR2T_AMT = DMA->DMA_TX_Length;
+		DMA_UR2T_AMT = (u8)DMA->DMA_TX_Length;
+		DMA_UR2T_AMTH = (u8)(DMA->DMA_TX_Length>>8);
 		DMA_UR2T_TXAH = (u8)(DMA->DMA_TX_Buffer>>8);
 		DMA_UR2T_TXAL = (u8)(DMA->DMA_TX_Buffer);
 		DMA_UR2R_RXAH = (u8)(DMA->DMA_RX_Buffer>>8);
@@ -131,7 +137,8 @@ void DMA_UART_Inilize(u8 UARTx, DMA_UART_InitTypeDef *DMA)
 	{
 		DMA_UR3T_STA = 0x00;
 		DMA_UR3R_STA = 0x00;
-		DMA_UR3T_AMT = DMA->DMA_TX_Length;
+		DMA_UR3T_AMT = (u8)DMA->DMA_TX_Length;
+		DMA_UR3T_AMTH = (u8)(DMA->DMA_TX_Length>>8);
 		DMA_UR3T_TXAH = (u8)(DMA->DMA_TX_Buffer>>8);
 		DMA_UR3T_TXAL = (u8)(DMA->DMA_TX_Buffer);
 		DMA_UR3R_RXAH = (u8)(DMA->DMA_RX_Buffer>>8);
@@ -150,7 +157,8 @@ void DMA_UART_Inilize(u8 UARTx, DMA_UART_InitTypeDef *DMA)
 	{
 		DMA_UR4T_STA = 0x00;
 		DMA_UR4R_STA = 0x00;
-		DMA_UR4T_AMT = DMA->DMA_TX_Length;
+		DMA_UR4T_AMT = (u8)DMA->DMA_TX_Length;
+		DMA_UR4T_AMTH = (u8)(DMA->DMA_TX_Length>>8);
 		DMA_UR4T_TXAH = (u8)(DMA->DMA_TX_Buffer>>8);
 		DMA_UR4T_TXAL = (u8)(DMA->DMA_TX_Buffer);
 		DMA_UR4R_RXAH = (u8)(DMA->DMA_RX_Buffer>>8);

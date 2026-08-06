@@ -1,1 +1,0 @@
-"USER\log.c" XSMALL INTR2 BROWSE INCDIR(.\USER;.\Library) DEBUG PRINT(.\Listings\log.lst) OBJECT(.\Objects\log.obj)

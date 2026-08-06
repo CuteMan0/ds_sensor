@@ -1,0 +1,213 @@
+C251 COMPILER V5.60.0,  sw_iic_drive                                                       06/08/26  15:59:02  PAGE 1   
+
+
+C251 COMPILER V5.60.0, COMPILATION OF MODULE sw_iic_drive
+OBJECT MODULE PLACED IN .\Objects\sw_iic_drive.obj
+COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE ..\Driver\sw_iic_drive.c XSMALL INTR2 BROWSE INCDIR(..\App;..\Bsp;..\D
+                    -river;..\Library;..\Tool) DEBUG PRINT(.\Listings\sw_iic_drive.lst) OBJECT(.\Objects\sw_iic_drive.obj) 
+
+stmt  level    source
+
+    1          #include "sw_iic_drive.h"
+    2          
+    3          #include "stc32g.h"
+    4          #include "STC32G_Delay.h"
+    5          #include "STC32G_GPIO.h"
+    6          
+    7          void soft_i2c_delay(void)
+    8          {
+    9   1          delay_us(DELAY_TIME);
+   10   1      }
+   11          
+   12          void soft_i2c_init(void)
+   13          {
+   14   1          SDA_OUT();
+   15   1          SCL_OUT();
+   16   1          SDA_HIGH();
+   17   1          SCL_HIGH();
+   18   1      }
+   19          
+   20          void soft_i2c_start(void)
+   21          {
+   22   1          SDA_OUT();
+   23   1          SDA_HIGH();
+   24   1          soft_i2c_delay();
+   25   1          SCL_HIGH();
+   26   1          soft_i2c_delay();
+   27   1          SDA_LOW();
+   28   1          soft_i2c_delay();
+   29   1      
+   30   1          SCL_LOW();
+   31   1          soft_i2c_delay();
+   32   1      }
+   33          
+   34          void soft_i2c_stop(void)
+   35          {
+   36   1          SCL_LOW();
+   37   1          soft_i2c_delay();
+   38   1          SDA_OUT();
+   39   1          SDA_LOW();
+   40   1          soft_i2c_delay();
+   41   1          SCL_HIGH();
+   42   1          soft_i2c_delay();
+   43   1          SDA_HIGH();
+   44   1      }
+   45          
+   46          // i2c写入 返回1为ack，0为nack
+   47          bit soft_i2c_write_byte(u8 byte)
+   48          {
+   49   1          u8 i;
+   50   1          bit ack;
+   51   1          SDA_OUT();
+   52   1          for (i = 0; i < 8; i++)
+   53   1          {
+   54   2              if (byte & 0x80)
+   55   2                  SDA_HIGH();
+   56   2              else
+   57   2                  SDA_LOW();
+   58   2      
+C251 COMPILER V5.60.0,  sw_iic_drive                                                       06/08/26  15:59:02  PAGE 2   
+
+   59   2              soft_i2c_delay();
+   60   2              SCL_HIGH();
+   61   2              soft_i2c_delay();
+   62   2              SCL_LOW();
+   63   2              byte <<= 1;
+   64   2          }
+   65   1      
+   66   1          // 读取ACK
+   67   1          SDA_IN();
+   68   1          soft_i2c_delay();
+   69   1          SCL_HIGH();
+   70   1          ack = !(SDA_READ);
+   71   1          soft_i2c_delay();
+   72   1          SCL_LOW();
+   73   1          SDA_OUT();
+   74   1      
+   75   1          return ack;
+   76   1      }
+   77          
+   78          // i2c读出 参数写1为ack，写0为nack
+   79          u8 soft_i2c_read_byte(bit ack)
+   80          {
+   81   1          u8 i;
+   82   1          u8 byte = 0;
+   83   1          SDA_IN();
+   84   1          soft_i2c_delay();
+   85   1          for (i = 0; i < 8; i++)
+   86   1          {
+   87   2              byte <<= 1;
+   88   2              SCL_HIGH();
+   89   2              soft_i2c_delay();
+   90   2              if (SDA_READ)
+   91   2                  byte |= 0x01;
+   92   2              SCL_LOW();
+   93   2              soft_i2c_delay();
+   94   2          }
+   95   1      
+   96   1          // 发出 ACK/NACK
+   97   1          SDA_OUT();
+   98   1          if (ack)
+   99   1              SDA_LOW();
+  100   1          else
+  101   1              SDA_HIGH();
+  102   1      
+  103   1          soft_i2c_delay();
+  104   1          SCL_HIGH();
+  105   1          soft_i2c_delay();
+  106   1          SCL_LOW();
+  107   1          SDA_HIGH();
+  108   1      
+  109   1          return byte;
+  110   1      }
+  111          
+  112          u8 soft_iic_read(u8 addr, u8 reg, u8 *buf, u16 len)
+  113          {
+  114   1          u16 i;
+  115   1      
+  116   1          if (!buf || len == 0)
+  117   1              return 1;
+  118   1      
+  119   1          /* 发送设备地址（写）并检查 ACK */
+  120   1          soft_i2c_start();
+  121   1          if (!soft_i2c_write_byte(addr << 1))
+  122   1              goto read_fail;
+  123   1      
+  124   1          /* 发送寄存器地址并检查 ACK */
+C251 COMPILER V5.60.0,  sw_iic_drive                                                       06/08/26  15:59:02  PAGE 3   
+
+  125   1          if (!soft_i2c_write_byte(reg))
+  126   1              goto read_fail;
+  127   1      
+  128   1          /* 重复启动，发送设备地址（读）并检查 ACK */
+  129   1          soft_i2c_start();
+  130   1          if (!soft_i2c_write_byte(addr << 1 | 0x01))
+  131   1              goto read_fail;
+  132   1      
+  133   1          /* 连续读取 len 字节 */
+  134   1          for (i = 0; i < len; i++)
+  135   1          {
+  136   2              if (i < len - 1)
+  137   2                  *(buf + i) = soft_i2c_read_byte(ACK); // 非最后字节：发送 ACK
+  138   2              else
+  139   2                  *(buf + i) = soft_i2c_read_byte(NACK); // 最后字节：发送 NACK
+  140   2          }
+  141   1      
+  142   1          soft_i2c_stop();
+  143   1          return 0; // 读取成功
+  144   1      
+  145   1      read_fail:
+  146   1          soft_i2c_stop();
+  147   1          return 1; // 读取失败（设备无应答）
+  148   1      }
+  149          
+  150          u8 soft_iic_write(u8 addr, u8 reg, u8 *buf, u16 len)
+  151          {
+  152   1          u16 i;
+  153   1      
+  154   1          if (!buf || len == 0)
+  155   1              return 1;
+  156   1      
+  157   1          soft_i2c_start();
+  158   1          if (!soft_i2c_write_byte(addr << 1)) // 发送设备地址（写）
+  159   1              goto stop_fail;
+  160   1          if (!soft_i2c_write_byte(reg)) // 发送寄存器地址
+  161   1              goto stop_fail;
+  162   1          for (i = 0; i < len; i++) // 发送数据
+  163   1          {
+  164   2              if (!soft_i2c_write_byte(*(buf + i)))
+  165   2                  goto stop_fail;
+  166   2          }
+  167   1          soft_i2c_stop();
+  168   1          return 0; // 写入成功
+  169   1      
+  170   1      stop_fail:
+  171   1          soft_i2c_stop();
+  172   1          return 1; // 写入失败
+  173   1      }
+
+
+Module Information          Static   Overlayable
+------------------------------------------------
+  code size            =       507     ------
+  ecode size           =    ------     ------
+  data size            =    ------     ------
+  idata size           =    ------     ------
+  pdata size           =    ------     ------
+  xdata size           =    ------     ------
+  xdata-const size     =    ------     ------
+  edata size           =    ------         12
+  bit size             =    ------          2
+  ebit size            =    ------     ------
+  bitaddressable size  =    ------     ------
+  ebitaddressable size =    ------     ------
+  far data size        =    ------     ------
+  huge data size       =    ------     ------
+C251 COMPILER V5.60.0,  sw_iic_drive                                                       06/08/26  15:59:02  PAGE 4   
+
+  const size           =    ------     ------
+  hconst size          =    ------     ------
+End of Module Information.
+
+
+C251 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

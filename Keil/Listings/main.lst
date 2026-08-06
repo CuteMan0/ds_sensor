@@ -1,0 +1,231 @@
+C251 COMPILER V5.60.0,  main                                                               06/08/26  17:29:54  PAGE 1   
+
+
+C251 COMPILER V5.60.0, COMPILATION OF MODULE main
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE ..\App\main.c XSMALL INTR2 BROWSE INCDIR(..\App;..\Bsp;..\Driver;..\Li
+                    -brary;..\Tool) DEBUG PRINT(.\Listings\main.lst) OBJECT(.\Objects\main.obj) 
+
+stmt  level    source
+
+    1          // working @ 24 MHz
+    2          #define USB_INFO 1
+    3          #include "stc32g.h"
+    4          //------------------------------STC lib--------------------------
+    5          #if USB_INFO
+    6          #include "stc32_stc8_usb.h"
+    7          #endif
+    8          //------------------------------bsp lib------------------------------
+    9          #include "led_drive.h"
+   10          #include "key_drive.h"
+   11          //------------------------------  Task  ------------------------------
+   12          #include "ds_sensor.h"
+   13          #include "filter.h"
+   14          #include "task_scheduler.h"
+   15          
+   16          #define NUM_BUF_AVG 8
+   17          avg_filter_t filter;
+   18          avgf_data_t buffer[NUM_BUF_AVG];
+   19          volatile float dat_for_printf;
+   20          
+   21          #if USB_INFO
+   22          #include "STC32G_GPIO.h"
+   23          
+   24          char putchar(char c)
+   25          {
+   26   1          USB_SendData(&c, 1);
+   27   1          return c;
+   28   1      }
+   29          
+   30          void USB_init(void)
+   31          {
+   32   1          P3_MODE_IN_HIZ(GPIO_Pin_0 | GPIO_Pin_1) // 需要将 P3.0/P3.1设置为高阻输入模式
+   33   1          IRC48MCR = 0x80;                        // 使能内部 48M 的 USB 专用 IRC
+   34   1          while (!(IRC48MCR & 0x01));
+   35   1          USBCLK = 0x00; // 设置 USB 时钟源为内部 48M 的 USB 专用 IRC
+   36   1          USBCON = 0x90; // 使能 USB 功能
+   37   1      
+   38   1          usb_init(); // 调用 USB CDC 初始化库函数
+   39   1      
+   40   1          EUSB = 1; // 使能 USB 中断
+   41   1          EA = 1;
+   42   1          while (DeviceState != DEVSTATE_CONFIGURED);
+   43   1          printf("USB init OK!\n");
+   44   1      }
+   45          #endif
+   46          
+   47          void task_calibration_save(void)
+   48          {
+   49   1      #if USE_CALIBRATION
+*** WARNING C322 IN LINE 49 OF ..\App\main.c: 'USE_CALIBRATION': unknown identifier
+                   ProcessCalibration();
+               #endif
+   52   1      }
+   53          
+   54          void task_key_scan()
+   55          {
+   56   1          Scan_Key();
+   57   1      }
+C251 COMPILER V5.60.0,  main                                                               06/08/26  17:29:54  PAGE 2   
+
+   58          
+   59          void task_led_blink(void)
+   60          {
+   61   1      #if USE_BLINK
+*** WARNING C322 IN LINE 61 OF ..\App\main.c: 'USE_BLINK': unknown identifier
+                   Led_Task();
+               #endif
+   64   1      }
+   65          void task_sensor(void)
+   66          {
+   67   1          ds_update(&dat_for_printf); // 传感器数据更新
+   68   1          avg_filter_update(&filter, dat_for_printf);
+   69   1      }
+   70          
+   71          void task_printf(void)
+   72          {
+   73   1      #if USB_INFO
+   74   1      #if DS_SENSOR == 112
+                   printf("temp:%.2fC\n", dat_for_printf); // ℃
+               #elif DS_SENSOR == 131
+                   printf("ph:%.2f\n", dat_for_printf);
+               #elif DS_SENSOR == 132
+                   printf("EC:%.4f\n", dat_for_printf); // mS/cm
+               #elif DS_SENSOR == 133
+                   printf("EC:%.4f\n", dat_for_printf); // mS/cm
+               // DS134 单独设置程序文件
+               #elif DS_SENSOR == 135
+                   printf("tur:%.6f\n", dat_for_printf); // NTU
+               #elif DS_SENSOR == 136
+                   printf("ORG:%.1f\n", dat_for_printf); // mV
+               #elif DS_SENSOR == 137
+                   printf("SO2:%.2f\n", dat_for_printf); // ppm
+               #elif DS_SENSOR == 138
+                   printf("airC2H6O:%.1f\n", dat_for_printf); // ppm
+               #elif DS_SENSOR == 139
+                   printf("O2:%.2f%\n", dat_for_printf); // %
+               #elif DS_SENSOR == 141
+                   printf("SIG:%.2f\n", dat_for_printf); // ppm
+               #elif DS_SENSOR == 144
+                   printf("dO:%.2f\n", dat_for_printf); // ppm
+               #elif DS_SENSOR == 145
+                   printf("dCO2:%.2f\n", dat_for_printf); // ppm
+               #elif DS_SENSOR == 151
+  100   1          printf("temp:%.2fC\n", dat_for_printf); // ℃
+  101   1      #elif DS_SENSOR == 153
+                   printf("H2:%.2f\n", dat_for_printf); // ppm
+               #elif DS_SENSOR == 157
+                   printf("BPM:%u\n", (u16)dat_for_printf); // bpm
+               #elif DS_SENSOR == 159
+                   printf("BPM:%u\n", (u16)dat_for_printf); // bpm
+               #elif DS_SENSOR == 160
+                   printf("NO2:%.2f\n", dat_for_printf); // ppm
+               #elif DS_SENSOR == 161
+                   printf("CO:%.2f\n", dat_for_printf); // ppm
+               #elif DS_SENSOR == 162
+                   printf("CH4:%.2f\n", dat_for_printf); // ppm
+               #elif DS_SENSOR == 163
+                   printf("NH3:%.2f\n", dat_for_printf); // ppm
+               #elif DS_SENSOR == 164
+                   printf("CL2:%.2f\n", dat_for_printf); // ppm
+               #elif DS_SENSOR == 165
+                   printf("NH4:%.3f\n", dat_for_printf); // ppm
+               #elif DS_SENSOR == 166
+                   printf("K:%.3f\n", dat_for_printf); // ppm
+               #elif DS_SENSOR == 167
+                   printf("NO3:%.3f\n", dat_for_printf); // ppm
+C251 COMPILER V5.60.0,  main                                                               06/08/26  17:29:54  PAGE 3   
+
+               #elif DS_SENSOR == 168
+                   printf("CL:%.3f\n", dat_for_printf); // ppm
+               #elif DS_SENSOR == 169
+                   printf("Na:%.3f\n", dat_for_printf); // ppm
+               #elif DS_SENSOR == 170
+                   printf("Ca:%.3f\n", dat_for_printf); // ppm
+               #elif DS_SENSOR == 172
+                   printf("Counter:%.3f\n", dat_for_printf); // ppm
+               #endif
+  132   1      #endif
+  133   1      }
+  134          
+  135          void STC_init(void)
+  136          {
+  137   1          WTST = 0;
+  138   1          EAXFR = 1;
+  139   1          CKCON = 0;
+  140   1      
+  141   1      #if USB_INFO
+  142   1          USB_init();
+  143   1      #endif
+  144   1          DIS_LED_init();
+  145   1          KEY_GPIO_init();
+  146   1      }
+  147          
+  148          void main(void)
+  149          {
+  150   1          STC_init();
+  151   1          ds_init(); // 传感器初始化
+  152   1          avg_filter_init(&filter, buffer, NUM_BUF_AVG);
+  153   1          task_scheduler_init();
+  154   1      
+  155   1      #if DS_SENSOR == 159
+                   task_register(task_sensor, 80, 3);
+               #else
+  158   1          task_register(task_sensor, 50, 3); // 传感器任务，周期50ms，优先级3
+  159   1      #endif
+  160   1          task_register(task_printf, 100, 4);
+  161   1          task_register(task_calibration_save, 1000, 1);
+  162   1          task_register(task_key_scan, 20, 2);
+  163   1          task_register(task_led_blink, 10, 2);
+  164   1      
+  165   1          while (1)
+  166   1          {
+  167   2              task_scheduler_run();
+  168   2          }
+  169   1      }
+  170          
+  171          #if DS_SENSOR == 161
+               #include "ds161_co_meter.h"
+               void Timer3_ISR_Handler(void) interrupt TMR3_VECTOR // 进中断时已经清除标志
+               {
+               
+                   static u16 tick = 0;
+                   tick++;
+                   if (tick == 100)
+                   {
+                       tick = 0;
+                       heating_tick++;
+                   }
+               }
+               #endif
+  185          
+  186          void Timer0_ISR_Handler(void) interrupt TMR0_VECTOR
+  187          {
+  188   1          task_scheduler_tick_isr(); // 用于任务框架的时基
+C251 COMPILER V5.60.0,  main                                                               06/08/26  17:29:54  PAGE 4   
+
+  189   1      }
+
+
+Module Information          Static   Overlayable
+------------------------------------------------
+  code size            =       294     ------
+  ecode size           =    ------     ------
+  data size            =    ------     ------
+  idata size           =    ------     ------
+  pdata size           =    ------     ------
+  xdata size           =    ------     ------
+  xdata-const size     =    ------     ------
+  edata size           =        50          1
+  bit size             =    ------     ------
+  ebit size            =    ------     ------
+  bitaddressable size  =    ------     ------
+  ebitaddressable size =    ------     ------
+  far data size        =    ------     ------
+  huge data size       =    ------     ------
+  const size           =    ------     ------
+  hconst size          =        26     ------
+End of Module Information.
+
+
+C251 COMPILATION COMPLETE.  2 WARNING(S),  0 ERROR(S)

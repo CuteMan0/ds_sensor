@@ -1,0 +1,85 @@
+C251 COMPILER V5.60.0,  ds162_ch4_meter                                                    06/08/26  16:43:27  PAGE 1   
+
+
+C251 COMPILER V5.60.0, COMPILATION OF MODULE ds162_ch4_meter
+OBJECT MODULE PLACED IN .\Objects\ds162_ch4_meter.obj
+COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE ..\Bsp\ds162_ch4_meter.c XSMALL INTR2 BROWSE INCDIR(..\App;..\Bsp;..\D
+                    -river;..\Library;..\Tool) DEBUG PRINT(.\Listings\ds162_ch4_meter.lst) OBJECT(.\Objects\ds162_ch4_meter.obj) 
+
+stmt  level    source
+
+    1          #include "ds162_ch4_meter.h"
+    2          // MP-4
+    3          #if DS_SENSOR == 162
+               
+               #include "adc_drive.h"
+               #include "lut.h"
+               
+               ADC_Handle_t adc0;
+               
+               const LUT_2D mp4_lut[] =
+                   {
+                       {650, 0},
+                       {2150, 1000},
+                       {2600, 2000},
+                       {2900, 3000},
+                       {3050, 4000},
+                       {3200, 5000},
+                       {3300, 6000},
+                       {3400, 7000},
+                       {3450, 8000},
+                       {3500, 9000},
+                       {3600, 10000},
+                       {3700, 12000},
+                       {3780, 14000}};
+               
+               void ds_init(void)
+               {
+                   adc_init(&adc0, 0, 3.3f);
+               }
+               
+               void ds_update(float *dat)
+               {
+                   u16 ch4_val, adc_vol_mv = 0.0f;
+               
+                   adc_vol_mv = (u16)(adc_get(&adc0) * 2000);
+               
+                   ch4_val = LUT_BinaryInterp_u16(mp4_lut,
+                                                  sizeof(mp4_lut) / sizeof(mp4_lut[0]),
+                                                  adc_vol_mv);
+               
+                   if (ch4_val < 300)
+                   {
+                       ch4_val = 0;
+                   }
+               
+                   *dat = (float)ch4_val;
+               }
+               
+               #endif
+
+
+Module Information          Static   Overlayable
+------------------------------------------------
+  code size            =    ------     ------
+  ecode size           =    ------     ------
+  data size            =    ------     ------
+  idata size           =    ------     ------
+  pdata size           =    ------     ------
+  xdata size           =    ------     ------
+C251 COMPILER V5.60.0,  ds162_ch4_meter                                                    06/08/26  16:43:27  PAGE 2   
+
+  xdata-const size     =    ------     ------
+  edata size           =    ------     ------
+  bit size             =    ------     ------
+  ebit size            =    ------     ------
+  bitaddressable size  =    ------     ------
+  ebitaddressable size =    ------     ------
+  far data size        =    ------     ------
+  huge data size       =    ------     ------
+  const size           =    ------     ------
+  hconst size          =    ------     ------
+End of Module Information.
+
+
+C251 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

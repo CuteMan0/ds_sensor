@@ -1,0 +1,139 @@
+C251 COMPILER V5.60.0,  ds161_co_meter                                                     06/08/26  16:43:26  PAGE 1   
+
+
+C251 COMPILER V5.60.0, COMPILATION OF MODULE ds161_co_meter
+OBJECT MODULE PLACED IN .\Objects\ds161_co_meter.obj
+COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE ..\Bsp\ds161_co_meter.c XSMALL INTR2 BROWSE INCDIR(..\App;..\Bsp;..\Dr
+                    -iver;..\Library;..\Tool) DEBUG PRINT(.\Listings\ds161_co_meter.lst) OBJECT(.\Objects\ds161_co_meter.obj) 
+
+stmt  level    source
+
+    1          #include "ds161_co_meter.h"
+    2          // MP-7
+    3          #if DS_SENSOR == 161
+               
+               #include "STC32G_GPIO.h"
+               
+               #include "adc_drive.h"
+               #include "led_drive.h"
+               
+               #include "lut.h"
+               
+               #define HEAT_INTERVAL (10 * 60) // 脱附间隔10分钟
+               #define HEAT_TIME 45            // 加热脱附45s
+               
+               sbit sw = P2 ^ 4;
+               volatile u8 heating_flag = 1;
+               volatile u32 heating_tick = 0;
+               u32 last_heating_time = 0; // 上次加热时间
+               ADC_Handle_t adc0;
+               
+               const LUT_2D mp7_lut[] =
+                   {
+                       {2600, 0},
+                       {2850, 50},
+                       {3100, 100},
+                       {3350, 150},
+                       {3550, 200},
+                       {3700, 250},
+                       {3800, 300},
+                       {3880, 350},
+                       {3950, 400},
+                       {4000, 450},
+                       {4050, 500}};
+               
+               static void Timer3_Init(void);       // 10毫秒@24.000MHz
+               static void CO_HeatingControl(void); // CO加热脱附控制
+               
+               void ds_init(void)
+               {
+                   P2_MODE_OUT_PP(GPIO_Pin_4); // P2.4输出
+                   adc_init(&adc0, 0, 3.3f);
+                   sw = 0; // PMOS导通，5V加热待机状态
+                   Timer3_Init();
+               }
+               
+               void ds_update(float *dat)
+               {
+                   u16 adc_vol_mv = 0.0f;
+                   static u16 co_val = 0.0f;
+               
+                   CO_HeatingControl();
+               
+                   if (!heating_flag)
+                   {
+                       DIS_LED_Just_One_Enable(3); // 运行指示灯（未加热）
+               
+                       // 未加热时才能测量
+                       adc_vol_mv = (u16)(adc_get(&adc0) * 2000);
+C251 COMPILER V5.60.0,  ds161_co_meter                                                     06/08/26  16:43:26  PAGE 2   
+
+                       co_val = LUT_BinaryInterp_u16(mp7_lut,
+                                                     sizeof(mp7_lut) / sizeof(mp7_lut[0]),
+                                                     adc_vol_mv);
+               
+                       *dat = (float)co_val;
+                   }
+                   else
+                   {
+                       DIS_LED_Just_One_Enable(1); // 加热指示灯
+                       *dat = (float)co_val;       // 加热期间返回上次有效值
+                   }
+               }
+               
+               static void CO_HeatingControl(void)
+               {
+                   u32 current_time; // 获取系统时间的函数
+                   current_time = heating_tick;
+               
+                   if ((current_time - last_heating_time) >= HEAT_INTERVAL)
+                   {
+                       // 开始脱附加热
+                       if (!heating_flag)
+                       {
+                           sw = 0; // 切换至5V加热测量状态
+                           heating_flag = 1;
+                           last_heating_time = current_time;
+                       }
+                   }
+                   else if (heating_flag && (current_time - last_heating_time >= HEAT_TIME))
+                   {
+                       sw = 1; // 脱附加热完毕，停止加热
+                       heating_flag = 0;
+                   }
+               }
+               
+               static void Timer3_Init(void) // 10毫秒@24.000MHz
+               {
+                   T4T3M &= 0xFD; // 定时器时钟12T模式
+                   T3L = 0xE0;    // 设置定时初始值
+                   T3H = 0xB1;    // 设置定时初始值
+                   T4T3M |= 0x08; // 定时器3开始计时
+                   IE2 |= 0x20;   // 使能定时器3中断
+               }
+               
+               #endif
+
+
+Module Information          Static   Overlayable
+------------------------------------------------
+  code size            =    ------     ------
+  ecode size           =    ------     ------
+  data size            =    ------     ------
+  idata size           =    ------     ------
+  pdata size           =    ------     ------
+  xdata size           =    ------     ------
+  xdata-const size     =    ------     ------
+  edata size           =    ------     ------
+  bit size             =    ------     ------
+  ebit size            =    ------     ------
+  bitaddressable size  =    ------     ------
+  ebitaddressable size =    ------     ------
+  far data size        =    ------     ------
+  huge data size       =    ------     ------
+  const size           =    ------     ------
+  hconst size          =    ------     ------
+End of Module Information.
+
+
+C251 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

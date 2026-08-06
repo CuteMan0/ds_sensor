@@ -1,5 +1,4 @@
 #include	"STC32G_SPI.h"
-#include "COMMON_drive.h"
 #include "LED_drive.h"
 #include	"STC32G_UART.h"
 

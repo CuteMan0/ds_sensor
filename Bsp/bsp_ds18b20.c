@@ -12,63 +12,52 @@
 #include "STC32G_Delay.h"
 
 /* ============================================================
- * 1-Wire 底层宏（仅依赖头文件中的 DS18B20_DQ_PORT / DS18B20_DQ_PIN）
+ * 1-Wire 底层宏（依赖头文件中的 DS18B20_DQ_PORT / DS18B20_DQ_PIN_MASK）
  *
- * 用法示例（以 P3.2 为例）：
- *   DQ_OUT()   → P3M1 &= ~0x04, P3M0 |= 0x04   (推挽输出)
- *   DQ_IN()    → P3M1 |= 0x04, P3M0 &= ~0x04    (高阻输入)
- *   DQ_HIGH()  → P3 |= 0x04
- *   DQ_LOW()   → P3 &= ~0x04
- *   DQ_READ    → (P3 & 0x04)
+ * 使用 STC32G_GPIO 库宏操作 GPIO 模式
+ * 注意：#if 分支使用数字常量 DS18B20_DQ_PORT_NUM（0~7），
+ *       因为 P0~P7 是 sfr 声明，预处理器无法求值。
  * ============================================================ */
-#define DQ_HIGH() (DS18B20_DQ_PORT |= (DS18B20_DQ_PIN))
-#define DQ_LOW()  (DS18B20_DQ_PORT &= ~(DS18B20_DQ_PIN))
-#define DQ_READ   (DS18B20_DQ_PORT & (DS18B20_DQ_PIN))
+#define DQ_HIGH() (DS18B20_DQ_PORT |= (DS18B20_DQ_PIN_MASK))
+#define DQ_LOW()  (DS18B20_DQ_PORT &= ~(DS18B20_DQ_PIN_MASK))
+#define DQ_READ   (DS18B20_DQ_PORT & (DS18B20_DQ_PIN_MASK))
 
-/* GPIO 模式切换：根据实际引脚号写对应 M1/M0 寄存器 */
-#if DS18B20_DQ_PORT == P0
-    #define DQ_PORT_M1 P0M1
-    #define DQ_PORT_M0 P0M0
-    #define DQ_PORT_PU P0PU
-#elif DS18B20_DQ_PORT == P1
-    #define DQ_PORT_M1 P1M1
-    #define DQ_PORT_M0 P1M0
-    #define DQ_PORT_PU P1PU
-#elif DS18B20_DQ_PORT == P2
-    #define DQ_PORT_M1 P2M1
-    #define DQ_PORT_M0 P2M0
-    #define DQ_PORT_PU P2PU
-#elif DS18B20_DQ_PORT == P3
-    #define DQ_PORT_M1 P3M1
-    #define DQ_PORT_M0 P3M0
-    #define DQ_PORT_PU P3PU
-#elif DS18B20_DQ_PORT == P4
-    #define DQ_PORT_M1 P4M1
-    #define DQ_PORT_M0 P4M0
-    #define DQ_PORT_PU P4PU
-#elif DS18B20_DQ_PORT == P5
-    #define DQ_PORT_M1 P5M1
-    #define DQ_PORT_M0 P5M0
-    #define DQ_PORT_PU P5PU
+/* GPIO 模式切换宏：用数字端口编号做预处理器分支 */
+#if DS18B20_DQ_PORT_NUM == 0
+    #define DQ_OUT()   P0_MODE_OUT_PP(DS18B20_DQ_PIN_MASK)
+    #define DQ_IN()    P0_MODE_IN_HIZ(DS18B20_DQ_PIN_MASK)
+    #define DQ_INIT()  { P0_MODE_IO_PU(DS18B20_DQ_PIN_MASK); P0_PULL_UP_ENABLE(DS18B20_DQ_PIN_MASK); P0_DIGIT_IN_ENABLE(DS18B20_DQ_PIN_MASK); }
+#elif DS18B20_DQ_PORT_NUM == 1
+    #define DQ_OUT()   P1_MODE_OUT_PP(DS18B20_DQ_PIN_MASK)
+    #define DQ_IN()    P1_MODE_IN_HIZ(DS18B20_DQ_PIN_MASK)
+    #define DQ_INIT()  { P1_MODE_IO_PU(DS18B20_DQ_PIN_MASK); P1_PULL_UP_ENABLE(DS18B20_DQ_PIN_MASK); P1_DIGIT_IN_ENABLE(DS18B20_DQ_PIN_MASK); }
+#elif DS18B20_DQ_PORT_NUM == 2
+    #define DQ_OUT()   P2_MODE_OUT_PP(DS18B20_DQ_PIN_MASK)
+    #define DQ_IN()    P2_MODE_IN_HIZ(DS18B20_DQ_PIN_MASK)
+    #define DQ_INIT()  { P2_MODE_IO_PU(DS18B20_DQ_PIN_MASK); P2_PULL_UP_ENABLE(DS18B20_DQ_PIN_MASK); P2_DIGIT_IN_ENABLE(DS18B20_DQ_PIN_MASK); }
+#elif DS18B20_DQ_PORT_NUM == 3
+    #define DQ_OUT()   P3_MODE_OUT_PP(DS18B20_DQ_PIN_MASK)
+    #define DQ_IN()    P3_MODE_IN_HIZ(DS18B20_DQ_PIN_MASK)
+    #define DQ_INIT()  { P3_MODE_IO_PU(DS18B20_DQ_PIN_MASK); P3_PULL_UP_ENABLE(DS18B20_DQ_PIN_MASK); P3_DIGIT_IN_ENABLE(DS18B20_DQ_PIN_MASK); }
+#elif DS18B20_DQ_PORT_NUM == 4
+    #define DQ_OUT()   P4_MODE_OUT_PP(DS18B20_DQ_PIN_MASK)
+    #define DQ_IN()    P4_MODE_IN_HIZ(DS18B20_DQ_PIN_MASK)
+    #define DQ_INIT()  { P4_MODE_IO_PU(DS18B20_DQ_PIN_MASK); P4_PULL_UP_ENABLE(DS18B20_DQ_PIN_MASK); P4_DIGIT_IN_ENABLE(DS18B20_DQ_PIN_MASK); }
+#elif DS18B20_DQ_PORT_NUM == 5
+    #define DQ_OUT()   P5_MODE_OUT_PP(DS18B20_DQ_PIN_MASK)
+    #define DQ_IN()    P5_MODE_IN_HIZ(DS18B20_DQ_PIN_MASK)
+    #define DQ_INIT()  { P5_MODE_IO_PU(DS18B20_DQ_PIN_MASK); P5_PULL_UP_ENABLE(DS18B20_DQ_PIN_MASK); P5_DIGIT_IN_ENABLE(DS18B20_DQ_PIN_MASK); }
+#elif DS18B20_DQ_PORT_NUM == 6
+    #define DQ_OUT()   P6_MODE_OUT_PP(DS18B20_DQ_PIN_MASK)
+    #define DQ_IN()    P6_MODE_IN_HIZ(DS18B20_DQ_PIN_MASK)
+    #define DQ_INIT()  { P6_MODE_IO_PU(DS18B20_DQ_PIN_MASK); P6_PULL_UP_ENABLE(DS18B20_DQ_PIN_MASK); P6_DIGIT_IN_ENABLE(DS18B20_DQ_PIN_MASK); }
+#elif DS18B20_DQ_PORT_NUM == 7
+    #define DQ_OUT()   P7_MODE_OUT_PP(DS18B20_DQ_PIN_MASK)
+    #define DQ_IN()    P7_MODE_IN_HIZ(DS18B20_DQ_PIN_MASK)
+    #define DQ_INIT()  { P7_MODE_IO_PU(DS18B20_DQ_PIN_MASK); P7_PULL_UP_ENABLE(DS18B20_DQ_PIN_MASK); P7_DIGIT_IN_ENABLE(DS18B20_DQ_PIN_MASK); }
 #else
-    #error "DS18B20_DQ_PORT: unsupported GPIO port (supported: P0~P5)"
+    #error "DS18B20_DQ_PORT_NUM: unsupported port number (supported: 0~7)"
 #endif
-
-/* 推挽输出模式 */
-#define DQ_OUT()                            \
-    do                                      \
-    {                                       \
-        DQ_PORT_M1 &= ~(DS18B20_DQ_PIN);    \
-        DQ_PORT_M0 |= (DS18B20_DQ_PIN);     \
-    } while (0)
-
-/* 高阻输入模式 */
-#define DQ_IN()                             \
-    do                                      \
-    {                                       \
-        DQ_PORT_M1 |= (DS18B20_DQ_PIN);     \
-        DQ_PORT_M0 &= ~(DS18B20_DQ_PIN);    \
-    } while (0)
 
 /* ============================================================
  * 1-Wire 精确延时（基于 STC32G_Delay.h 中的 delay_us）
@@ -200,11 +189,9 @@ static u8 ds18b20_crc8(const u8 *dat, u8 len)
  */
 void ds18b20_init(void)
 {
-    /* 配置 DQ 引脚为准双向口 + 上拉 */
-    DQ_PORT_M1 &= ~(DS18B20_DQ_PIN);   /* PxM1.x = 0 */
-    DQ_PORT_M0 &= ~(DS18B20_DQ_PIN);   /* PxM0.x = 0 → 准双向口 */
-    DQ_PORT_PU |= (DS18B20_DQ_PIN);    /* 内部上拉使能 */
-    DQ_HIGH();                         /* 总线空闲高电平 */
+    /* 使用 STC32G_GPIO 库宏配置 DQ 引脚为准双向口 + 上拉 + 数字输入使能 */
+    DQ_INIT();
+    DQ_HIGH();  /* 总线空闲高电平 */
 }
 
 /**

@@ -1,0 +1,205 @@
+C251 COMPILER V5.60.0,  tim_drive                                                          06/08/26  15:59:02  PAGE 1   
+
+
+C251 COMPILER V5.60.0, COMPILATION OF MODULE tim_drive
+OBJECT MODULE PLACED IN .\Objects\tim_drive.obj
+COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE ..\Driver\tim_drive.c XSMALL INTR2 BROWSE INCDIR(..\App;..\Bsp;..\Driv
+                    -er;..\Library;..\Tool) DEBUG PRINT(.\Listings\tim_drive.lst) OBJECT(.\Objects\tim_drive.obj) 
+
+stmt  level    source
+
+    1          #include "tim_drive.h"
+    2          
+    3          #include "STC32G_Timer.h"
+    4          #include "STC32G_NVIC.h"
+    5          
+    6          void tim_init(TIM_Handle_t *htim)
+    7          {
+    8   1          TIM_InitTypeDef TIM_InitStructure;
+    9   1      
+   10   1          if (!htim)
+   11   1              return;
+   12   1      
+   13   1          TIM_InitStructure.TIM_Mode = TIM_16BitAutoReload;
+   14   1          TIM_InitStructure.TIM_ClkSource = htim->clk_mode;
+   15   1          TIM_InitStructure.TIM_ClkOut = DISABLE;
+   16   1          TIM_InitStructure.TIM_Value = (0x10000 - htim->arr); // 0~65535
+*** WARNING C188 IN LINE 16 OF ..\Driver\tim_drive.c: 'constant': value truncated
+   17   1          TIM_InitStructure.TIM_PS = htim->psr;                // 0~255
+   18   1          TIM_InitStructure.TIM_Run = DISABLE;
+   19   1          Timer_Inilize(htim->id, &TIM_InitStructure);
+   20   1      
+   21   1          htim->ticks = 0;
+   22   1      }
+   23          
+   24          float tim_get(TIM_Handle_t *htim)
+   25          {
+   26   1          if (!htim)
+   27   1              return -1.0f;
+   28   1      
+   29   1          switch (htim->id)
+   30   1          {
+   31   2          case 0:
+   32   2              htim->ticks = TH0 << 8 | TL0;
+   33   2              break;
+   34   2          case 1:
+   35   2              htim->ticks = TH1 << 8 | TL1;
+   36   2              break;
+   37   2          case 2:
+   38   2              htim->ticks = T2H << 8 | T2L;
+   39   2              break;
+   40   2          case 3:
+   41   2              htim->ticks = T3H << 8 | T3L;
+   42   2              break;
+   43   2          case 4:
+   44   2              htim->ticks = T4H << 8 | T4L;
+   45   2              break;
+   46   2          default:
+   47   2              return -1.0f;
+   48   2          }
+   49   1      
+   50   1          return htim->ticks;
+   51   1      }
+   52          
+   53          void tim_start(TIM_Handle_t *htim)
+   54          {
+   55   1          if (!htim)
+   56   1              return;
+   57   1      
+C251 COMPILER V5.60.0,  tim_drive                                                          06/08/26  15:59:02  PAGE 2   
+
+   58   1          switch (htim->id)
+   59   1          {
+   60   2          case 0:
+   61   2              Timer0_Run(1);
+   62   2              break;
+   63   2          case 1:
+   64   2              Timer1_Run(1);
+   65   2              break;
+   66   2          case 2:
+   67   2              Timer2_Run(1);
+   68   2              break;
+   69   2          case 3:
+   70   2              Timer3_Run(1);
+   71   2              break;
+   72   2          case 4:
+   73   2              Timer4_Run(1);
+   74   2              break;
+   75   2          default:
+   76   2              break;
+   77   2          }
+   78   1      }
+   79          
+   80          void tim_stop(TIM_Handle_t *htim)
+   81          {
+   82   1          if (!htim)
+   83   1              return;
+   84   1      
+   85   1          switch (htim->id)
+   86   1          {
+   87   2          case 0:
+   88   2              Timer0_Stop();
+   89   2              break;
+   90   2          case 1:
+   91   2              Timer1_Stop();
+   92   2              break;
+   93   2          case 2:
+   94   2              Timer2_Stop();
+   95   2              break;
+   96   2          case 3:
+   97   2              Timer3_Stop();
+   98   2              break;
+   99   2          case 4:
+  100   2              Timer4_Stop();
+  101   2              break;
+  102   2          default:
+  103   2              break;
+  104   2          }
+  105   1      }
+  106          
+  107          void tim_clr(TIM_Handle_t *htim)
+  108          {
+  109   1          if (!htim)
+  110   1              return;
+  111   1      
+  112   1          switch (htim->id)
+  113   1          {
+  114   2          case 0:
+  115   2              TH0 = 0;
+  116   2              TL0 = 0;
+  117   2              break;
+  118   2          case 1:
+  119   2              TH1 = 0;
+  120   2              TL1 = 0;
+  121   2              break;
+  122   2          case 2:
+  123   2              T2H = 0;
+C251 COMPILER V5.60.0,  tim_drive                                                          06/08/26  15:59:02  PAGE 3   
+
+  124   2              T2L = 0;
+  125   2              break;
+  126   2          case 3:
+  127   2              T3H = 0;
+  128   2              T3L = 0;
+  129   2              break;
+  130   2          case 4:
+  131   2              T4H = 0;
+  132   2              T4L = 0;
+  133   2              break;
+  134   2          default:
+  135   2              break;
+  136   2          }
+  137   1      
+  138   1          htim->ticks = 0;
+  139   1      }
+  140          
+  141          void tim_intr(TIM_Handle_t *htim, u8 State, u8 Priority)
+  142          {
+  143   1          if (!htim)
+  144   1              return;
+  145   1      
+  146   1          switch (htim->id)
+  147   1          {
+  148   2          case 0:
+  149   2              NVIC_Timer0_Init(State, Priority);
+  150   2              break;
+  151   2          case 1:
+  152   2              NVIC_Timer1_Init(State, Priority);
+  153   2              break;
+  154   2          case 2:
+  155   2              NVIC_Timer2_Init(State, Priority);
+  156   2              break;
+  157   2          case 3:
+  158   2              NVIC_Timer3_Init(State, Priority);
+  159   2              break;
+  160   2          case 4:
+  161   2              NVIC_Timer4_Init(State, Priority);
+  162   2              break;
+  163   2          default:
+  164   2              break;
+  165   2          }
+  166   1      }
+
+
+Module Information          Static   Overlayable
+------------------------------------------------
+  code size            =       397     ------
+  ecode size           =    ------     ------
+  data size            =    ------     ------
+  idata size           =    ------     ------
+  pdata size           =    ------     ------
+  xdata size           =    ------     ------
+  xdata-const size     =    ------     ------
+  edata size           =    ------          7
+  bit size             =    ------     ------
+  ebit size            =    ------     ------
+  bitaddressable size  =    ------     ------
+  ebitaddressable size =    ------     ------
+  far data size        =    ------     ------
+  huge data size       =    ------     ------
+  const size           =    ------     ------
+  hconst size          =    ------     ------
+End of Module Information.
+
+
+C251 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)

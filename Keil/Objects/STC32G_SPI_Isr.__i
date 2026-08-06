@@ -1,0 +1,1 @@
+"..\Library\STC32G_SPI_Isr.c" XSMALL INTR2 BROWSE INCDIR(..\App;..\Bsp;..\Driver;..\Library;..\Tool) DEBUG PRINT(.\Listings\STC32G_SPI_Isr.lst) OBJECT(.\Objects\STC32G_SPI_Isr.obj)

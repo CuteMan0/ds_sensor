@@ -1,0 +1,182 @@
+C251 COMPILER V5.60.0,  fft                                                                06/08/26  15:59:09  PAGE 1   
+
+
+C251 COMPILER V5.60.0, COMPILATION OF MODULE fft
+OBJECT MODULE PLACED IN .\Objects\fft.obj
+COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE ..\Tool\fft.c XSMALL INTR2 BROWSE INCDIR(..\App;..\Bsp;..\Driver;..\Li
+                    -brary;..\Tool) DEBUG PRINT(.\Listings\fft.lst) OBJECT(.\Objects\fft.obj) 
+
+stmt  level    source
+
+    1          /**
+    2           * @file fft.h
+    3           * @author wongsx
+    4           * @brief
+    5           * @version 0.1
+    6           * @date 2025-9-22
+    7           *
+    8           * @copyright Copyright (c) 2025
+    9           *
+   10           */
+   11          
+   12          #include "fft.h"
+   13          #include <math.h>
+   14          
+   15          float xdata sin_lut[MAX_FFT_N / 2];
+   16          float xdata cos_lut[MAX_FFT_N / 2];
+   17          
+   18          /* 位反转表（用于蝶形交换，节省计算时间） */
+   19          u16 xdata bitrev[MAX_FFT_N];
+   20          
+   21          static u16 bit_reverse(u16 x, u16 bits)
+   22          {
+   23   1          u16 i;
+   24   1          u16 r;
+   25   1      
+   26   1          r = 0;
+   27   1          for (i = 0; i < bits; i++)
+   28   1          {
+   29   2              r = (r << 1) | (x & 1);
+   30   2              x >>= 1;
+   31   2          }
+   32   1          return r;
+   33   1      }
+   34          
+   35          void fft_init(void)
+   36          {
+   37   1          u16 i;
+   38   1          u16 bits;
+   39   1          float angle;
+   40   1      
+   41   1          /* 计算 LUT */
+   42   1          for (i = 0; i < MAX_FFT_N / 2; i++)
+   43   1          {
+   44   2              angle = -2.0f * 3.1415926f * (float)i / (float)MAX_FFT_N;
+   45   2              cos_lut[i] = cos(angle);
+   46   2              sin_lut[i] = sin(angle);
+   47   2          }
+   48   1      
+   49   1          /* 预计算 bit-reversal  */
+   50   1          bits = 0;
+   51   1          i = MAX_FFT_N;
+   52   1          while (i > 1)
+   53   1          {
+   54   2              bits++;
+   55   2              i >>= 1;
+   56   2          }
+   57   1      
+   58   1          for (i = 0; i < MAX_FFT_N; i++)
+C251 COMPILER V5.60.0,  fft                                                                06/08/26  15:59:09  PAGE 2   
+
+   59   1              bitrev[i] = bit_reverse(i, bits);
+   60   1      }
+   61          
+   62          /* 真实 FFT (Cooley-Tukey) */
+   63          void fft_run(float *input, complex_t *output)
+   64          {
+   65   1          u16 i;
+   66   1          u16 j;
+   67   1          u16 step;
+   68   1          u16 half;
+   69   1          u16 a;
+   70   1          u16 b;
+   71   1          u16 lut_step;
+   72   1          float wr;
+   73   1          float wi;
+   74   1          float tr;
+   75   1          float ti;
+   76   1          float xr;
+   77   1          float xi;
+   78   1      
+   79   1          /* 位反转排列 */
+   80   1          for (i = 0; i < MAX_FFT_N; i++)
+   81   1          {
+   82   2              j = bitrev[i];
+   83   2              output[i].real = input[j];
+   84   2              output[i].imag = 0.0f;
+   85   2          }
+   86   1      
+   87   1          /* 蝶形运算 */
+   88   1          step = 2;
+   89   1          while (step <= MAX_FFT_N)
+   90   1          {
+   91   2              half = step >> 1;
+   92   2              lut_step = MAX_FFT_N / step;
+   93   2      
+   94   2              for (a = 0; a < half; a++)
+   95   2              {
+   96   3                  wr = cos_lut[a * lut_step];
+   97   3                  wi = sin_lut[a * lut_step];
+   98   3      
+   99   3                  for (b = a; b < MAX_FFT_N; b += step)
+  100   3                  {
+  101   4                      j = b + half;
+  102   4      
+  103   4                      /* 读取 */
+  104   4                      xr = output[b].real;
+  105   4                      xi = output[b].imag;
+  106   4                      tr = output[j].real;
+  107   4                      ti = output[j].imag;
+  108   4      
+  109   4                      /* 旋转乘法 */
+  110   4                      output[j].real = tr * wr - ti * wi;
+  111   4                      output[j].imag = tr * wi + ti * wr;
+  112   4      
+  113   4                      /* 蝶形结果 */
+  114   4                      output[b].real = xr + output[j].real;
+  115   4                      output[b].imag = xi + output[j].imag;
+  116   4                      output[j].real = xr - output[j].real;
+  117   4                      output[j].imag = xi - output[j].imag;
+  118   4                  }
+  119   3              }
+  120   2      
+  121   2              step <<= 1;
+  122   2          }
+  123   1      }
+  124          
+C251 COMPILER V5.60.0,  fft                                                                06/08/26  15:59:09  PAGE 3   
+
+  125          void fft_abs(complex_t *freq, float *mag)
+  126          {
+  127   1          u16 i;
+  128   1          float r;
+  129   1          float im;
+  130   1          float v;
+  131   1      
+  132   1          for (i = 0; i < MAX_FFT_N; i++)
+  133   1          {
+  134   2              r = freq[i].real;
+  135   2              im = freq[i].imag;
+  136   2              v = r * r + im * im;
+  137   2      
+  138   2              /* 防止 NaN */
+  139   2              if (v < 0 || v != v)
+  140   2                  v = 0;
+  141   2      
+  142   2              mag[i] = sqrt(v);
+  143   2          }
+  144   1      }
+
+
+Module Information          Static   Overlayable
+------------------------------------------------
+  code size            =       876     ------
+  ecode size           =    ------     ------
+  data size            =    ------     ------
+  idata size           =    ------     ------
+  pdata size           =    ------     ------
+  xdata size           =      1536     ------
+  xdata-const size     =    ------     ------
+  edata size           =    ------         46
+  bit size             =    ------     ------
+  ebit size            =    ------     ------
+  bitaddressable size  =    ------     ------
+  ebitaddressable size =    ------     ------
+  far data size        =    ------     ------
+  huge data size       =    ------     ------
+  const size           =    ------     ------
+  hconst size          =    ------     ------
+End of Module Information.
+
+
+C251 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

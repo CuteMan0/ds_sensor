@@ -1,0 +1,1 @@
+"..\Bsp\ds144_do_meter.c" XSMALL INTR2 BROWSE INCDIR(..\App;..\Bsp;..\Driver;..\Library;..\Tool) DEBUG PRINT(.\Listings\ds144_do_meter.lst) OBJECT(.\Objects\ds144_do_meter.obj)

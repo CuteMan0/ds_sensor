@@ -1,0 +1,1 @@
+"..\Library\STC32G_USART_LIN.c" XSMALL INTR2 BROWSE INCDIR(..\App;..\Bsp;..\Driver;..\Library;..\Tool) DEBUG PRINT(.\Listings\STC32G_USART_LIN.lst) OBJECT(.\Objects\STC32G_USART_LIN.obj)

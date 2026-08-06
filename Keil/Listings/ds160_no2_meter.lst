@@ -1,0 +1,90 @@
+C251 COMPILER V5.60.0,  ds160_no2_meter                                                    06/08/26  16:43:26  PAGE 1   
+
+
+C251 COMPILER V5.60.0, COMPILATION OF MODULE ds160_no2_meter
+OBJECT MODULE PLACED IN .\Objects\ds160_no2_meter.obj
+COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE ..\Bsp\ds160_no2_meter.c XSMALL INTR2 BROWSE INCDIR(..\App;..\Bsp;..\D
+                    -river;..\Library;..\Tool) DEBUG PRINT(.\Listings\ds160_no2_meter.lst) OBJECT(.\Objects\ds160_no2_meter.obj) 
+
+stmt  level    source
+
+    1          #include "ds160_no2_meter.h"
+    2          // WSP-1110
+    3          #if DS_SENSOR == 160
+               
+               #include "adc_drive.h"
+               
+               #include "lut.h"
+               
+               #include <math.h>
+               
+               #define VCC 5.0f
+               #define RL 1000000.0f // 1M
+               #define R0 510000.0f  // 510K 空气标定电阻值
+               
+               ADC_Handle_t adc0;
+               
+               static const LUT_2D wsp1110_lut[] = {
+                   {1.31f, 0.1f},
+                   {2.9f, 0.3f},
+                   {4.1f, 0.5f},
+                   {6.1f, 0.7f},
+                   {9.3f, 1.0f},
+                   {23.1f, 2.0f},
+                   {42.0f, 3.0f}};
+               
+               void ds_init(void)
+               {
+                   adc_init(&adc0, 0, 3.3f);
+               }
+               
+               void ds_update(float *dat)
+               {
+                   float ratio, rs = 0.0f;
+                   u16 ppm = 0;
+               
+                   rs = RL * (0.5f * VCC / adc_get(&adc0) - 1.0f);
+                   ratio = rs / R0;
+               
+                   if (ratio > 42.0f)
+                   {
+                       // 高浓度按照拟合曲线计算
+                       ppm = pow(ratio / 9.2, 1.0 / 1.18);
+                   }
+                   else
+                   {
+                       // 低浓度直接查表
+                       ppm = LUT_BinaryInterp_u16(wsp1110_lut,
+                                                  sizeof(wsp1110_lut) / sizeof(wsp1110_lut[0]),
+                                                  ratio);
+                   }
+               
+                   *dat = (float)ppm;
+               }
+               #endif
+
+
+Module Information          Static   Overlayable
+------------------------------------------------
+  code size            =    ------     ------
+C251 COMPILER V5.60.0,  ds160_no2_meter                                                    06/08/26  16:43:26  PAGE 2   
+
+  ecode size           =    ------     ------
+  data size            =    ------     ------
+  idata size           =    ------     ------
+  pdata size           =    ------     ------
+  xdata size           =    ------     ------
+  xdata-const size     =    ------     ------
+  edata size           =    ------     ------
+  bit size             =    ------     ------
+  ebit size            =    ------     ------
+  bitaddressable size  =    ------     ------
+  ebitaddressable size =    ------     ------
+  far data size        =    ------     ------
+  huge data size       =    ------     ------
+  const size           =    ------     ------
+  hconst size          =    ------     ------
+End of Module Information.
+
+
+C251 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

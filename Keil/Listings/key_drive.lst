@@ -1,0 +1,111 @@
+C251 COMPILER V5.60.0,  key_drive                                                          06/08/26  15:59:02  PAGE 1   
+
+
+C251 COMPILER V5.60.0, COMPILATION OF MODULE key_drive
+OBJECT MODULE PLACED IN .\Objects\key_drive.obj
+COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE ..\Driver\key_drive.c XSMALL INTR2 BROWSE INCDIR(..\App;..\Bsp;..\Driv
+                    -er;..\Library;..\Tool) DEBUG PRINT(.\Listings\key_drive.lst) OBJECT(.\Objects\key_drive.obj) 
+
+stmt  level    source
+
+    1          #include "key_drive.h"
+    2          
+    3          #include "STC32G_GPIO.h"
+    4          #include "STC32G_Delay.h"
+    5          
+    6          static u8 key_state = 0;
+    7          static u16 key_press_time = 0;
+    8          static u8 long_press_triggered = 0;
+    9          u8 flag_key = 0; // 1 = 短按，2 = 长按
+   10          
+   11          //========================================================================
+   12          // 函数: void KEY_GPIO_init(void)
+   13          // 描述: 按键_IO口配置.
+   14          // 参数: none.
+   15          // 返回: none.
+   16          // 版本: V1.0, 2024-06-26
+   17          void KEY_GPIO_init(void)
+   18          {
+   19   1          P3_MODE_IN_HIZ(GPIO_Pin_2);    // P3.2设置为准双向口
+   20   1          P3_PULL_UP_ENABLE(GPIO_Pin_2); // P3.2上拉使能
+   21   1      }
+   22          
+   23          void Scan_Key(void)
+   24          {
+   25   1          u8 current_key = (0 == HOME_key) ? 0 : 1;
+   26   1      
+   27   1          switch (key_state)
+   28   1          {
+   29   2          case 0: // 空闲
+   30   2              if (0 == current_key)
+   31   2              {
+   32   3                  key_state = 1;
+   33   3                  key_press_time = 0;
+   34   3                  long_press_triggered = 0;
+   35   3              }
+   36   2              break;
+   37   2      
+   38   2          case 1: // 消抖
+   39   2              if (0 == current_key)
+   40   2              {
+   41   3                  key_press_time++;
+   42   3                  if (key_press_time >= 2) // 消抖完成（40ms）
+   43   3                  {
+   44   4                      key_state = 2;
+   45   4                  }
+   46   3              }
+   47   2              else
+   48   2              {
+   49   3                  key_state = 0;
+   50   3              }
+   51   2              break;
+   52   2      
+   53   2          case 2: // 按键按下，等待释放或长按
+   54   2              if (0 == current_key)
+   55   2              {
+   56   3                  key_press_time++;
+   57   3      
+   58   3                  // 长按检测（例如 1000ms）
+C251 COMPILER V5.60.0,  key_drive                                                          06/08/26  15:59:02  PAGE 2   
+
+   59   3                  if (!long_press_triggered && key_press_time >= 50) // 50 * 20ms = 1000ms
+   60   3                  {
+   61   4                      long_press_triggered = 1;
+   62   4                      flag_key = 2; // 长按
+   63   4                  }
+   64   3              }
+   65   2              else // 按键释放
+   66   2              {
+   67   3                  if (!long_press_triggered)
+   68   3                  {
+   69   4                      flag_key = 1; // 短按
+   70   4                  }
+   71   3                  key_state = 0;
+   72   3              }
+   73   2              break;
+   74   2          }
+   75   1      }
+
+
+Module Information          Static   Overlayable
+------------------------------------------------
+  code size            =       160     ------
+  ecode size           =    ------     ------
+  data size            =    ------     ------
+  idata size           =    ------     ------
+  pdata size           =    ------     ------
+  xdata size           =    ------     ------
+  xdata-const size     =    ------     ------
+  edata size           =         5     ------
+  bit size             =    ------     ------
+  ebit size            =    ------     ------
+  bitaddressable size  =    ------     ------
+  ebitaddressable size =    ------     ------
+  far data size        =    ------     ------
+  huge data size       =    ------     ------
+  const size           =    ------     ------
+  hconst size          =        21     ------
+End of Module Information.
+
+
+C251 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

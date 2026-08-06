@@ -1,0 +1,1 @@
+"..\Tool\task_scheduler.c" XSMALL INTR2 BROWSE INCDIR(..\App;..\Bsp;..\Driver;..\Library;..\Tool) DEBUG PRINT(.\Listings\task_scheduler.lst) OBJECT(.\Objects\task_scheduler.obj)

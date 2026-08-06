@@ -1,0 +1,67 @@
+C251 COMPILER V5.60.0,  STC32G_Exti                                                        06/08/26  15:59:05  PAGE 1   
+
+
+C251 COMPILER V5.60.0, COMPILATION OF MODULE STC32G_Exti
+OBJECT MODULE PLACED IN .\Objects\STC32G_Exti.obj
+COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE ..\Library\STC32G_Exti.c XSMALL INTR2 BROWSE INCDIR(..\App;..\Bsp;..\D
+                    -river;..\Library;..\Tool) DEBUG PRINT(.\Listings\STC32G_Exti.lst) OBJECT(.\Objects\STC32G_Exti.obj) 
+
+stmt  level    source
+
+    1          /*---------------------------------------------------------------------*/
+    2          /* --- Web: www.STCAI.com ---------------------------------------------*/
+    3          /*---------------------------------------------------------------------*/
+    4          
+    5          #include "STC32G_Exti.h"
+    6          
+    7          //========================================================================
+    8          // 函数: u8     Ext_Inilize(u8 EXT, EXTI_InitTypeDef *INTx)
+    9          // 描述: 外部中断初始化程序.
+   10          // 参数: EXT: 外部中断号, INTx: 结构参数,请参考Exti.h里的定义.
+   11          // 返回: 成功返回 SUCCESS, 错误返回 FAIL.
+   12          // 版本: V1.0, 2012-10-22
+   13          //========================================================================
+   14          u8 Ext_Inilize(u8 EXT, EXTI_InitTypeDef *INTx)
+   15          {
+   16   1              if (EXT > EXT_INT1)
+   17   1                      return FAIL; // 空操作
+   18   1      
+   19   1              if (EXT == EXT_INT0) // 外中断0
+   20   1              {
+   21   2                      IE0 = 0; // 外中断0标志位
+   22   2                      INT0_Mode(INTx->EXTI_Mode);
+   23   2                      return SUCCESS; // 成功
+   24   2              }
+   25   1      
+   26   1              if (EXT == EXT_INT1) // 外中断1
+   27   1              {
+   28   2                      IE1 = 0; // 外中断1标志位
+   29   2                      INT1_Mode(INTx->EXTI_Mode);
+   30   2                      return SUCCESS; // 成功
+   31   2              }
+   32   1              return FAIL; // 失败
+   33   1      }
+
+
+Module Information          Static   Overlayable
+------------------------------------------------
+  code size            =        51     ------
+  ecode size           =    ------     ------
+  data size            =    ------     ------
+  idata size           =    ------     ------
+  pdata size           =    ------     ------
+  xdata size           =    ------     ------
+  xdata-const size     =    ------     ------
+  edata size           =    ------     ------
+  bit size             =    ------     ------
+  ebit size            =    ------     ------
+  bitaddressable size  =    ------     ------
+  ebitaddressable size =    ------     ------
+  far data size        =    ------     ------
+  huge data size       =    ------     ------
+  const size           =    ------     ------
+  hconst size          =    ------     ------
+End of Module Information.
+
+
+C251 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

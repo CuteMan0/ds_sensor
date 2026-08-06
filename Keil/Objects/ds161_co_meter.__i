@@ -1,0 +1,1 @@
+"..\Bsp\ds161_co_meter.c" XSMALL INTR2 BROWSE INCDIR(..\App;..\Bsp;..\Driver;..\Library;..\Tool) DEBUG PRINT(.\Listings\ds161_co_meter.lst) OBJECT(.\Objects\ds161_co_meter.obj)

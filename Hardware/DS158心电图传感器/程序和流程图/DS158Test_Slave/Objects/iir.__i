@@ -1,1 +1,0 @@
-"USER\iir.c" XSMALL INTR2 BROWSE INCDIR(.\USER;.\Library) DEBUG PRINT(.\Listings\iir.lst) OBJECT(.\Objects\iir.obj)

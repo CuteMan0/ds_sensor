@@ -1,1 +1,0 @@
-"USER\DS158_ecg_drive.c" XSMALL INTR2 BROWSE INCDIR(.\USER;.\Library) DEBUG PRINT(.\Listings\DS158_ecg_drive.lst) OBJECT(.\Objects\DS158_ecg_drive.obj)

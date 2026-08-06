@@ -1,0 +1,296 @@
+C251 COMPILER V5.60.0,  task_scheduler                                                     06/08/26  17:27:48  PAGE 1   
+
+
+C251 COMPILER V5.60.0, COMPILATION OF MODULE task_scheduler
+OBJECT MODULE PLACED IN .\Objects\task_scheduler.obj
+COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE ..\Tool\task_scheduler.c XSMALL INTR2 BROWSE INCDIR(..\App;..\Bsp;..\D
+                    -river;..\Library;..\Tool) DEBUG PRINT(.\Listings\task_scheduler.lst) OBJECT(.\Objects\task_scheduler.obj) 
+
+stmt  level    source
+
+    1          #include "task_scheduler.h"
+    2          
+    3          #include "STC32G_Timer.h"
+    4          
+    5          static TaskScheduler_t scheduler;
+    6          static volatile u32 sys_tick_ms = 0;
+    7          
+    8          //------------------------------------------------------------
+    9          // 初始化任务调度器
+   10          //------------------------------------------------------------
+   11          void task_scheduler_init(void)
+   12          {
+   13   1          u8 i;
+   14   1          scheduler.task_count = 0;
+   15   1          scheduler.idle_hook = 0;
+   16   1          sys_tick_ms = 0;
+   17   1      
+   18   1          for (i = 0; i < MAX_TASKS; i++)
+   19   1          {
+   20   2              scheduler.tasks[i].stats.max_us = 0;
+   21   2              scheduler.tasks[i].stats.min_us = 0xFFFFFFFF;
+   22   2              scheduler.tasks[i].stats.avg_us = 0;
+   23   2              scheduler.tasks[i].stats.total_us = 0;
+   24   2              scheduler.tasks[i].stats.exec_cnt = 0;
+   25   2              scheduler.tasks[i].stats.overrun_cnt = 0;
+   26   2              scheduler.tasks[i].stats.last_dur_us = 0;
+   27   2          }
+   28   1      
+   29   1          // 1ms@24.000MHz
+   30   1          TM0PS = 0x00; // Set timer clock prescaler
+   31   1          AUXR |= 0x80; // imer clock is 1T mode
+   32   1          TMOD &= 0xF0; // Set timer work mode
+   33   1          TL0 = 0x40;   // Initial timer value
+   34   1          TH0 = 0xA2;   // Initial timer value
+   35   1          TF0 = 0;      // Clear TF0 flag
+   36   1          TR0 = 1;      // Timer0 start run
+   37   1          ET0 = 1;      // Enable timer0 interrupt
+   38   1      }
+   39          
+   40          //------------------------------------------------------------
+   41          // 设置空闲钩子
+   42          //------------------------------------------------------------
+   43          void task_set_idle_hook(TaskIdleHook_t hook)
+   44          {
+   45   1          scheduler.idle_hook = hook;
+   46   1      }
+   47          
+   48          //------------------------------------------------------------
+   49          // 原子读取系统滴答（关闭 EA 保证 u32 读原子性）
+   50          //------------------------------------------------------------
+   51          u32 task_get_tick_ms(void)
+   52          {
+   53   1          u32 t;
+   54   1          EA = 0;
+   55   1          t = sys_tick_ms;
+   56   1          EA = 1;
+   57   1          return t;
+   58   1      }
+C251 COMPILER V5.60.0,  task_scheduler                                                     06/08/26  17:27:48  PAGE 2   
+
+   59          
+   60          //------------------------------------------------------------
+   61          // 获取微秒级时间戳（基于 ms tick + Timer0 当前计数值）
+   62          // 精度：约 1us（24MHz 1T 模式）
+   63          //------------------------------------------------------------
+   64          u32 task_get_tick_us(void)
+   65          {
+   66   1          u32 t_ms, elapsed_ticks;
+   67   1          u16 t0_val;
+   68   1          u8 ea_save = EA;
+   69   1      
+   70   1          EA = 0;
+   71   1          t_ms = sys_tick_ms;
+   72   1          // 读取 Timer0 当前计数值（16位自动重装，从 TL0/TH0 到 0xFFFF 溢出）
+   73   1          t0_val = (TH0 << 8) | TL0;
+   74   1          // 检查是否在读取期间发生溢出
+   75   1          if (TF0)
+   76   1          {
+   77   2              // 溢出已发生但 ISR 尚未执行，补偿 1ms
+   78   2              t0_val = (TH0 << 8) | TL0;
+   79   2              if ((u16)(0xA240 - t0_val) > 0xA240 / 2)
+   80   2              {
+   81   3                  // 确实刚溢出，补偿
+   82   3                  t_ms++;
+   83   3              }
+   84   2          }
+   85   1          EA = ea_save;
+   86   1      
+   87   1          // 计算从重装值到当前值的 ticks（向下计数）
+   88   1          // 重装值 ≈ 0xA240，满值 0xFFFF，每个 tick = 1/24 μs ≈ 0.0417μs
+   89   1          // 简化：ticks 直接对应 us 近似值
+   90   1          elapsed_ticks = (u16)(t0_val - 0xA240);
+   91   1          // 24MHz 1T: 1 tick = 1/24 us.  elapsed_ticks / 24 = elapsed_us
+   92   1          return t_ms * 1000 + elapsed_ticks / 24;
+   93   1      }
+   94          
+   95          //------------------------------------------------------------
+   96          // 注册一个周期任务
+   97          //------------------------------------------------------------
+   98          u8 task_register(TaskFunc_t func, u32 period_ms, u8 priority)
+   99          {
+  100   1          u8 id = scheduler.task_count;
+  101   1          if (id >= MAX_TASKS)
+  102   1              return 0xFF;
+  103   1      
+  104   1          scheduler.tasks[id].id = id;
+  105   1          scheduler.tasks[id].priority = priority;
+  106   1          scheduler.tasks[id].period_ms = period_ms;
+  107   1          scheduler.tasks[id].last_tick = 0;
+  108   1          scheduler.tasks[id].func = func;
+  109   1      
+  110   1          scheduler.task_count++;
+  111   1          return id;
+  112   1      }
+  113          
+  114          //------------------------------------------------------------
+  115          // 中断调用，系统时基更新
+  116          //------------------------------------------------------------
+  117          void task_scheduler_tick_isr(void)
+  118          {
+  119   1          sys_tick_ms++;
+  120   1      }
+  121          
+  122          //------------------------------------------------------------
+  123          // 获取任务统计
+  124          //------------------------------------------------------------
+C251 COMPILER V5.60.0,  task_scheduler                                                     06/08/26  17:27:48  PAGE 3   
+
+  125          const TaskStats_t *task_get_stats(u8 task_id)
+  126          {
+  127   1          if (task_id >= scheduler.task_count)
+  128   1              return 0;
+  129   1          return &scheduler.tasks[task_id].stats;
+  130   1      }
+  131          
+  132          //------------------------------------------------------------
+  133          // 非阻塞微秒延迟
+  134          // 返回: 1=还在等待，0=超时已到
+  135          //------------------------------------------------------------
+  136          u8 task_delay_us(u32 *t_next, u32 delay_us)
+  137          {
+  138   1          u32 now = task_get_tick_us();
+  139   1      
+  140   1          if (*t_next == 0)
+  141   1          {
+  142   2              *t_next = now + delay_us;
+  143   2              return 1;
+  144   2          }
+  145   1      
+  146   1          // 纯 u32 比较，利用无符号回绕
+  147   1          if ((u32)(now - *t_next) >= 0x80000000UL) // now < t_next 等价
+  148   1              return 1;                              // 还没到
+  149   1      
+  150   1          *t_next = now + delay_us;
+  151   1          return 0; // 超时到达
+  152   1      }
+  153          
+  154          //------------------------------------------------------------
+  155          // 非阻塞毫秒延迟（兼容旧 API）
+  156          //------------------------------------------------------------
+  157          u8 task_delay(u32 *t_next, u32 delay_ms)
+  158          {
+  159   1          u32 now = task_get_tick_ms();
+  160   1      
+  161   1          if (*t_next == 0)
+  162   1          {
+  163   2              *t_next = now + delay_ms;
+  164   2              return 1;
+  165   2          }
+  166   1      
+  167   1          if ((u32)(now - *t_next) >= 0x80000000UL)
+  168   1              return 1;
+  169   1      
+  170   1          *t_next = now + delay_ms;
+  171   1          return 0;
+  172   1      }
+  173          
+  174          //------------------------------------------------------------
+  175          // 主循环中调用，调度任务执行
+  176          //------------------------------------------------------------
+  177          void task_scheduler_run(void)
+  178          {
+  179   1          u8 i, j;
+  180   1          Task_t *ready_list[MAX_TASKS];
+  181   1          u8 ready_count = 0;
+  182   1          u32 now, now_us, start_us, dur_us, elapsed;
+  183   1      
+  184   1          now = task_get_tick_ms();
+  185   1      
+  186   1          // 扫描到期任务
+  187   1          for (i = 0; i < scheduler.task_count; i++)
+  188   1          {
+  189   2              Task_t *t = &scheduler.tasks[i];
+  190   2      
+C251 COMPILER V5.60.0,  task_scheduler                                                     06/08/26  17:27:48  PAGE 4   
+
+  191   2              // 首次调度：last_tick==0 时直接触发
+  192   2              if (t->last_tick == 0)
+  193   2              {
+  194   3                  t->last_tick = now;
+  195   3                  ready_list[ready_count++] = t;
+  196   3                  continue;
+  197   3              }
+  198   2      
+  199   2              // 时间到？
+  200   2              elapsed = now - t->last_tick;
+  201   2              if (elapsed >= t->period_ms)
+  202   2              {
+  203   3                  // 积压检测：如果流逝时间超过 2 倍周期，说明任务被严重延迟
+  204   3                  if (elapsed >= t->period_ms * 2)
+  205   3                  {
+  206   4                      t->stats.overrun_cnt++;
+  207   4                  }
+  208   3      
+  209   3                  // 重置 last_tick 为 now，放弃追赶，避免连续多次执行
+  210   3                  t->last_tick = now;
+  211   3                  ready_list[ready_count++] = t;
+  212   3              }
+  213   2          }
+  214   1      
+  215   1          // 按优先级排序（高值优先，冒泡）
+  216   1          for (i = 0; i < ready_count; i++)
+  217   1          {
+  218   2              for (j = i + 1; j < ready_count; j++)
+  219   2              {
+  220   3                  if (ready_list[j]->priority > ready_list[i]->priority)
+  221   3                  {
+  222   4                      Task_t *tmp = ready_list[i];
+  223   4                      ready_list[i] = ready_list[j];
+  224   4                      ready_list[j] = tmp;
+  225   4                  }
+  226   3              }
+  227   2          }
+  228   1      
+  229   1          // 执行就绪任务并统计耗时
+  230   1          for (i = 0; i < ready_count; i++)
+  231   1          {
+  232   2              Task_t *t = ready_list[i];
+  233   2              start_us = task_get_tick_us();
+  234   2              t->func();
+  235   2              now_us = task_get_tick_us();
+  236   2              dur_us = now_us - start_us;
+  237   2      
+  238   2              // 更新统计
+  239   2              t->stats.last_dur_us = dur_us;
+  240   2              t->stats.total_us += dur_us;
+  241   2              t->stats.exec_cnt++;
+  242   2              if (dur_us > t->stats.max_us)
+  243   2                  t->stats.max_us = dur_us;
+  244   2              if (dur_us < t->stats.min_us)
+  245   2                  t->stats.min_us = dur_us;
+  246   2              // avg 通过 total/exec_cnt 计算即可
+  247   2          }
+  248   1      
+  249   1          // 无任务就绪时调用空闲钩子
+  250   1          if (ready_count == 0 && scheduler.idle_hook)
+  251   1          {
+  252   2              scheduler.idle_hook();
+  253   2          }
+  254   1      }
+
+
+C251 COMPILER V5.60.0,  task_scheduler                                                     06/08/26  17:27:48  PAGE 5   
+
+Module Information          Static   Overlayable
+------------------------------------------------
+  code size            =       927     ------
+  ecode size           =    ------     ------
+  data size            =    ------     ------
+  idata size           =    ------     ------
+  pdata size           =    ------     ------
+  xdata size           =    ------     ------
+  xdata-const size     =    ------     ------
+  edata size           =       327         56
+  bit size             =    ------     ------
+  ebit size            =    ------     ------
+  bitaddressable size  =    ------     ------
+  ebitaddressable size =    ------     ------
+  far data size        =    ------     ------
+  huge data size       =    ------     ------
+  const size           =    ------     ------
+  hconst size          =         8     ------
+End of Module Information.
+
+
+C251 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

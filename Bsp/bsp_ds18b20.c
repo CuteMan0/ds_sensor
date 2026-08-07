@@ -19,44 +19,84 @@
  *       因为 P0~P7 是 sfr 声明，预处理器无法求值。
  * ============================================================ */
 #define DQ_HIGH() (DS18B20_DQ_PORT |= (DS18B20_DQ_PIN_MASK))
-#define DQ_LOW()  (DS18B20_DQ_PORT &= ~(DS18B20_DQ_PIN_MASK))
-#define DQ_READ   (DS18B20_DQ_PORT & (DS18B20_DQ_PIN_MASK))
+#define DQ_LOW() (DS18B20_DQ_PORT &= ~(DS18B20_DQ_PIN_MASK))
+#define DQ_READ (DS18B20_DQ_PORT & (DS18B20_DQ_PIN_MASK))
 
 /* GPIO 模式切换宏：用数字端口编号做预处理器分支 */
 #if DS18B20_DQ_PORT_NUM == 0
-    #define DQ_OUT()   P0_MODE_OUT_PP(DS18B20_DQ_PIN_MASK)
-    #define DQ_IN()    P0_MODE_IN_HIZ(DS18B20_DQ_PIN_MASK)
-    #define DQ_INIT()  { P0_MODE_IO_PU(DS18B20_DQ_PIN_MASK); P0_PULL_UP_ENABLE(DS18B20_DQ_PIN_MASK); P0_DIGIT_IN_ENABLE(DS18B20_DQ_PIN_MASK); }
+#define DQ_OUT() P0_MODE_OUT_PP(DS18B20_DQ_PIN_MASK)
+#define DQ_IN() P0_MODE_IN_HIZ(DS18B20_DQ_PIN_MASK)
+#define DQ_INIT()                                \
+    {                                            \
+        P0_MODE_IO_PU(DS18B20_DQ_PIN_MASK);      \
+        P0_PULL_UP_ENABLE(DS18B20_DQ_PIN_MASK);  \
+        P0_DIGIT_IN_ENABLE(DS18B20_DQ_PIN_MASK); \
+    }
 #elif DS18B20_DQ_PORT_NUM == 1
-    #define DQ_OUT()   P1_MODE_OUT_PP(DS18B20_DQ_PIN_MASK)
-    #define DQ_IN()    P1_MODE_IN_HIZ(DS18B20_DQ_PIN_MASK)
-    #define DQ_INIT()  { P1_MODE_IO_PU(DS18B20_DQ_PIN_MASK); P1_PULL_UP_ENABLE(DS18B20_DQ_PIN_MASK); P1_DIGIT_IN_ENABLE(DS18B20_DQ_PIN_MASK); }
+#define DQ_OUT() P1_MODE_OUT_PP(DS18B20_DQ_PIN_MASK)
+#define DQ_IN() P1_MODE_IN_HIZ(DS18B20_DQ_PIN_MASK)
+#define DQ_INIT()                                \
+    {                                            \
+        P1_MODE_IO_PU(DS18B20_DQ_PIN_MASK);      \
+        P1_PULL_UP_ENABLE(DS18B20_DQ_PIN_MASK);  \
+        P1_DIGIT_IN_ENABLE(DS18B20_DQ_PIN_MASK); \
+    }
 #elif DS18B20_DQ_PORT_NUM == 2
-    #define DQ_OUT()   P2_MODE_OUT_PP(DS18B20_DQ_PIN_MASK)
-    #define DQ_IN()    P2_MODE_IN_HIZ(DS18B20_DQ_PIN_MASK)
-    #define DQ_INIT()  { P2_MODE_IO_PU(DS18B20_DQ_PIN_MASK); P2_PULL_UP_ENABLE(DS18B20_DQ_PIN_MASK); P2_DIGIT_IN_ENABLE(DS18B20_DQ_PIN_MASK); }
+#define DQ_OUT() P2_MODE_OUT_PP(DS18B20_DQ_PIN_MASK)
+#define DQ_IN() P2_MODE_IN_HIZ(DS18B20_DQ_PIN_MASK)
+#define DQ_INIT()                                \
+    {                                            \
+        P2_MODE_IO_PU(DS18B20_DQ_PIN_MASK);      \
+        P2_PULL_UP_ENABLE(DS18B20_DQ_PIN_MASK);  \
+        P2_DIGIT_IN_ENABLE(DS18B20_DQ_PIN_MASK); \
+    }
 #elif DS18B20_DQ_PORT_NUM == 3
-    #define DQ_OUT()   P3_MODE_OUT_PP(DS18B20_DQ_PIN_MASK)
-    #define DQ_IN()    P3_MODE_IN_HIZ(DS18B20_DQ_PIN_MASK)
-    #define DQ_INIT()  { P3_MODE_IO_PU(DS18B20_DQ_PIN_MASK); P3_PULL_UP_ENABLE(DS18B20_DQ_PIN_MASK); P3_DIGIT_IN_ENABLE(DS18B20_DQ_PIN_MASK); }
+#define DQ_OUT() P3_MODE_OUT_PP(DS18B20_DQ_PIN_MASK)
+#define DQ_IN() P3_MODE_IN_HIZ(DS18B20_DQ_PIN_MASK)
+#define DQ_INIT()                                \
+    {                                            \
+        P3_MODE_IO_PU(DS18B20_DQ_PIN_MASK);      \
+        P3_PULL_UP_ENABLE(DS18B20_DQ_PIN_MASK);  \
+        P3_DIGIT_IN_ENABLE(DS18B20_DQ_PIN_MASK); \
+    }
 #elif DS18B20_DQ_PORT_NUM == 4
-    #define DQ_OUT()   P4_MODE_OUT_PP(DS18B20_DQ_PIN_MASK)
-    #define DQ_IN()    P4_MODE_IN_HIZ(DS18B20_DQ_PIN_MASK)
-    #define DQ_INIT()  { P4_MODE_IO_PU(DS18B20_DQ_PIN_MASK); P4_PULL_UP_ENABLE(DS18B20_DQ_PIN_MASK); P4_DIGIT_IN_ENABLE(DS18B20_DQ_PIN_MASK); }
+#define DQ_OUT() P4_MODE_OUT_PP(DS18B20_DQ_PIN_MASK)
+#define DQ_IN() P4_MODE_IN_HIZ(DS18B20_DQ_PIN_MASK)
+#define DQ_INIT()                                \
+    {                                            \
+        P4_MODE_IO_PU(DS18B20_DQ_PIN_MASK);      \
+        P4_PULL_UP_ENABLE(DS18B20_DQ_PIN_MASK);  \
+        P4_DIGIT_IN_ENABLE(DS18B20_DQ_PIN_MASK); \
+    }
 #elif DS18B20_DQ_PORT_NUM == 5
-    #define DQ_OUT()   P5_MODE_OUT_PP(DS18B20_DQ_PIN_MASK)
-    #define DQ_IN()    P5_MODE_IN_HIZ(DS18B20_DQ_PIN_MASK)
-    #define DQ_INIT()  { P5_MODE_IO_PU(DS18B20_DQ_PIN_MASK); P5_PULL_UP_ENABLE(DS18B20_DQ_PIN_MASK); P5_DIGIT_IN_ENABLE(DS18B20_DQ_PIN_MASK); }
+#define DQ_OUT() P5_MODE_OUT_PP(DS18B20_DQ_PIN_MASK)
+#define DQ_IN() P5_MODE_IN_HIZ(DS18B20_DQ_PIN_MASK)
+#define DQ_INIT()                                \
+    {                                            \
+        P5_MODE_IO_PU(DS18B20_DQ_PIN_MASK);      \
+        P5_PULL_UP_ENABLE(DS18B20_DQ_PIN_MASK);  \
+        P5_DIGIT_IN_ENABLE(DS18B20_DQ_PIN_MASK); \
+    }
 #elif DS18B20_DQ_PORT_NUM == 6
-    #define DQ_OUT()   P6_MODE_OUT_PP(DS18B20_DQ_PIN_MASK)
-    #define DQ_IN()    P6_MODE_IN_HIZ(DS18B20_DQ_PIN_MASK)
-    #define DQ_INIT()  { P6_MODE_IO_PU(DS18B20_DQ_PIN_MASK); P6_PULL_UP_ENABLE(DS18B20_DQ_PIN_MASK); P6_DIGIT_IN_ENABLE(DS18B20_DQ_PIN_MASK); }
+#define DQ_OUT() P6_MODE_OUT_PP(DS18B20_DQ_PIN_MASK)
+#define DQ_IN() P6_MODE_IN_HIZ(DS18B20_DQ_PIN_MASK)
+#define DQ_INIT()                                \
+    {                                            \
+        P6_MODE_IO_PU(DS18B20_DQ_PIN_MASK);      \
+        P6_PULL_UP_ENABLE(DS18B20_DQ_PIN_MASK);  \
+        P6_DIGIT_IN_ENABLE(DS18B20_DQ_PIN_MASK); \
+    }
 #elif DS18B20_DQ_PORT_NUM == 7
-    #define DQ_OUT()   P7_MODE_OUT_PP(DS18B20_DQ_PIN_MASK)
-    #define DQ_IN()    P7_MODE_IN_HIZ(DS18B20_DQ_PIN_MASK)
-    #define DQ_INIT()  { P7_MODE_IO_PU(DS18B20_DQ_PIN_MASK); P7_PULL_UP_ENABLE(DS18B20_DQ_PIN_MASK); P7_DIGIT_IN_ENABLE(DS18B20_DQ_PIN_MASK); }
+#define DQ_OUT() P7_MODE_OUT_PP(DS18B20_DQ_PIN_MASK)
+#define DQ_IN() P7_MODE_IN_HIZ(DS18B20_DQ_PIN_MASK)
+#define DQ_INIT()                                \
+    {                                            \
+        P7_MODE_IO_PU(DS18B20_DQ_PIN_MASK);      \
+        P7_PULL_UP_ENABLE(DS18B20_DQ_PIN_MASK);  \
+        P7_DIGIT_IN_ENABLE(DS18B20_DQ_PIN_MASK); \
+    }
 #else
-    #error "DS18B20_DQ_PORT_NUM: unsupported port number (supported: 0~7)"
+#error "DS18B20_DQ_PORT_NUM: unsupported port number (supported: 0~7)"
 #endif
 
 /* ============================================================
@@ -64,7 +104,7 @@
  * ============================================================ */
 
 /* 约 1μs 短延时 */
-#define ow_delay_1us()  delay_us(1)
+#define ow_delay_1us() delay_us(1)
 /* 约 15μs 延时 */
 #define ow_delay_15us() delay_us(15)
 /* 约 45μs 延时 */
@@ -85,13 +125,13 @@ static u8 ow_reset(void)
     DQ_LOW();
     ow_delay_480us(); /* 拉低 480μs */
     DQ_HIGH();
-    ow_delay_60us();  /* 释放总线 60μs */
+    ow_delay_60us(); /* 释放总线 60μs */
 
     DQ_IN();
     presence = (DQ_READ == 0) ? 1 : 0; /* 0 = 器件应答（拉低） */
-    ow_delay_480us(); /* 等待完整复位时序结束 */
+    ow_delay_480us();                  /* 等待完整复位时序结束 */
 
-    return presence;  /* 返回 1 = 检测到器件, 0 = 无器件 */
+    return presence; /* 返回 1 = 检测到器件, 0 = 无器件 */
 }
 
 /* ============================================================
@@ -106,11 +146,11 @@ static void ow_write_bit(bit b)
     ow_delay_1us(); /* 拉低 >1μs 表示写时序开始 */
 
     if (b)
-        DQ_HIGH();  /* 写 1: 立即释放总线 */
+        DQ_HIGH(); /* 写 1: 立即释放总线 */
 
     ow_delay_60us(); /* 主机至少保持/释放 60μs */
     DQ_HIGH();
-    ow_delay_1us();  /* 恢复间隔 >1μs */
+    ow_delay_1us(); /* 恢复间隔 >1μs */
 }
 
 /* 从总线读取 1 bit */
@@ -120,14 +160,14 @@ static bit ow_read_bit(void)
 
     DQ_OUT();
     DQ_LOW();
-    ow_delay_1us();  /* 拉低 >1μs 表示读时序开始 */
+    ow_delay_1us(); /* 拉低 >1μs 表示读时序开始 */
     DQ_HIGH();
-    ow_delay_1us();  /* 释放总线等待器件驱动 */
+    ow_delay_1us(); /* 释放总线等待器件驱动 */
 
     DQ_IN();
-    ow_delay_15us();  /* 15μs 内采样 */
+    ow_delay_15us(); /* 15μs 内采样 */
     b = (DQ_READ != 0) ? 1 : 0;
-    ow_delay_45us();  /* 等待完整读时序结束 */
+    ow_delay_45us(); /* 等待完整读时序结束 */
 
     return b;
 }
@@ -191,7 +231,7 @@ void ds18b20_init(void)
 {
     /* 使用 STC32G_GPIO 库宏配置 DQ 引脚为准双向口 + 上拉 + 数字输入使能 */
     DQ_INIT();
-    DQ_HIGH();  /* 总线空闲高电平 */
+    DQ_HIGH(); /* 总线空闲高电平 */
 }
 
 /**
@@ -200,6 +240,9 @@ void ds18b20_init(void)
  */
 void ds18b20_start_conversion(u8 resolution)
 {
+    /* 关全局中断，保护 1-Wire 时序不被任何 ISR（含 USB）打断 */
+    EA = 0;
+
     /* 1. 复位并等待存在脉冲 */
     ow_reset();
 
@@ -208,9 +251,9 @@ void ds18b20_start_conversion(u8 resolution)
 
     /* 3. 写入暂存器配置分辨率 */
     ow_write_byte(DS18B20_CMD_WRITE_SCRATCHPAD);
-    ow_write_byte(0x00);        /* TH 寄存器（未使用） */
-    ow_write_byte(0x00);        /* TL 寄存器（未使用） */
-    ow_write_byte(resolution);  /* 配置寄存器：分辨率 */
+    ow_write_byte(0x00);       /* TH 寄存器（未使用） */
+    ow_write_byte(0x00);       /* TL 寄存器（未使用） */
+    ow_write_byte(resolution); /* 配置寄存器：分辨率 */
 
     /* 4. 复位 */
     ow_reset();
@@ -220,6 +263,8 @@ void ds18b20_start_conversion(u8 resolution)
 
     /* 6. CONVERT T (0x44) — 启动温度转换 */
     ow_write_byte(DS18B20_CMD_CONVERT_T);
+
+    EA = 1; /* 开中断 */
 }
 
 /**
@@ -231,13 +276,20 @@ u8 ds18b20_read_temperature(float *celsius)
 {
     u8 buf[9];
     u8 crc;
+    u8 ret;
 
     if (!celsius)
         return DS18B20_ERR_PRESENCE;
 
+    /* 关全局中断，保护 1-Wire 时序不被任何 ISR（含 USB）打断 */
+    EA = 0;
+
     /* 1. 复位并检测存在脉冲 */
     if (!ow_reset())
-        return DS18B20_ERR_PRESENCE;
+    {
+        ret = DS18B20_ERR_PRESENCE;
+        goto exit;
+    }
 
     /* 2. SKIP ROM (0xCC) */
     ow_write_byte(DS18B20_CMD_SKIP_ROM);
@@ -255,7 +307,10 @@ u8 ds18b20_read_temperature(float *celsius)
     /* 5. CRC 校验（暂存器前 8 字节的 CRC 应等于第 9 字节） */
     crc = ds18b20_crc8(buf, 8);
     if (crc != buf[8])
-        return DS18B20_ERR_CRC;
+    {
+        ret = DS18B20_ERR_CRC;
+        goto exit;
+    }
 
     /* 6. 解析温度 */
     {
@@ -263,5 +318,9 @@ u8 ds18b20_read_temperature(float *celsius)
         *celsius = raw * 0.0625f;
     }
 
-    return DS18B20_OK;
+    ret = DS18B20_OK;
+
+exit:
+    EA = 1;
+    return ret;
 }

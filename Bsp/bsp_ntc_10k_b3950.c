@@ -43,7 +43,7 @@ void bsp_ntc_10k_b3950_init(void)
 float bsp_ntc_10k_b3950_temperature_get(u16 adc_value)
 {
     int i;
-    float temp;
+    float ntc_temp;
 
     if (adc_value >= adc_table[0])
     {
@@ -62,8 +62,8 @@ float bsp_ntc_10k_b3950_temperature_get(u16 adc_value)
         }
     }
 
-    temp = (TEMP_MIN + i) +
+    ntc_temp = (TEMP_MIN + i) +
            (float)(adc_table[i] - adc_value) / (adc_table[i] - adc_table[i + 1]);
 
-    return temp;
+    return ntc_temp;
 }

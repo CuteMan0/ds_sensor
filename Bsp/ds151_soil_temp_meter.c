@@ -6,6 +6,7 @@
 
 static float temp;
 static u8 conv_pending = 0;
+static u8 printf_pending = 1;
 
 void ds_init(void)
 {
@@ -27,15 +28,20 @@ void ds_update(void)
         {
             dat_for_printf = temp;
             avg_filter_update(&filter, dat_for_printf);
+            conv_pending = 0;
+            printf_pending = 0;
         }
-        conv_pending = 0;
     }
     task_delay_ms(750);
 }
 
 void ds_printf(void)
 {
-    printf("temp:%.2fC\n", dat_for_printf);
+    if (!printf_pending)
+    {
+        printf("temp:%.2fC\n", dat_for_printf);
+        printf_pending = 1;
+    }
 }
 
 void ds_calib(void)

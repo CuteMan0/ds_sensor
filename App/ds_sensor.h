@@ -4,7 +4,7 @@
 #include "task_scheduler.h"
 #include "filter.h"
 
-#define DS_SENSOR 144
+#define DS_SENSOR 151
 
 /* ============================================================
  * 共享全局变量（由某个 .c 文件定义）

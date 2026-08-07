@@ -1,74 +1,82 @@
-C251 COMPILER V5.60.0,  ds151_soil_temp_meter                                              06/08/26  21:49:27  PAGE 1   
+C251 COMPILER V5.60.0,  ds151_soil_temp_meter                                              07/08/26  17:10:49  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE ds151_soil_temp_meter
 OBJECT MODULE PLACED IN .\Objects\ds151_soil_temp_meter.obj
-COMPILER INVOKED BY: C:\Wongsoft\Keil_v5\C251\BIN\C251.EXE ..\Bsp\ds151_soil_temp_meter.c XSMALL INTR2 BROWSE INCDIR(..\
-                    -App;..\Bsp;..\Driver;..\Library;..\Tool) DEBUG PRINT(.\Listings\ds151_soil_temp_meter.lst) OBJECT(.\Objects\ds151_soil_t
-                    -emp_meter.obj) 
+COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE ..\Bsp\ds151_soil_temp_meter.c XSMALL INTR2 FLOAT64 BROWSE INCDIR(..\A
+                    -pp;..\Bsp;..\Driver;..\Library;..\Tool) DEBUG PRINT(.\Listings\ds151_soil_temp_meter.lst) OBJECT(.\Objects\ds151_soil_te
+                    -mp_meter.obj) 
 
 stmt  level    source
 
     1          #include "ds151_soil_temp_meter.h"
     2          
     3          #if DS_SENSOR == 151
-               
-               #include "bsp_ds18b20.h"
-               
-               static float temp;
-               static u8 conv_pending = 0;
-               
-               void ds_init(void)
-               {
-                   ds18b20_init();
-               }
-               
-               void ds_update(void)
-               {
-                   u8 ret;
-                   if (!conv_pending)
-                   {
-                       ds18b20_start_conversion(DS18B20_RES_12BIT);
-                       conv_pending = 1;
-                   }
-                   else
-                   {
-                       ret = ds18b20_read_temperature(&temp);
-                       if (ret == DS18B20_OK)
-                       {
-                           dat_for_printf = temp;
-                           avg_filter_update(&filter, dat_for_printf);
-                       }
-                       conv_pending = 0;
-                   }
-                   task_delay_ms(750);
-               }
-               
-               void ds_printf(void)
-               {
-                   printf("temp:%.2fC\n", dat_for_printf);
-               }
-               
-               void ds_calib(void)
-               {
-                   /* DS151 无校准需求 */
-               }
-               
-               #endif
+    4          
+    5          #include "bsp_ds18b20.h"
+    6          
+    7          static float temp;
+    8          static u8 conv_pending = 0;
+    9          static u8 printf_pending = 1;
+   10          
+   11          void ds_init(void)
+   12          {
+   13   1          ds18b20_init();
+   14   1      }
+   15          
+   16          void ds_update(void)
+   17          {
+   18   1          u8 ret;
+   19   1          if (!conv_pending)
+   20   1          {
+   21   2              ds18b20_start_conversion(DS18B20_RES_12BIT);
+   22   2              conv_pending = 1;
+   23   2          }
+   24   1          else
+   25   1          {
+   26   2              ret = ds18b20_read_temperature(&temp);
+   27   2              if (ret == DS18B20_OK)
+   28   2              {
+   29   3                  dat_for_printf = temp;
+   30   3                  avg_filter_update(&filter, dat_for_printf);
+   31   3                  conv_pending = 0;
+   32   3                  printf_pending = 0;
+   33   3              }
+   34   2          }
+   35   1          task_delay_ms(750);
+   36   1      }
+   37          
+   38          void ds_printf(void)
+   39          {
+   40   1          if (!printf_pending)
+   41   1          {
+   42   2              printf("temp:%.2fC\n", dat_for_printf);
+*** WARNING C140 IN LINE 42 OF ..\Bsp\ds151_soil_temp_meter.c: 'printf' undefined; assuming 'extern int printf()'
+*** WARNING C95 IN LINE 42 OF ..\Bsp\ds151_soil_temp_meter.c: 'printf': too many actual parameters
+   43   2              printf_pending = 1;
+   44   2          }
+   45   1      }
+   46          
+   47          void ds_calib(void)
+   48          {
+   49   1          /* DS151 无校准需求 */
+   50   1      }
+   51          
+   52          #endif
 
 
 Module Information          Static   Overlayable
 ------------------------------------------------
-  code size            =    ------     ------
+C251 COMPILER V5.60.0,  ds151_soil_temp_meter                                              07/08/26  17:10:49  PAGE 2   
+
+  code size            =       106     ------
   ecode size           =    ------     ------
   data size            =    ------     ------
   idata size           =    ------     ------
   pdata size           =    ------     ------
   xdata size           =    ------     ------
   xdata-const size     =    ------     ------
-  edata size           =    ------     ------
-C251 COMPILER V5.60.0,  ds151_soil_temp_meter                                              06/08/26  21:49:27  PAGE 2   
-
+  edata size           =         6     ------
   bit size             =    ------     ------
   ebit size            =    ------     ------
   bitaddressable size  =    ------     ------
@@ -76,8 +84,8 @@ Module Information          Static   Overlayable
   far data size        =    ------     ------
   huge data size       =    ------     ------
   const size           =    ------     ------
-  hconst size          =    ------     ------
+  hconst size          =        22     ------
 End of Module Information.
 
 
-C251 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
+C251 COMPILATION COMPLETE.  2 WARNING(S),  0 ERROR(S)

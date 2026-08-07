@@ -1,1 +1,0 @@
-"..\Driver\USB_CDC_drive.c" XSMALL INTR2 BROWSE INCDIR(..\App;..\Bsp;..\Driver;..\Library;..\Tool) DEBUG PRINT(.\Listings\USB_CDC_drive.lst) OBJECT(.\Objects\USB_CDC_drive.obj)

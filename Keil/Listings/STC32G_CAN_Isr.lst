@@ -1,10 +1,10 @@
-C251 COMPILER V5.60.0,  STC32G_CAN_Isr                                                     06/08/26  21:48:48  PAGE 1   
+C251 COMPILER V5.60.0,  STC32G_CAN_Isr                                                     07/08/26  17:10:53  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE STC32G_CAN_Isr
 OBJECT MODULE PLACED IN .\Objects\STC32G_CAN_Isr.obj
-COMPILER INVOKED BY: C:\Wongsoft\Keil_v5\C251\BIN\C251.EXE ..\Library\STC32G_CAN_Isr.c XSMALL INTR2 BROWSE INCDIR(..\App
-                    -;..\Bsp;..\Driver;..\Library;..\Tool) DEBUG PRINT(.\Listings\STC32G_CAN_Isr.lst) OBJECT(.\Objects\STC32G_CAN_Isr.obj) 
+COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE ..\Library\STC32G_CAN_Isr.c XSMALL INTR2 FLOAT64 BROWSE INCDIR(..\App;
+                    -..\Bsp;..\Driver;..\Library;..\Tool) DEBUG PRINT(.\Listings\STC32G_CAN_Isr.lst) OBJECT(.\Objects\STC32G_CAN_Isr.obj) 
 
 stmt  level    source
 
@@ -66,7 +66,7 @@ stmt  level    source
    56   2                      
    57   2                      CANAR = ISR;
    58   2                      CANDR = 0x20;    //CLR FLAG
-C251 COMPILER V5.60.0,  STC32G_CAN_Isr                                                     06/08/26  21:48:48  PAGE 2   
+C251 COMPILER V5.60.0,  STC32G_CAN_Isr                                                     07/08/26  17:10:53  PAGE 2   
 
    59   2              }       
    60   1      
@@ -134,7 +134,7 @@ stmt  level    source
   122   1      
   123   1              if((isr & 0x20) == 0x20)  //EWI
   124   1              {
-C251 COMPILER V5.60.0,  STC32G_CAN_Isr                                                     06/08/26  21:48:48  PAGE 3   
+C251 COMPILER V5.60.0,  STC32G_CAN_Isr                                                     07/08/26  17:10:53  PAGE 3   
 
   125   2                      CANAR = MR;
   126   2                      CANDR &= ~0x04;  //Çå³ý Reset Mode, ´ÓBUS-OFF×´Ì¬ÍË³ö

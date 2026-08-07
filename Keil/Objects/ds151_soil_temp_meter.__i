@@ -1,1 +1,0 @@
-"..\Bsp\ds151_soil_temp_meter.c" XSMALL INTR2 BROWSE INCDIR(..\App;..\Bsp;..\Driver;..\Library;..\Tool) DEBUG PRINT(.\Listings\ds151_soil_temp_meter.lst) OBJECT(.\Objects\ds151_soil_temp_meter.obj)

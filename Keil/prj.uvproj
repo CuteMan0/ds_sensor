@@ -262,7 +262,7 @@
             <uAlias>1</uAlias>
             <uRentF>0</uRentF>
             <uUch>0</uUch>
-            <uFlt64>0</uFlt64>
+            <uFlt64>1</uFlt64>
             <Fuzzy>3</Fuzzy>
             <Optim>7</Optim>
             <wLevel>2</wLevel>
@@ -465,9 +465,9 @@
               <FilePath>..\Bsp\ds164_cl2_meter.c</FilePath>
             </File>
             <File>
-              <FileName>ds165_nh4_meter.c</FileName>
+              <FileName>ds165_170_ise_meter.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Bsp\ds165_nh4_meter.c</FilePath>
+              <FilePath>..\Bsp\ds165_170_ise_meter.c</FilePath>
             </File>
             <File>
               <FileName>ds172_titration_meter.c</FileName>
@@ -703,11 +703,6 @@
               <FileName>filter.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Tool\filter.c</FilePath>
-            </File>
-            <File>
-              <FileName>iir.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Tool\iir.c</FilePath>
             </File>
             <File>
               <FileName>task_scheduler.c</FileName>

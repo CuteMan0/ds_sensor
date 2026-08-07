@@ -1,9 +1,6 @@
 // working @ 24 MHz
-#include "stc32g.h"
 //------------------------------STC lib--------------------------
-#if USB_INFO
-#include "stc32_stc8_usb.h"
-#endif
+#include "stc32g.h"
 //------------------------------bsp lib------------------------------
 #include "led_drive.h"
 #include "key_drive.h"

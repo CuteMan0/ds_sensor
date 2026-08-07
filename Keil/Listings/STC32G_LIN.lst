@@ -1,10 +1,10 @@
-C251 COMPILER V5.60.0,  STC32G_LIN                                                         06/08/26  21:48:48  PAGE 1   
+C251 COMPILER V5.60.0,  STC32G_LIN                                                         07/08/26  17:10:57  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE STC32G_LIN
 OBJECT MODULE PLACED IN .\Objects\STC32G_LIN.obj
-COMPILER INVOKED BY: C:\Wongsoft\Keil_v5\C251\BIN\C251.EXE ..\Library\STC32G_LIN.c XSMALL INTR2 BROWSE INCDIR(..\App;..\
-                    -Bsp;..\Driver;..\Library;..\Tool) DEBUG PRINT(.\Listings\STC32G_LIN.lst) OBJECT(.\Objects\STC32G_LIN.obj) 
+COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE ..\Library\STC32G_LIN.c XSMALL INTR2 FLOAT64 BROWSE INCDIR(..\App;..\B
+                    -sp;..\Driver;..\Library;..\Tool) DEBUG PRINT(.\Listings\STC32G_LIN.lst) OBJECT(.\Objects\STC32G_LIN.obj) 
 
 stmt  level    source
 
@@ -66,7 +66,7 @@ stmt  level    source
    56   2              }
    57   1      }
    58          
-C251 COMPILER V5.60.0,  STC32G_LIN                                                         06/08/26  21:48:48  PAGE 2   
+C251 COMPILER V5.60.0,  STC32G_LIN                                                         07/08/26  17:10:57  PAGE 2   
 
    59          //========================================================================
    60          // 函数: void LinSendMsg(u8 *pdat)
@@ -134,7 +134,7 @@ stmt  level    source
   122   2                      lsr = LinReadReg(LSR);
   123   2              }while(!(lsr & 0x02));          //判断ready状态
   124   1              return lsr;
-C251 COMPILER V5.60.0,  STC32G_LIN                                                         06/08/26  21:48:48  PAGE 3   
+C251 COMPILER V5.60.0,  STC32G_LIN                                                         07/08/26  17:10:57  PAGE 3   
 
   125   1      }
   126          
@@ -202,7 +202,7 @@ stmt  level    source
   188          // 函数: void ResponseRxCmd(void)
   189          // 描述: 从模式发送Lin总线Rx Response函数。
   190          // 参数: none.
-C251 COMPILER V5.60.0,  STC32G_LIN                                                         06/08/26  21:48:48  PAGE 4   
+C251 COMPILER V5.60.0,  STC32G_LIN                                                         07/08/26  17:10:57  PAGE 4   
 
   191          // 返回: none.
   192          // 版本: VER1.0
@@ -270,7 +270,7 @@ stmt  level    source
   254   1              GetLinError();                                          //读取清除错误寄存器
   255   1      
   256   1              SendDatCmd();                                                   //Send Data
-C251 COMPILER V5.60.0,  STC32G_LIN                                                         06/08/26  21:48:48  PAGE 5   
+C251 COMPILER V5.60.0,  STC32G_LIN                                                         07/08/26  17:10:57  PAGE 5   
 
   257   1              WaitLinReady();                                         //等待ready状态
   258   1              GetLinError();                                          //读取清除错误寄存器
@@ -338,7 +338,7 @@ stmt  level    source
   320          
   321          //========================================================================
   322          // 函数: void LIN_Inilize(LIN_InitTypeDef *LIN)
-C251 COMPILER V5.60.0,  STC32G_LIN                                                         06/08/26  21:48:48  PAGE 6   
+C251 COMPILER V5.60.0,  STC32G_LIN                                                         07/08/26  17:10:57  PAGE 6   
 
   323          // 描述: LIN 初始化程序.
   324          // 参数: LIN: 结构参数,请参考LIN.h里的定义.

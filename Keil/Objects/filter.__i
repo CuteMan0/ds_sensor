@@ -1,1 +1,1 @@
-"..\Tool\filter.c" XSMALL INTR2 BROWSE INCDIR(..\App;..\Bsp;..\Driver;..\Library;..\Tool) DEBUG PRINT(.\Listings\filter.lst) OBJECT(.\Objects\filter.obj)
+"..\Tool\filter.c" XSMALL INTR2 FLOAT64 BROWSE INCDIR(..\App;..\Bsp;..\Driver;..\Library;..\Tool) DEBUG PRINT(.\Listings\filter.lst) OBJECT(.\Objects\filter.obj)

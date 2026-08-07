@@ -1,10 +1,10 @@
-C251 COMPILER V5.60.0,  STC32G_CAN                                                         06/08/26  21:48:48  PAGE 1   
+C251 COMPILER V5.60.0,  STC32G_CAN                                                         07/08/26  17:10:53  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE STC32G_CAN
 OBJECT MODULE PLACED IN .\Objects\STC32G_CAN.obj
-COMPILER INVOKED BY: C:\Wongsoft\Keil_v5\C251\BIN\C251.EXE ..\Library\STC32G_CAN.c XSMALL INTR2 BROWSE INCDIR(..\App;..\
-                    -Bsp;..\Driver;..\Library;..\Tool) DEBUG PRINT(.\Listings\STC32G_CAN.lst) OBJECT(.\Objects\STC32G_CAN.obj) 
+COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE ..\Library\STC32G_CAN.c XSMALL INTR2 FLOAT64 BROWSE INCDIR(..\App;..\B
+                    -sp;..\Driver;..\Library;..\Tool) DEBUG PRINT(.\Listings\STC32G_CAN.lst) OBJECT(.\Objects\STC32G_CAN.obj) 
 
 stmt  level    source
 
@@ -66,7 +66,7 @@ stmt  level    source
    56   2              CANSEL = CAN1;          //Ñ¡ÔñCAN1Ä£¿é
    57   2              CanWriteReg(MR  ,0x04);         //Ê¹ÄÜ Reset Mode
    58   2      
-C251 COMPILER V5.60.0,  STC32G_CAN                                                         06/08/26  21:48:48  PAGE 2   
+C251 COMPILER V5.60.0,  STC32G_CAN                                                         07/08/26  17:10:53  PAGE 2   
 
    59   2              if(CAN->CAN_Enable == ENABLE)   CANEN = 1;              //Ê¹ÄÜCAN1Ä£¿é
    60   2              else                                                            CANEN = 0;              //¹Ø±ÕCAN1Ä£¿é
@@ -134,7 +134,7 @@ stmt  level    source
   122   1      
   123   1          pdat[0] = CanReadReg((u8)(RX_BUF0 + (RX_Index++&3)));
   124   1      
-C251 COMPILER V5.60.0,  STC32G_CAN                                                         06/08/26  21:48:48  PAGE 3   
+C251 COMPILER V5.60.0,  STC32G_CAN                                                         07/08/26  17:10:53  PAGE 3   
 
   125   1          if(pdat[0] & 0x80)  //ÅÐ¶ÏÊÇ±ê×¼Ö¡»¹ÊÇÀ©Õ¹Ö¡
   126   1          {
@@ -202,7 +202,7 @@ stmt  level    source
   187          
   188          //========================================================================
   189          // º¯Êý: void CanSendMsg(u8 CANx, CAN_DataDef *CAN)
-C251 COMPILER V5.60.0,  STC32G_CAN                                                         06/08/26  21:48:48  PAGE 4   
+C251 COMPILER V5.60.0,  STC32G_CAN                                                         07/08/26  17:10:53  PAGE 4   
 
   190          // ÃèÊö: CAN·¢ËÍ±ê×¼Ö¡º¯Êý¡£
   191          // ²ÎÊý: CANx: Ñ¡ÔñCANÍ¨µÀ.
@@ -270,7 +270,7 @@ stmt  level    source
   250   2              {
   251   3                  CanWriteReg((u8)(TX_BUF0 + (RX_Index++&3)),0x00);  //Ð´ÈëÌî³äÊý¾Ý£¬Ò»Ö¡Êý¾ÝÕ¼¾Ý4µÄÕûÊý±¶»º³åÇ
              -ø¿Õ¼ä£¬²»×ã²¹0
-C251 COMPILER V5.60.0,  STC32G_CAN                                                         06/08/26  21:48:48  PAGE 5   
+C251 COMPILER V5.60.0,  STC32G_CAN                                                         07/08/26  17:10:53  PAGE 5   
 
   252   3              }
   253   2          }

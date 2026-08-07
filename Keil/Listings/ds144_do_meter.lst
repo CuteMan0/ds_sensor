@@ -1,199 +1,199 @@
-C251 COMPILER V5.60.0,  ds144_do_meter                                                     06/08/26  21:49:26  PAGE 1   
+C251 COMPILER V5.60.0,  ds144_do_meter                                                     07/08/26  17:10:49  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE ds144_do_meter
 OBJECT MODULE PLACED IN .\Objects\ds144_do_meter.obj
-COMPILER INVOKED BY: C:\Wongsoft\Keil_v5\C251\BIN\C251.EXE ..\Bsp\ds144_do_meter.c XSMALL INTR2 BROWSE INCDIR(..\App;..\
-                    -Bsp;..\Driver;..\Library;..\Tool) DEBUG PRINT(.\Listings\ds144_do_meter.lst) OBJECT(.\Objects\ds144_do_meter.obj) 
+COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE ..\Bsp\ds144_do_meter.c XSMALL INTR2 FLOAT64 BROWSE INCDIR(..\App;..\B
+                    -sp;..\Driver;..\Library;..\Tool) DEBUG PRINT(.\Listings\ds144_do_meter.lst) OBJECT(.\Objects\ds144_do_meter.obj) 
 
 stmt  level    source
 
     1          #include "ds144_do_meter.h"
     2          
     3          #if DS_SENSOR == 144
-    4          
-    5          #include "STC32G_GPIO.h"
-    6          #include "STC32G_EEPROM.h"
-    7          
-    8          #include "adc_drive.h"
-    9          #include "key_drive.h"
-   10          #include "led_drive.h"
-   11          
-   12          #define GAIN 51.0f
-   13          #define K_cal(vol) (k_val = (8.25f / (vol - zero_point))) // 饱和氧校准,确定斜率
-   14          #define B_cal(vol) (zero_point = vol)                     // 零氧校准,确定截距
-   15          
-   16          ADC_Handle_t adc0;
-   17          static volatile u8 calibration_pending = 0; // 校准标志
-   18          static volatile u8 led_flash = 0;           // LED闪烁标志
-   19          
-   20          static volatile float k_val = 0.26f;
-   21          static volatile float zero_point = 0.6f; // mV
-   22          
-   23          u8 flag_cal = 1; // 校准模式标志
-   24          
-   25          void ds_init(void)
-   26          {
-   27   1          u8 tmp[4];
-   28   1          adc_init(&adc0, 0, 3.3f);
-   29   1      
-   30   1          EEPROM_read_n(0, tmp, sizeof(tmp));
-   31   1          if (tmp[0] != 0xff && tmp[1] != 0xff && tmp[2] != 0xff && tmp[3] != 0xff)
-   32   1          {
-   33   2              k_val = (float)((u16)(tmp[0] << 8) + tmp[1]) / 1000;
-   34   2              zero_point = (float)((u16)(tmp[2] << 8) + tmp[3]) / 1000;
-   35   2          }
-   36   1      }
-   37          
-   38          void ds_update(void)
-   39          {
-   40   1          float do_val = 0.0f;
-   41   1      
-   42   1          do_val = adc_get(&adc0) / GAIN * 1000.0f; // mV
-   43   1          if (1 == flag_key)
-   44   1          {
-   45   2              flag_key = 0;
-   46   2              flag_cal = !flag_cal; // 切换零氧校准 (0) 和 饱和校准(1)
-   47   2              if (1 == flag_cal)    // 饱和校准
-   48   2              {
-   49   3                  DIS_LED_Just_One_Enable(3);
-   50   3              }
-   51   2              else // 零氧校准
-   52   2              {
-   53   3                  DIS_LED_Just_One_Enable(2);
-   54   3              }
-   55   2          }
-   56   1      
-   57   1          if (2 == flag_key) // 长按，开始校准
-   58   1          {
-C251 COMPILER V5.60.0,  ds144_do_meter                                                     06/08/26  21:49:26  PAGE 2   
+               
+               #include "STC32G_GPIO.h"
+               #include "STC32G_EEPROM.h"
+               
+               #include "adc_drive.h"
+               #include "key_drive.h"
+               #include "led_drive.h"
+               
+               #define GAIN 51.0f
+               #define K_cal(vol) (k_val = (8.25f / (vol - zero_point))) // 饱和氧校准,确定斜率
+               #define B_cal(vol) (zero_point = vol)                     // 零氧校准,确定截距
+               
+               ADC_Handle_t adc0;
+               static volatile u8 calibration_pending = 0; // 校准标志
+               static volatile u8 led_flash = 0;           // LED闪烁标志
+               
+               static volatile float k_val = 0.26f;
+               static volatile float zero_point = 0.6f; // mV
+               
+               u8 flag_cal = 1; // 校准模式标志
+               
+               void ds_init(void)
+               {
+                   u8 tmp[4];
+                   adc_init(&adc0, 0, 3.3f);
+               
+                   EEPROM_read_n(0, tmp, sizeof(tmp));
+                   if (tmp[0] != 0xff && tmp[1] != 0xff && tmp[2] != 0xff && tmp[3] != 0xff)
+                   {
+                       k_val = (float)((u16)(tmp[0] << 8) + tmp[1]) / 1000;
+                       zero_point = (float)((u16)(tmp[2] << 8) + tmp[3]) / 1000;
+                   }
+               }
+               
+               void ds_update(void)
+               {
+                   float do_val = 0.0f;
+               
+                   do_val = adc_get(&adc0) / GAIN * 1000.0f; // mV
+                   if (1 == flag_key)
+                   {
+                       flag_key = 0;
+                       flag_cal = !flag_cal; // 切换零氧校准 (0) 和 饱和校准(1)
+                       if (1 == flag_cal)    // 饱和校准
+                       {
+                           DIS_LED_Just_One_Enable(3);
+                       }
+                       else // 零氧校准
+                       {
+                           DIS_LED_Just_One_Enable(2);
+                       }
+                   }
+               
+                   if (2 == flag_key) // 长按，开始校准
+                   {
+C251 COMPILER V5.60.0,  ds144_do_meter                                                     07/08/26  17:10:49  PAGE 2   
 
-   59   2              flag_key = 0;
-   60   2              if (0 == flag_cal)
-   61   2              {
-   62   3                  B_cal(do_val); // 校准截距
-   63   3              }
-   64   2              else
-   65   2              {
-   66   3                  K_cal(do_val); // 校准斜率
-   67   3              }
-   68   2              calibration_pending = 1;
-   69   2          }
-   70   1      
-   71   1          dat_for_printf = k_val * (do_val - zero_point);
-   72   1          avg_filter_update(&filter, dat_for_printf);
-   73   1          task_delay_ms(50);
-   74   1      }
-   75          
-   76          void ProcessCalibration(void)
-   77          {
-   78   1          u8 tmp[4];
-   79   1      
-   80   1          if (calibration_pending)
-   81   1          {
-   82   2              calibration_pending = 0;
-   83   2      
-   84   2              /* 以 u16×2 打包格式写入EEPROM，与 ds_init 读取格式一致 */
-   85   2              tmp[0] = (u8)((u16)(k_val * 1000) >> 8);
-   86   2              tmp[1] = (u8)((u16)(k_val * 1000) & 0xFF);
-   87   2              tmp[2] = (u8)((u16)(zero_point * 1000) >> 8);
-   88   2              tmp[3] = (u8)((u16)(zero_point * 1000) & 0xFF);
-   89   2      
-   90   2              EEPROM_write_n(0,
-   91   2                             tmp,
-   92   2                             sizeof(tmp));
-   93   2              led_flash = 1;
-   94   2          }
-   95   1      }
-   96          
-   97          void Led_Task(void)
-   98          {
-   99   1          static u8 cnt = 0;
-  100   1          static bit on = 0;
-  101   1          static u8 flash_cnt = 0;
-  102   1      
-  103   1          if (!led_flash)
-  104   1              return;
-  105   1      
-  106   1          cnt++;
-  107   1      
-  108   1          if (cnt >= 10)
-  109   1          {
-  110   2              cnt = 0;
-  111   2      
-  112   2              on = !on;
-  113   2      
-  114   2              if (on)
-  115   2              {
-  116   3                  if (1 == flag_cal) // 饱和校准
-  117   3                  {
-  118   4                      DIS_LED_Just_One_Enable(3);
-  119   4                  }
-  120   3                  else // 零氧校准
-  121   3                  {
-  122   4                      DIS_LED_Just_One_Enable(2);
-  123   4                  }
-  124   3              }
-C251 COMPILER V5.60.0,  ds144_do_meter                                                     06/08/26  21:49:26  PAGE 3   
+                       flag_key = 0;
+                       if (0 == flag_cal)
+                       {
+                           B_cal(do_val); // 校准截距
+                       }
+                       else
+                       {
+                           K_cal(do_val); // 校准斜率
+                       }
+                       calibration_pending = 1;
+                   }
+               
+                   dat_for_printf = k_val * (do_val - zero_point);
+                   avg_filter_update(&filter, dat_for_printf);
+                   task_delay_ms(50);
+               }
+               
+               void ProcessCalibration(void)
+               {
+                   u8 tmp[4];
+               
+                   if (calibration_pending)
+                   {
+                       calibration_pending = 0;
+               
+                       /* 以 u16×2 打包格式写入EEPROM，与 ds_init 读取格式一致 */
+                       tmp[0] = (u8)((u16)(k_val * 1000) >> 8);
+                       tmp[1] = (u8)((u16)(k_val * 1000) & 0xFF);
+                       tmp[2] = (u8)((u16)(zero_point * 1000) >> 8);
+                       tmp[3] = (u8)((u16)(zero_point * 1000) & 0xFF);
+               
+                       EEPROM_write_n(0,
+                                      tmp,
+                                      sizeof(tmp));
+                       led_flash = 1;
+                   }
+               }
+               
+               void Led_Task(void)
+               {
+                   static u8 cnt = 0;
+                   static bit on = 0;
+                   static u8 flash_cnt = 0;
+               
+                   if (!led_flash)
+                       return;
+               
+                   cnt++;
+               
+                   if (cnt >= 10)
+                   {
+                       cnt = 0;
+               
+                       on = !on;
+               
+                       if (on)
+                       {
+                           if (1 == flag_cal) // 饱和校准
+                           {
+                               DIS_LED_Just_One_Enable(3);
+                           }
+                           else // 零氧校准
+                           {
+                               DIS_LED_Just_One_Enable(2);
+                           }
+                       }
+C251 COMPILER V5.60.0,  ds144_do_meter                                                     07/08/26  17:10:49  PAGE 3   
 
-  125   2              else
-  126   2              {
-  127   3                  DIS_LED_ALL_off();
-  128   3              }
-  129   2          }
-  130   1      
-  131   1          if (cnt == 0)
-  132   1          {
-  133   2              flash_cnt++;
-  134   2      
-  135   2              if (flash_cnt >= 6)
-  136   2              {
-  137   3                  flash_cnt = 0;
-  138   3                  led_flash = 0;
-  139   3      
-  140   3                  if (1 == flag_cal)
-  141   3                  {
-  142   4                      DIS_LED_Just_One_Enable(3);
-  143   4                  }
-  144   3                  else
-  145   3                  {
-  146   4                      DIS_LED_Just_One_Enable(2);
-  147   4                  }
-  148   3              }
-  149   2          }
-  150   1      }
-  151          
-  152          void ds_printf(void)
-  153          {
-  154   1          printf("dO:%.2f\n", dat_for_printf);
-  155   1      }
-  156          
-  157          void ds_calib(void)
-  158          {
-  159   1          /* 无校准需求 */
-  160   1      }
-  161          
-  162          #endif
+                       else
+                       {
+                           DIS_LED_ALL_off();
+                       }
+                   }
+               
+                   if (cnt == 0)
+                   {
+                       flash_cnt++;
+               
+                       if (flash_cnt >= 6)
+                       {
+                           flash_cnt = 0;
+                           led_flash = 0;
+               
+                           if (1 == flag_cal)
+                           {
+                               DIS_LED_Just_One_Enable(3);
+                           }
+                           else
+                           {
+                               DIS_LED_Just_One_Enable(2);
+                           }
+                       }
+                   }
+               }
+               
+               void ds_printf(void)
+               {
+                   printf("dO:%.2f\n", dat_for_printf);
+               }
+               
+               void ds_calib(void)
+               {
+                   /* 无校准需求 */
+               }
+               
+               #endif
 
 
 Module Information          Static   Overlayable
 ------------------------------------------------
-  code size            =       528     ------
+  code size            =    ------     ------
   ecode size           =    ------     ------
   data size            =    ------     ------
   idata size           =    ------     ------
   pdata size           =    ------     ------
   xdata size           =    ------     ------
   xdata-const size     =    ------     ------
-  edata size           =        24          8
-  bit size             =         1     ------
+  edata size           =    ------     ------
+  bit size             =    ------     ------
   ebit size            =    ------     ------
   bitaddressable size  =    ------     ------
   ebitaddressable size =    ------     ------
   far data size        =    ------     ------
   huge data size       =    ------     ------
   const size           =    ------     ------
-  hconst size          =        50     ------
+  hconst size          =    ------     ------
 End of Module Information.
 
 

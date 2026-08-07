@@ -25,7 +25,7 @@
 ".\Objects\ds162_ch4_meter.obj",
 ".\Objects\ds163_nh3_meter.obj",
 ".\Objects\ds164_cl2_meter.obj",
-".\Objects\ds165_nh4_meter.obj",
+".\Objects\ds165_170_ise_meter.obj",
 ".\Objects\ds172_titration_meter.obj",
 ".\Objects\adc_drive.obj",
 ".\Objects\key_drive.obj",
@@ -70,7 +70,6 @@
 ".\Objects\STC32G_WDT.obj",
 "..\Library\stc_usb_cdc_32g.LIB",
 ".\Objects\filter.obj",
-".\Objects\iir.obj",
 ".\Objects\task_scheduler.obj",
 ".\Objects\fft.obj",
 ".\Objects\lut.obj" 

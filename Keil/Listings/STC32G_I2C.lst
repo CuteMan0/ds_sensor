@@ -1,10 +1,10 @@
-C251 COMPILER V5.60.0,  STC32G_I2C                                                         07/08/26  17:10:56  PAGE 1   
+C251 COMPILER V5.60.0,  STC32G_I2C                                                         07/08/26  18:36:44  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE STC32G_I2C
 OBJECT MODULE PLACED IN .\Objects\STC32G_I2C.obj
-COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE ..\Library\STC32G_I2C.c XSMALL INTR2 FLOAT64 BROWSE INCDIR(..\App;..\B
-                    -sp;..\Driver;..\Library;..\Tool) DEBUG PRINT(.\Listings\STC32G_I2C.lst) OBJECT(.\Objects\STC32G_I2C.obj) 
+COMPILER INVOKED BY: C:\Wongsoft\Keil_v5\C251\BIN\C251.EXE ..\Library\STC32G_I2C.c XSMALL INTR2 BROWSE INCDIR(..\App;..\
+                    -Bsp;..\Driver;..\Library;..\Tool) DEBUG PRINT(.\Listings\STC32G_I2C.lst) OBJECT(.\Objects\STC32G_I2C.obj) 
 
 stmt  level    source
 
@@ -66,7 +66,7 @@ stmt  level    source
    56          // 参数: none.
    57          // 返回: none.
    58          // 版本: V1.0, 2012-11-22
-C251 COMPILER V5.60.0,  STC32G_I2C                                                         07/08/26  17:10:56  PAGE 2   
+C251 COMPILER V5.60.0,  STC32G_I2C                                                         07/08/26  18:36:44  PAGE 2   
 
    59          //========================================================================
    60          void Wait()
@@ -134,7 +134,7 @@ stmt  level    source
   122          // 描述: I2C发送ACK函数.
   123          // 参数: none.
   124          // 返回: none.
-C251 COMPILER V5.60.0,  STC32G_I2C                                                         07/08/26  17:10:56  PAGE 3   
+C251 COMPILER V5.60.0,  STC32G_I2C                                                         07/08/26  18:36:44  PAGE 3   
 
   125          // 版本: V1.0, 2020-09-15
   126          //========================================================================
@@ -202,7 +202,7 @@ stmt  level    source
   187   1              SendData(mem_addr);                     //发送存储地址
   188   1              RecvACK();
   189   1              do
-C251 COMPILER V5.60.0,  STC32G_I2C                                                         07/08/26  17:10:56  PAGE 4   
+C251 COMPILER V5.60.0,  STC32G_I2C                                                         07/08/26  18:36:44  PAGE 4   
 
   190   1              {
   191   2                      SendData(*p++);

@@ -262,7 +262,7 @@
             <uAlias>1</uAlias>
             <uRentF>0</uRentF>
             <uUch>0</uUch>
-            <uFlt64>1</uFlt64>
+            <uFlt64>0</uFlt64>
             <Fuzzy>3</Fuzzy>
             <Optim>7</Optim>
             <wLevel>2</wLevel>
@@ -295,7 +295,7 @@
             <WarningLevel>2</WarningLevel>
             <DataOverlaying>1</DataOverlaying>
             <OverlayString></OverlayString>
-            <MiscControls></MiscControls>
+            <MiscControls>REMOVEUNUSED</MiscControls>
             <DisableWarningNumbers></DisableWarningNumbers>
             <LinkerCmdFile></LinkerCmdFile>
             <Assign></Assign>
@@ -328,6 +328,11 @@
               <FileName>main.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\App\main.c</FilePath>
+            </File>
+            <File>
+              <FileName>task.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\App\task.c</FilePath>
             </File>
           </Files>
         </Group>

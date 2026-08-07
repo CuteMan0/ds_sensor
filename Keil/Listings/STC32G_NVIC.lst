@@ -1,10 +1,10 @@
-C251 COMPILER V5.60.0,  STC32G_NVIC                                                        07/08/26  17:10:57  PAGE 1   
+C251 COMPILER V5.60.0,  STC32G_NVIC                                                        07/08/26  18:36:44  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE STC32G_NVIC
 OBJECT MODULE PLACED IN .\Objects\STC32G_NVIC.obj
-COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE ..\Library\STC32G_NVIC.c XSMALL INTR2 FLOAT64 BROWSE INCDIR(..\App;..\
-                    -Bsp;..\Driver;..\Library;..\Tool) DEBUG PRINT(.\Listings\STC32G_NVIC.lst) OBJECT(.\Objects\STC32G_NVIC.obj) 
+COMPILER INVOKED BY: C:\Wongsoft\Keil_v5\C251\BIN\C251.EXE ..\Library\STC32G_NVIC.c XSMALL INTR2 BROWSE INCDIR(..\App;..
+                    -\Bsp;..\Driver;..\Library;..\Tool) DEBUG PRINT(.\Listings\STC32G_NVIC.lst) OBJECT(.\Objects\STC32G_NVIC.obj) 
 
 stmt  level    source
 
@@ -66,7 +66,7 @@ stmt  level    source
    56          // 参数: Priority: 中断优先级, NULL.
    57          // 返回: 执行结果 SUCCESS/FAIL.
    58          // 版本: V1.0, 2020-09-29
-C251 COMPILER V5.60.0,  STC32G_NVIC                                                        07/08/26  17:10:57  PAGE 2   
+C251 COMPILER V5.60.0,  STC32G_NVIC                                                        07/08/26  18:36:44  PAGE 2   
 
    59          //========================================================================
    60          u8 NVIC_Timer3_Init(u8 State, u8 Priority)
@@ -134,7 +134,7 @@ stmt  level    source
   122   1              if(State <= ENABLE) INT2_Interrupt(State); else  return FAIL;
   123   1              Priority = NULL;
   124   1              return SUCCESS;
-C251 COMPILER V5.60.0,  STC32G_NVIC                                                        07/08/26  17:10:57  PAGE 3   
+C251 COMPILER V5.60.0,  STC32G_NVIC                                                        07/08/26  18:36:44  PAGE 3   
 
   125   1      }
   126          
@@ -202,7 +202,7 @@ stmt  level    source
   188   1      }
   189          
   190          //========================================================================
-C251 COMPILER V5.60.0,  STC32G_NVIC                                                        07/08/26  17:10:57  PAGE 4   
+C251 COMPILER V5.60.0,  STC32G_NVIC                                                        07/08/26  18:36:44  PAGE 4   
 
   191          // 函数: NVIC_I2C_Init
   192          // 描述: I2C嵌套向量中断控制器初始化.
@@ -270,7 +270,7 @@ stmt  level    source
   254          {
   255   1              if(State <= ENABLE) UART3_Interrupt(State); else  return FAIL;
   256   1              if(Priority <= Priority_3) UART3_Priority(Priority); else  return FAIL;
-C251 COMPILER V5.60.0,  STC32G_NVIC                                                        07/08/26  17:10:57  PAGE 5   
+C251 COMPILER V5.60.0,  STC32G_NVIC                                                        07/08/26  18:36:44  PAGE 5   
 
   257   1              return SUCCESS;
   258   1      }
@@ -338,7 +338,7 @@ stmt  level    source
   319          #endif
   320          u8 NVIC_PWM_Init(u8 Channel, u8 State, u8 Priority)
   321          {
-C251 COMPILER V5.60.0,  STC32G_NVIC                                                        07/08/26  17:10:57  PAGE 6   
+C251 COMPILER V5.60.0,  STC32G_NVIC                                                        07/08/26  18:36:44  PAGE 6   
 
   322   1              if(Channel > PWMB) return FAIL;
   323   1              if(Priority > Priority_3) return FAIL;
@@ -406,7 +406,7 @@ stmt  level    source
   385          
   386          //========================================================================
   387          // 函数: NVIC_DMA_SPI_Init
-C251 COMPILER V5.60.0,  STC32G_NVIC                                                        07/08/26  17:10:57  PAGE 7   
+C251 COMPILER V5.60.0,  STC32G_NVIC                                                        07/08/26  18:36:44  PAGE 7   
 
   388          // 描述: DMA SPI嵌套向量中断控制器初始化.
   389          // 参数: State:    中断使能状态, ENABLE/DISABLE.
@@ -474,7 +474,7 @@ stmt  level    source
   451          // 描述: DMA UART2 Tx嵌套向量中断控制器初始化.
   452          // 参数: State:    中断使能状态, ENABLE/DISABLE.
   453          // 参数: Priority: 中断优先级, Priority_0,Priority_1,Priority_2,Priority_3.
-C251 COMPILER V5.60.0,  STC32G_NVIC                                                        07/08/26  17:10:57  PAGE 8   
+C251 COMPILER V5.60.0,  STC32G_NVIC                                                        07/08/26  18:36:44  PAGE 8   
 
   454          // 参数: Bus_Priority: 数据总线访问优先级, Priority_0,Priority_1,Priority_2,Priority_3.
   455          // 返回: 执行结果 SUCCESS/FAIL.
@@ -542,7 +542,7 @@ stmt  level    source
   517          // 参数: Bus_Priority: 数据总线访问优先级, Priority_0,Priority_1,Priority_2,Priority_3.
   518          // 返回: 执行结果 SUCCESS/FAIL.
   519          // 版本: V1.0, 2021-05-21
-C251 COMPILER V5.60.0,  STC32G_NVIC                                                        07/08/26  17:10:57  PAGE 9   
+C251 COMPILER V5.60.0,  STC32G_NVIC                                                        07/08/26  18:36:44  PAGE 9   
 
   520          //========================================================================
   521          u8 NVIC_DMA_UART3_Rx_Init(u8 State, u8 Priority, u8 Bus_Priority)
@@ -610,7 +610,7 @@ stmt  level    source
   583          //========================================================================
   584          u8 NVIC_DMA_LCM_Init(u8 State, u8 Priority, u8 Bus_Priority)
   585          {
-C251 COMPILER V5.60.0,  STC32G_NVIC                                                        07/08/26  17:10:57  PAGE 10  
+C251 COMPILER V5.60.0,  STC32G_NVIC                                                        07/08/26  18:36:44  PAGE 10  
 
   586   1              DMA_LCM_CFG &= ~0x0f;
   587   1              if(Priority <= Priority_3) DMA_LCM_CFG |= Priority << 2;
@@ -678,7 +678,7 @@ stmt  level    source
   649   1              if(Bus_Priority <= Priority_3) DMA_I2CR_CFG |= Bus_Priority;    //数据总线访问优先级
   650   1              if(State == ENABLE)
   651   1                      DMA_I2CR_CFG |= 0x80;           //bit7 1:Enable Interrupt
-C251 COMPILER V5.60.0,  STC32G_NVIC                                                        07/08/26  17:10:57  PAGE 11  
+C251 COMPILER V5.60.0,  STC32G_NVIC                                                        07/08/26  18:36:44  PAGE 11  
 
   652   1              else
   653   1                      DMA_I2CR_CFG &= ~0x80;  //bit7 0:Disable Interrupt
@@ -746,7 +746,7 @@ stmt  level    source
   715          
 
 
-C251 COMPILER V5.60.0,  STC32G_NVIC                                                        07/08/26  17:10:57  PAGE 12  
+C251 COMPILER V5.60.0,  STC32G_NVIC                                                        07/08/26  18:36:44  PAGE 12  
 
 Module Information          Static   Overlayable
 ------------------------------------------------

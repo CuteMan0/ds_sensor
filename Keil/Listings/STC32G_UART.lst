@@ -1,10 +1,10 @@
-C251 COMPILER V5.60.0,  STC32G_UART                                                        07/08/26  17:11:00  PAGE 1   
+C251 COMPILER V5.60.0,  STC32G_UART                                                        07/08/26  18:36:44  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE STC32G_UART
 OBJECT MODULE PLACED IN .\Objects\STC32G_UART.obj
-COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE ..\Library\STC32G_UART.c XSMALL INTR2 FLOAT64 BROWSE INCDIR(..\App;..\
-                    -Bsp;..\Driver;..\Library;..\Tool) DEBUG PRINT(.\Listings\STC32G_UART.lst) OBJECT(.\Objects\STC32G_UART.obj) 
+COMPILER INVOKED BY: C:\Wongsoft\Keil_v5\C251\BIN\C251.EXE ..\Library\STC32G_UART.c XSMALL INTR2 BROWSE INCDIR(..\App;..
+                    -\Bsp;..\Driver;..\Library;..\Tool) DEBUG PRINT(.\Listings\STC32G_UART.lst) OBJECT(.\Objects\STC32G_UART.obj) 
 
 stmt  level    source
 
@@ -66,7 +66,7 @@ stmt  level    source
    56   2                      COM1.RX_TimeOut = 0;
    57   2                      
    58   2                      for(i=0; i<COM_TX1_Lenth; i++)  TX1_Buffer[i] = 0;
-C251 COMPILER V5.60.0,  STC32G_UART                                                        07/08/26  17:11:00  PAGE 2   
+C251 COMPILER V5.60.0,  STC32G_UART                                                        07/08/26  18:36:44  PAGE 2   
 
    59   2                      for(i=0; i<COM_RX1_Lenth; i++)  RX1_Buffer[i] = 0;
    60   2      
@@ -134,7 +134,7 @@ stmt  level    source
   122   3                              T2R = 0;                //Timer stop
   123   3                              T2_CT = 0;      //Timer2 set As Timer
   124   3                              T2x12 = 1;      //Timer2 set as 1T mode
-C251 COMPILER V5.60.0,  STC32G_UART                                                        07/08/26  17:11:00  PAGE 3   
+C251 COMPILER V5.60.0,  STC32G_UART                                                        07/08/26  18:36:44  PAGE 3   
 
   125   3                              T2H = (u8)(j>>8);
   126   3                              T2L = (u8)j;
@@ -202,7 +202,7 @@ stmt  level    source
   188   2                      for(i=0; i<COM_TX4_Lenth; i++)  TX4_Buffer[i] = 0;
   189   2                      for(i=0; i<COM_RX4_Lenth; i++)  RX4_Buffer[i] = 0;
   190   2      
-C251 COMPILER V5.60.0,  STC32G_UART                                                        07/08/26  17:11:00  PAGE 4   
+C251 COMPILER V5.60.0,  STC32G_UART                                                        07/08/26  18:36:44  PAGE 4   
 
   191   2                      if((COMx->UART_Mode == UART_9bit_BRTx) || (COMx->UART_Mode == UART_8bit_BRTx))  //¿É±ä²¨ÌØÂÊ
   192   2                      {
@@ -270,7 +270,7 @@ stmt  level    source
   253   1          for (; *puts != 0;  puts++)  TX1_write2buff(*puts);         //Óöµ½Í£Ö¹·û0½áÊø
   254   1      }
   255          
-C251 COMPILER V5.60.0,  STC32G_UART                                                        07/08/26  17:11:00  PAGE 5   
+C251 COMPILER V5.60.0,  STC32G_UART                                                        07/08/26  18:36:44  PAGE 5   
 
   256          #endif
   257          
@@ -338,7 +338,7 @@ stmt  level    source
   317          {
   318   1          #if(UART_QUEUE_MODE == 1)
                        TX4_Buffer[COM4.TX_write] = dat;        //×°·¢ËÍ»º³å£¬Ê¹ÓÃ¶ÓÁÐÊ½Êý¾Ý·¢ËÍ£¬Ò»´ÎÐÔ·¢ËÍÊý¾Ý³¤¶È²»Òª³¬¹ý»º³åÇø´óÐ¡£
-C251 COMPILER V5.60.0,  STC32G_UART                                                        07/08/26  17:11:00  PAGE 6   
+C251 COMPILER V5.60.0,  STC32G_UART                                                        07/08/26  18:36:44  PAGE 6   
 
              -¨COM_TXn_Lenth£©
                        if(++COM4.TX_write >= COM_TX4_Lenth)    COM4.TX_write = 0;
@@ -406,7 +406,7 @@ stmt  level    source
                
                #elif(PRINTF_SELECT == 4)
                
-C251 COMPILER V5.60.0,  STC32G_UART                                                        07/08/26  17:11:00  PAGE 7   
+C251 COMPILER V5.60.0,  STC32G_UART                                                        07/08/26  18:36:44  PAGE 7   
 
                char putchar(char c)
                {

@@ -1,4 +1,5 @@
 ".\Objects\main.obj",
+".\Objects\task.obj",
 ".\Objects\bsp_ds18b20.obj",
 ".\Objects\bsp_max30102.obj",
 ".\Objects\bsp_mlx90614.obj",
@@ -75,5 +76,6 @@
 ".\Objects\lut.obj" 
 TO ".\Objects\prj" 
 PRINT(".\Listings\prj.map") CASE 
+REMOVEUNUSED 
 CLASSES (EDATA (0x0-0xFFF), 
 HDATA (0x0-0xFFF)) 

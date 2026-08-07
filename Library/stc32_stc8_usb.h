@@ -3,27 +3,27 @@
 
 #include "type_def.h"
 
-//使用串口“printf”打印信息需屏蔽以下两个定义
-//#define PRINTF_SEGLED         //printf输出重定向到ISP下载软件中的7段数码管
-//#define PRINTF_HID            //printf输出直接重定向到USB口
-//#define PRINTF_USB            //printf输出直接重定向到USB口
+// 使用串口“printf”打印信息需屏蔽以下两个定义
+// #define PRINTF_SEGLED         //printf输出重定向到ISP下载软件中的7段数码管
+// #define PRINTF_HID            //printf输出直接重定向到USB口
+// #define PRINTF_USB            //printf输出直接重定向到USB口
 
-#define DEVSTATE_ATTACHED       0
-#define DEVSTATE_POWERED        1
-#define DEVSTATE_DEFAULT        2
-#define DEVSTATE_ADDRESS        3
-#define DEVSTATE_CONFIGURED     4
-#define DEVSTATE_SUSPENDED      5
+#define DEVSTATE_ATTACHED 0
+#define DEVSTATE_POWERED 1
+#define DEVSTATE_DEFAULT 2
+#define DEVSTATE_ADDRESS 3
+#define DEVSTATE_CONFIGURED 4
+#define DEVSTATE_SUSPENDED 5
 
 void usb_init();
 void usb_OUT_done();
 void USB_SendData(BYTE *dat, int size);
 
-void set_usb_OUT_callback(void (*pfn)(void));   //如果需要实现USB接收中断，需要调用此函数来设置回调函数
-void set_usb_IN_callback(void (*pfn)(void));    //如果需要实现USB发送中断，需要调用此函数来设置回调函数
-void set_usb_ispcmd(char *cmd);                 //设置不停电下载的用户自定义命令，不设置时默认下载命令为“@STCISP#”
+void set_usb_OUT_callback(void (*pfn)(void)); // 如果需要实现USB接收中断，需要调用此函数来设置回调函数
+void set_usb_IN_callback(void (*pfn)(void));  // 如果需要实现USB发送中断，需要调用此函数来设置回调函数
+void set_usb_ispcmd(char *cmd);               // 设置不停电下载的用户自定义命令，不设置时默认下载命令为“@STCISP#”
 
-//设置usb寄存器操作函数等待NOP数，STC32G144K246系列系统时钟处于高频时建议设置为40左右，在usb_init之后调用
+// 设置usb寄存器操作函数等待NOP数，STC32G144K246系列系统时钟处于高频时建议设置为40左右，在usb_init之后调用
 void set_usb_wait_time(u8);
 
 int SEG7_ShowString(const char *fmt, ...);
@@ -74,16 +74,15 @@ void OLED12864_ScrollStart();
 void OLED12864_ScrollStop();
 void OLED12864_ShowPicture(BYTE x, BYTE y, BYTE cx, BYTE cy, BYTE *dat);
 
-int printf_usb (const char *fmt, ...);
+int printf_usb(const char *fmt, ...);
 
 #if defined PRINTF_SEGLED
-#define printf  SEG7_ShowString
+#define printf SEG7_ShowString
 #elif defined PRINTF_USB
-#define printf  printf_usb
-#elif defined  PRINTF_HID
-#define printf  printf_usb
+#define printf printf_usb
+#elif defined PRINTF_HID
+#define printf printf_usb
 #endif
-
 
 extern BYTE xdata UsbFeatureBuffer[64];
 extern BYTE xdata UsbInBuffer[64];
@@ -93,6 +92,5 @@ extern BOOL bUsbInBusy;
 extern BOOL bUsbOutReady;
 extern BYTE DeviceState;
 extern BYTE OutNumber;
-
 
 #endif

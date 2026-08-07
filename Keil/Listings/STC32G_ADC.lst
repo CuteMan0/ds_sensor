@@ -1,10 +1,10 @@
-C251 COMPILER V5.60.0,  STC32G_ADC                                                         07/08/26  17:10:52  PAGE 1   
+C251 COMPILER V5.60.0,  STC32G_ADC                                                         07/08/26  18:36:43  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE STC32G_ADC
 OBJECT MODULE PLACED IN .\Objects\STC32G_ADC.obj
-COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE ..\Library\STC32G_ADC.c XSMALL INTR2 FLOAT64 BROWSE INCDIR(..\App;..\B
-                    -sp;..\Driver;..\Library;..\Tool) DEBUG PRINT(.\Listings\STC32G_ADC.lst) OBJECT(.\Objects\STC32G_ADC.obj) 
+COMPILER INVOKED BY: C:\Wongsoft\Keil_v5\C251\BIN\C251.EXE ..\Library\STC32G_ADC.c XSMALL INTR2 BROWSE INCDIR(..\App;..\
+                    -Bsp;..\Driver;..\Library;..\Tool) DEBUG PRINT(.\Listings\STC32G_ADC.lst) OBJECT(.\Objects\STC32G_ADC.obj) 
 
 stmt  level    source
 
@@ -66,7 +66,7 @@ stmt  level    source
    55   1              ADC_RESL = 0;
    56   1      
    57   1              ADC_CONTR = (ADC_CONTR & 0xf0) | channel; //设置ADC转换通道
-C251 COMPILER V5.60.0,  STC32G_ADC                                                         07/08/26  17:10:52  PAGE 2   
+C251 COMPILER V5.60.0,  STC32G_ADC                                                         07/08/26  18:36:43  PAGE 2   
 
    58   1              ADC_START = 1;//启动ADC转换
    59   1              NOP(10);                        //对ADC_CONTR操作后要4T之后才能访问

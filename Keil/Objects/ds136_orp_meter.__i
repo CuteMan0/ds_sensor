@@ -1,0 +1,1 @@
+"..\Bsp\ds136_orp_meter.c" XSMALL INTR2 BROWSE INCDIR(..\App;..\Bsp;..\Driver;..\Library;..\Tool) DEBUG PRINT(.\Listings\ds136_orp_meter.lst) OBJECT(.\Objects\ds136_orp_meter.obj)

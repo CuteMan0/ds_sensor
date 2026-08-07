@@ -1,10 +1,10 @@
-C251 COMPILER V5.60.0,  STC32G_EEPROM                                                      07/08/26  17:10:55  PAGE 1   
+C251 COMPILER V5.60.0,  STC32G_EEPROM                                                      07/08/26  18:36:44  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE STC32G_EEPROM
 OBJECT MODULE PLACED IN .\Objects\STC32G_EEPROM.obj
-COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE ..\Library\STC32G_EEPROM.c XSMALL INTR2 FLOAT64 BROWSE INCDIR(..\App;.
-                    -.\Bsp;..\Driver;..\Library;..\Tool) DEBUG PRINT(.\Listings\STC32G_EEPROM.lst) OBJECT(.\Objects\STC32G_EEPROM.obj) 
+COMPILER INVOKED BY: C:\Wongsoft\Keil_v5\C251\BIN\C251.EXE ..\Library\STC32G_EEPROM.c XSMALL INTR2 BROWSE INCDIR(..\App;
+                    -..\Bsp;..\Driver;..\Library;..\Tool) DEBUG PRINT(.\Listings\STC32G_EEPROM.lst) OBJECT(.\Objects\STC32G_EEPROM.obj) 
 
 stmt  level    source
 
@@ -66,7 +66,7 @@ stmt  level    source
    56          {
    57   1              IAP_ENABLE();                           //设置等待时间，允许IAP操作，送一次就够
    58   1              IAP_READ();                             //送字节读命令，命令不需改变时，不需重新送命令
-C251 COMPILER V5.60.0,  STC32G_EEPROM                                                      07/08/26  17:10:55  PAGE 2   
+C251 COMPILER V5.60.0,  STC32G_EEPROM                                                      07/08/26  18:36:44  PAGE 2   
 
    59   1              do
    60   1              {
@@ -135,7 +135,7 @@ Module Information          Static   Overlayable
   code size            =       209     ------
   ecode size           =    ------     ------
   data size            =    ------     ------
-C251 COMPILER V5.60.0,  STC32G_EEPROM                                                      07/08/26  17:10:55  PAGE 3   
+C251 COMPILER V5.60.0,  STC32G_EEPROM                                                      07/08/26  18:36:44  PAGE 3   
 
   idata size           =    ------     ------
   pdata size           =    ------     ------

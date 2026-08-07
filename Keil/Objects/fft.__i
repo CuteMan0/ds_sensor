@@ -1,1 +1,1 @@
-"..\Tool\fft.c" XSMALL INTR2 FLOAT64 BROWSE INCDIR(..\App;..\Bsp;..\Driver;..\Library;..\Tool) DEBUG PRINT(.\Listings\fft.lst) OBJECT(.\Objects\fft.obj)
+"..\Tool\fft.c" XSMALL INTR2 BROWSE INCDIR(..\App;..\Bsp;..\Driver;..\Library;..\Tool) DEBUG PRINT(.\Listings\fft.lst) OBJECT(.\Objects\fft.obj)

@@ -1,15 +1,16 @@
-C251 COMPILER V5.60.0,  ds138_airC2H6O_meter                                               07/08/26  17:10:48  PAGE 1   
+C251 COMPILER V5.60.0,  ds138_airC2H6O_meter                                               07/08/26  21:20:58  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE ds138_airC2H6O_meter
 OBJECT MODULE PLACED IN .\Objects\ds138_airC2H6O_meter.obj
-COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE ..\Bsp\ds138_airC2H6O_meter.c XSMALL INTR2 FLOAT64 BROWSE INCDIR(..\Ap
-                    -p;..\Bsp;..\Driver;..\Library;..\Tool) DEBUG PRINT(.\Listings\ds138_airC2H6O_meter.lst) OBJECT(.\Objects\ds138_airC2H6O_
-                    -meter.obj) 
+COMPILER INVOKED BY: C:\Wongsoft\Keil_v5\C251\BIN\C251.EXE ..\Bsp\ds138_airC2H6O_meter.c XSMALL INTR2 BROWSE INCDIR(..\A
+                    -pp;..\Bsp;..\Driver;..\Library;..\Tool) DEBUG PRINT(.\Listings\ds138_airC2H6O_meter.lst) OBJECT(.\Objects\ds138_airC2H6O
+                    -_meter.obj) 
 
 stmt  level    source
 
     1          #include "ds138_airC2H6O_meter.h"
+*** WARNING C317 IN LINE 68 OF \Users\Si\Desktop\ds_sensor\Library\type_def.h: attempt to redefine macro 'NULL'
     2          
     3          #if DS_SENSOR == 138
                
@@ -65,9 +66,9 @@ stmt  level    source
                    if (2 == flag_key) // 长按，开始校准零点
                    {
                        flag_key = 0;
-               
-C251 COMPILER V5.60.0,  ds138_airC2H6O_meter                                               07/08/26  17:10:48  PAGE 2   
+C251 COMPILER V5.60.0,  ds138_airC2H6O_meter                                               07/08/26  21:20:58  PAGE 2   
 
+               
                        // 读取当前电压作为新的零点
                        new_zero = adc_get(&adc0);
                
@@ -133,9 +134,9 @@ stmt  level    source
                    if (calibration_pending)
                    {
                        calibration_pending = 0;
-               
-C251 COMPILER V5.60.0,  ds138_airC2H6O_meter                                               07/08/26  17:10:48  PAGE 3   
+C251 COMPILER V5.60.0,  ds138_airC2H6O_meter                                               07/08/26  21:20:58  PAGE 3   
 
+               
                        // 写入EEPROM（这里过于耗时，在低频任务中执行）
                        tmp[0] = (u16)(pending_zero_value * 1000) >> 8;
                        tmp[1] = (u16)(pending_zero_value * 1000);
@@ -202,9 +203,9 @@ stmt  level    source
 Module Information          Static   Overlayable
 ------------------------------------------------
   code size            =    ------     ------
-  ecode size           =    ------     ------
-C251 COMPILER V5.60.0,  ds138_airC2H6O_meter                                               07/08/26  17:10:48  PAGE 4   
+C251 COMPILER V5.60.0,  ds138_airC2H6O_meter                                               07/08/26  21:20:58  PAGE 4   
 
+  ecode size           =    ------     ------
   data size            =    ------     ------
   idata size           =    ------     ------
   pdata size           =    ------     ------
@@ -222,4 +223,4 @@ Module Information          Static   Overlayable
 End of Module Information.
 
 
-C251 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
+C251 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)

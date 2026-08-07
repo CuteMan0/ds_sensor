@@ -1,0 +1,116 @@
+C251 COMPILER V5.60.0,  task                                                               07/08/26  21:20:57  PAGE 1   
+
+
+C251 COMPILER V5.60.0, COMPILATION OF MODULE task
+OBJECT MODULE PLACED IN .\Objects\task.obj
+COMPILER INVOKED BY: C:\Wongsoft\Keil_v5\C251\BIN\C251.EXE ..\App\task.c XSMALL INTR2 BROWSE INCDIR(..\App;..\Bsp;..\Dri
+                    -ver;..\Library;..\Tool) DEBUG PRINT(.\Listings\task.lst) OBJECT(.\Objects\task.obj) 
+
+stmt  level    source
+
+    1          /**
+    2           * @file    task.c
+    3           * @brief   应用层任务函数实现
+    4           * @note    包含传感器打印、校准保存、按键扫描、LED 闪烁和传感器采集任务。
+    5           *          所有任务由 task_scheduler 调度器按周期定时调用。
+    6           */
+    7          
+    8          #include "task.h"
+    9          
+   10          #include "ds_sensor.h"
+*** WARNING C317 IN LINE 68 OF \Users\Si\Desktop\ds_sensor\Library\type_def.h: attempt to redefine macro 'NULL'
+   11          
+   12          #include "led_drive.h"
+   13          #include "key_drive.h"
+   14          
+   15          /* ============================================================
+   16           * 全局变量定义（由 ds_sensor.h 中的 extern 声明引用）
+   17           * ============================================================ */
+   18          
+   19          volatile float dat_for_printf;   /**< 待打印的传感器数据（由传感器驱动更新） */
+   20          
+   21          char usb_txbuf[64];              /**< USB 发送缓冲区 */
+   22          u8 usb_send_flag = 0;            /**< USB 发送完成标志，1=发送完成 */
+   23          u8 usb_send_len = 0;             /**< USB 发送数据长度（字节数） */
+   24          
+   25          /* ============================================================
+   26           * 任务函数实现
+   27           * ============================================================ */
+   28          
+   29          /**
+   30           * @brief 传感器数据打印任务
+   31           * @note  周期调用 ds_printf() 输出传感器数据，每次执行后延时 10ms
+   32           */
+   33          void task_printf(void)
+   34          {
+   35   1          ds_printf();
+   36   1          task_delay_ms(10);
+   37   1      }
+   38          
+   39          /**
+   40           * @brief 传感器校准保存任务
+   41           * @note  周期 1s 调用 ds_calib()，仅在触发校准条件时执行实际校准操作
+   42           */
+   43          void task_calibration_save(void)
+   44          {
+   45   1          ds_calib(); /* 统一校准接口，仅在触发校准条件后执行 */
+   46   1          task_delay_ms(1000);
+   47   1      }
+   48          
+   49          /**
+   50           * @brief 按键扫描任务
+   51           * @note  周期 20ms 调用 Scan_Key() 检测按键输入
+   52           */
+   53          void task_key_scan(void)
+   54          {
+   55   1          Scan_Key();
+   56   1          task_delay_ms(20);
+   57   1      }
+C251 COMPILER V5.60.0,  task                                                               07/08/26  21:20:57  PAGE 2   
+
+   58          
+   59          /**
+   60           * @brief LED 闪烁任务
+   61           * @note  由 USE_BLINK 宏控制是否启用，用于校准状态指示灯
+   62           */
+   63          void task_led_blink(void)
+   64          {
+   65   1      #if USE_BLINK
+                   Led_Task();
+               #endif
+   68   1          task_delay_ms(10);
+   69   1      }
+   70          
+   71          /**
+   72           * @brief 传感器数据采集任务
+   73           * @note  调用 ds_update() 统一传感器更新接口，内部完成数据采集 + 滤波 + 超时处�
+             -��
+   74           */
+   75          void task_sensor(void)
+   76          {
+   77   1          ds_update(); /* 统一传感器更新接口，内部完成采集 + 滤波 + 超时处理 */
+   78   1      }
+
+
+Module Information          Static   Overlayable
+------------------------------------------------
+  code size            =        40     ------
+  ecode size           =    ------     ------
+  data size            =    ------     ------
+  idata size           =    ------     ------
+  pdata size           =    ------     ------
+  xdata size           =    ------     ------
+  xdata-const size     =    ------     ------
+  edata size           =        70     ------
+  bit size             =    ------     ------
+  ebit size            =    ------     ------
+  bitaddressable size  =    ------     ------
+  ebitaddressable size =    ------     ------
+  far data size        =    ------     ------
+  huge data size       =    ------     ------
+  const size           =    ------     ------
+  hconst size          =        10     ------
+End of Module Information.
+
+
+C251 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)

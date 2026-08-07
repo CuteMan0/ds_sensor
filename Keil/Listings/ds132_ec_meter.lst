@@ -1,14 +1,15 @@
-C251 COMPILER V5.60.0,  ds132_ec_meter                                                     07/08/26  17:10:47  PAGE 1   
+C251 COMPILER V5.60.0,  ds132_ec_meter                                                     07/08/26  21:20:57  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE ds132_ec_meter
 OBJECT MODULE PLACED IN .\Objects\ds132_ec_meter.obj
-COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE ..\Bsp\ds132_ec_meter.c XSMALL INTR2 FLOAT64 BROWSE INCDIR(..\App;..\B
-                    -sp;..\Driver;..\Library;..\Tool) DEBUG PRINT(.\Listings\ds132_ec_meter.lst) OBJECT(.\Objects\ds132_ec_meter.obj) 
+COMPILER INVOKED BY: C:\Wongsoft\Keil_v5\C251\BIN\C251.EXE ..\Bsp\ds132_ec_meter.c XSMALL INTR2 BROWSE INCDIR(..\App;..\
+                    -Bsp;..\Driver;..\Library;..\Tool) DEBUG PRINT(.\Listings\ds132_ec_meter.lst) OBJECT(.\Objects\ds132_ec_meter.obj) 
 
 stmt  level    source
 
     1          #include "ds132_ec_meter.h"
+*** WARNING C317 IN LINE 68 OF \Users\Si\Desktop\ds_sensor\Library\type_def.h: attempt to redefine macro 'NULL'
     2          
     3          #if DS_SENSOR == 132
                
@@ -65,9 +66,9 @@ stmt  level    source
                volatile float offset_vol = 0.0f; // 减法器偏移量
                
                static volatile u8 calibration_pending = 0; // 校准延迟处理变量
-               static volatile u8 led_flash = 0;           // LED闪烁标志
-C251 COMPILER V5.60.0,  ds132_ec_meter                                                     07/08/26  17:10:47  PAGE 2   
+C251 COMPILER V5.60.0,  ds132_ec_meter                                                     07/08/26  21:20:57  PAGE 2   
 
+               static volatile u8 led_flash = 0;           // LED闪烁标志
                
                ADC_Handle_t adc0;
                ADC_Handle_t adc1;
@@ -133,9 +134,9 @@ stmt  level    source
                {
                    u16 tmp = 0xff;
                
-                   if (calibration_pending)
-C251 COMPILER V5.60.0,  ds132_ec_meter                                                     07/08/26  17:10:47  PAGE 3   
+C251 COMPILER V5.60.0,  ds132_ec_meter                                                     07/08/26  21:20:57  PAGE 3   
 
+                   if (calibration_pending)
                    {
                        calibration_pending = 0;
                
@@ -201,9 +202,9 @@ stmt  level    source
                
                static eEvent eCurrentEvent = EVT_NO_EVENT;
                static pfState pfCurrentState = Range_0;
-               
-C251 COMPILER V5.60.0,  ds132_ec_meter                                                     07/08/26  17:10:47  PAGE 4   
+C251 COMPILER V5.60.0,  ds132_ec_meter                                                     07/08/26  21:20:57  PAGE 4   
 
+               
                // state transition table
                StmRow_t stm[10] = {
                    {Range_0, EVT_OverRange, Range_1},
@@ -269,9 +270,9 @@ stmt  level    source
                    adc_get(&adc1);
                    tmp = adc1.raw;
                
-                   if (tmp > range_change_val[1])
-C251 COMPILER V5.60.0,  ds132_ec_meter                                                     07/08/26  17:10:47  PAGE 5   
+C251 COMPILER V5.60.0,  ds132_ec_meter                                                     07/08/26  21:20:57  PAGE 5   
 
+                   if (tmp > range_change_val[1])
                    {
                        eCurrentEvent = EVT_OverRange;
                    }
@@ -337,9 +338,9 @@ stmt  level    source
                    REF_R5;
                    offset_vol = offset_val[4];
                    adc_get(&adc1);
-                   tmp = adc1.raw;
-C251 COMPILER V5.60.0,  ds132_ec_meter                                                     07/08/26  17:10:47  PAGE 6   
+C251 COMPILER V5.60.0,  ds132_ec_meter                                                     07/08/26  21:20:57  PAGE 6   
 
+                   tmp = adc1.raw;
                
                    if (tmp < range_change_val[9])
                    {
@@ -371,4 +372,4 @@ Module Information          Static   Overlayable
 End of Module Information.
 
 
-C251 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
+C251 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)

@@ -1,10 +1,10 @@
-C251 COMPILER V5.60.0,  bsp_tcs3400                                                        07/08/26  17:10:46  PAGE 1   
+C251 COMPILER V5.60.0,  bsp_tcs3400                                                        07/08/26  18:36:42  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE bsp_tcs3400
 OBJECT MODULE PLACED IN .\Objects\bsp_tcs3400.obj
-COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE ..\Bsp\bsp_tcs3400.c XSMALL INTR2 FLOAT64 BROWSE INCDIR(..\App;..\Bsp;
-                    -..\Driver;..\Library;..\Tool) DEBUG PRINT(.\Listings\bsp_tcs3400.lst) OBJECT(.\Objects\bsp_tcs3400.obj) 
+COMPILER INVOKED BY: C:\Wongsoft\Keil_v5\C251\BIN\C251.EXE ..\Bsp\bsp_tcs3400.c XSMALL INTR2 BROWSE INCDIR(..\App;..\Bsp
+                    -;..\Driver;..\Library;..\Tool) DEBUG PRINT(.\Listings\bsp_tcs3400.lst) OBJECT(.\Objects\bsp_tcs3400.obj) 
 
 stmt  level    source
 
@@ -66,7 +66,7 @@ stmt  level    source
    56          
    57          void tcs3400_init(void)
    58          {
-C251 COMPILER V5.60.0,  bsp_tcs3400                                                        07/08/26  17:10:46  PAGE 2   
+C251 COMPILER V5.60.0,  bsp_tcs3400                                                        07/08/26  18:36:42  PAGE 2   
 
    59   1          tcs3400_write_register(TCS3400_ENABLE, 0x00);
    60   1          // 设置积分时间
@@ -135,7 +135,7 @@ Module Information          Static   Overlayable
   huge data size       =    ------     ------
   const size           =    ------     ------
   hconst size          =         8     ------
-C251 COMPILER V5.60.0,  bsp_tcs3400                                                        07/08/26  17:10:46  PAGE 3   
+C251 COMPILER V5.60.0,  bsp_tcs3400                                                        07/08/26  18:36:42  PAGE 3   
 
 End of Module Information.
 

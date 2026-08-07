@@ -6,7 +6,6 @@
 
 static float temp;
 static u8 conv_pending = 0;
-static u8 printf_pending = 1;
 
 void ds_init(void)
 {
@@ -16,32 +15,32 @@ void ds_init(void)
 void ds_update(void)
 {
     u8 ret;
+
     if (!conv_pending)
     {
         ds18b20_start_conversion(DS18B20_RES_12BIT);
         conv_pending = 1;
+        task_delay_ms(750);
+        return;
     }
-    else
+
+    ret = ds18b20_read_temperature(&temp);
+
+    if(ret == DS18B20_OK)
     {
-        ret = ds18b20_read_temperature(&temp);
-        if (ret == DS18B20_OK)
-        {
-            dat_for_printf = temp;
-            avg_filter_update(&filter, dat_for_printf);
-            conv_pending = 0;
-            printf_pending = 0;
-        }
+        dat_for_printf = temp;
+        avg_filter_update(&filter, dat_for_printf);
     }
+
+    /* 马上开始下一次转换 */
+    ds18b20_start_conversion(DS18B20_RES_12BIT);
+
     task_delay_ms(750);
 }
 
 void ds_printf(void)
 {
-    if (!printf_pending)
-    {
-        printf("temp:%.2fC\n", dat_for_printf);
-        printf_pending = 1;
-    }
+    printf_usb("Temp=%.2f\r\n", dat_for_printf);
 }
 
 void ds_calib(void)

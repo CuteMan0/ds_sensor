@@ -1,10 +1,10 @@
-C251 COMPILER V5.60.0,  task_scheduler                                                     07/08/26  17:11:01  PAGE 1   
+C251 COMPILER V5.60.0,  task_scheduler                                                     07/08/26  18:36:45  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE task_scheduler
 OBJECT MODULE PLACED IN .\Objects\task_scheduler.obj
-COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE ..\Tool\task_scheduler.c XSMALL INTR2 FLOAT64 BROWSE INCDIR(..\App;..\
-                    -Bsp;..\Driver;..\Library;..\Tool) DEBUG PRINT(.\Listings\task_scheduler.lst) OBJECT(.\Objects\task_scheduler.obj) 
+COMPILER INVOKED BY: C:\Wongsoft\Keil_v5\C251\BIN\C251.EXE ..\Tool\task_scheduler.c XSMALL INTR2 BROWSE INCDIR(..\App;..
+                    -\Bsp;..\Driver;..\Library;..\Tool) DEBUG PRINT(.\Listings\task_scheduler.lst) OBJECT(.\Objects\task_scheduler.obj) 
 
 stmt  level    source
 
@@ -66,7 +66,7 @@ stmt  level    source
    56          // 原子读取系统滴答（关闭 EA 保证 u32 读原子性）
    57          //------------------------------------------------------------
    58          u32 task_get_tick_ms(void)
-C251 COMPILER V5.60.0,  task_scheduler                                                     07/08/26  17:11:01  PAGE 2   
+C251 COMPILER V5.60.0,  task_scheduler                                                     07/08/26  18:36:45  PAGE 2   
 
    59          {
    60   1          u32 t;
@@ -134,7 +134,7 @@ stmt  level    source
   122          u8 task_timeout(u32 *t_next, u32 timeout_ms)
   123          {
   124   1          u32 now = task_get_tick_ms();
-C251 COMPILER V5.60.0,  task_scheduler                                                     07/08/26  17:11:01  PAGE 3   
+C251 COMPILER V5.60.0,  task_scheduler                                                     07/08/26  18:36:45  PAGE 3   
 
   125   1      
   126   1          if (*t_next == 0)
@@ -202,7 +202,7 @@ stmt  level    source
   188   1          // 按优先级排序（高值优先，冒泡）
   189   1          for (i = 0; i < ready_count; i++)
   190   1          {
-C251 COMPILER V5.60.0,  task_scheduler                                                     07/08/26  17:11:01  PAGE 4   
+C251 COMPILER V5.60.0,  task_scheduler                                                     07/08/26  18:36:45  PAGE 4   
 
   191   2              for (j = i + 1; j < ready_count; j++)
   192   2              {
@@ -271,7 +271,7 @@ Module Information          Static   Overlayable
   edata size           =       308         53
   bit size             =    ------     ------
   ebit size            =    ------     ------
-C251 COMPILER V5.60.0,  task_scheduler                                                     07/08/26  17:11:01  PAGE 5   
+C251 COMPILER V5.60.0,  task_scheduler                                                     07/08/26  18:36:45  PAGE 5   
 
   bitaddressable size  =    ------     ------
   ebitaddressable size =    ------     ------

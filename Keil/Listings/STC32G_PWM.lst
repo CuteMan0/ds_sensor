@@ -1,10 +1,10 @@
-C251 COMPILER V5.60.0,  STC32G_PWM                                                         07/08/26  17:10:58  PAGE 1   
+C251 COMPILER V5.60.0,  STC32G_PWM                                                         07/08/26  18:36:44  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE STC32G_PWM
 OBJECT MODULE PLACED IN .\Objects\STC32G_PWM.obj
-COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE ..\Library\STC32G_PWM.c XSMALL INTR2 FLOAT64 BROWSE INCDIR(..\App;..\B
-                    -sp;..\Driver;..\Library;..\Tool) DEBUG PRINT(.\Listings\STC32G_PWM.lst) OBJECT(.\Objects\STC32G_PWM.obj) 
+COMPILER INVOKED BY: C:\Wongsoft\Keil_v5\C251\BIN\C251.EXE ..\Library\STC32G_PWM.c XSMALL INTR2 BROWSE INCDIR(..\App;..\
+                    -Bsp;..\Driver;..\Library;..\Tool) DEBUG PRINT(.\Listings\STC32G_PWM.lst) OBJECT(.\Objects\STC32G_PWM.obj) 
 
 stmt  level    source
 
@@ -66,7 +66,7 @@ stmt  level    source
    56   2                      {
    57   3                              PWMA_CC2E_Enable();                     //开启输入捕获/比较输出
    58   3                              PWMA_ENO |= ENO2P;
-C251 COMPILER V5.60.0,  STC32G_PWM                                                         07/08/26  17:10:58  PAGE 2   
+C251 COMPILER V5.60.0,  STC32G_PWM                                                         07/08/26  18:36:44  PAGE 2   
 
    59   3                      }
    60   2                      else
@@ -134,7 +134,7 @@ stmt  level    source
   122   3                              PWMA_ENO |= ENO4P;
   123   3                      }
   124   2                      else
-C251 COMPILER V5.60.0,  STC32G_PWM                                                         07/08/26  17:10:58  PAGE 3   
+C251 COMPILER V5.60.0,  STC32G_PWM                                                         07/08/26  18:36:44  PAGE 3   
 
   125   2                      {
   126   3                              PWMA_CC4E_Disable();            //关闭输入捕获/比较输出
@@ -202,7 +202,7 @@ stmt  level    source
   188   3                              PWMB_ENO |= ENO6P;
   189   3                      }
   190   2                      else
-C251 COMPILER V5.60.0,  STC32G_PWM                                                         07/08/26  17:10:58  PAGE 4   
+C251 COMPILER V5.60.0,  STC32G_PWM                                                         07/08/26  18:36:44  PAGE 4   
 
   191   2                      {
   192   3                              PWMB_CC6E_Disable();            //关闭输入捕获/比较输出
@@ -270,7 +270,7 @@ stmt  level    source
   254   2              }
   255   1      
   256   1              return  FAIL;   //错误
-C251 COMPILER V5.60.0,  STC32G_PWM                                                         07/08/26  17:10:58  PAGE 5   
+C251 COMPILER V5.60.0,  STC32G_PWM                                                         07/08/26  18:36:44  PAGE 5   
 
   257   1      }
   258          
@@ -338,7 +338,7 @@ stmt  level    source
   320          // 描述: 异步读取PWMA特殊功能寄存器函数. 
   321          // 参数: addr: 读取特殊功能寄存器地址.
   322          // 返回: dat:  读取特殊功能寄存器内容.
-C251 COMPILER V5.60.0,  STC32G_PWM                                                         07/08/26  17:10:58  PAGE 6   
+C251 COMPILER V5.60.0,  STC32G_PWM                                                         07/08/26  18:36:44  PAGE 6   
 
   323          // 版本: V1.0, 2022-03-16
   324          //========================================================================
@@ -406,7 +406,7 @@ stmt  level    source
   386   1              HSPWMB_ADR = addr &     0x7f;  //设置间接访问地址,只需要设置原XFR地址的低7位
   387   1                                                                      //HSPWMB_ADDR寄存器的最高位写0,表示写数据
   388   1      }
-C251 COMPILER V5.60.0,  STC32G_PWM                                                         07/08/26  17:10:58  PAGE 7   
+C251 COMPILER V5.60.0,  STC32G_PWM                                                         07/08/26  18:36:44  PAGE 7   
 
   389          
   390          //========================================================================
@@ -474,7 +474,7 @@ stmt  level    source
   452   3                              tmpENO &= ~ENO3P;
   453   3                              tmpCCER2 &= ~0x01;
   454   3                      }
-C251 COMPILER V5.60.0,  STC32G_PWM                                                         07/08/26  17:10:58  PAGE 8   
+C251 COMPILER V5.60.0,  STC32G_PWM                                                         07/08/26  18:36:44  PAGE 8   
 
   455   2                      if(PWMx->PWM_EnoSelect & ENO3N)
   456   2                      {
@@ -542,7 +542,7 @@ stmt  level    source
   518   3                      }
   519   2                      else
   520   2                      {
-C251 COMPILER V5.60.0,  STC32G_PWM                                                         07/08/26  17:10:58  PAGE 9   
+C251 COMPILER V5.60.0,  STC32G_PWM                                                         07/08/26  18:36:44  PAGE 9   
 
   521   3                              tmpENO &= ~ENO5P;
   522   3                              tmpCCER1 &= ~0x01;
@@ -610,7 +610,7 @@ stmt  level    source
   584          // 参数: PWM: PWM通道/组号, PWMx结构参数,请参考PWM.h里的定义.
   585          // 返回: none.
   586          // 版本: V1.0, 2022-04-05
-C251 COMPILER V5.60.0,  STC32G_PWM                                                         07/08/26  17:10:58  PAGE 10  
+C251 COMPILER V5.60.0,  STC32G_PWM                                                         07/08/26  18:36:44  PAGE 10  
 
   587          //========================================================================
   588          void UpdateHSPwm(u8 PWM, PWMx_Duty *PWMx)
@@ -678,7 +678,7 @@ stmt  level    source
   650   2                              WritePWMB((u8)&PWMB_CCR8H, (u8)(PWMx->PWM8_Duty >> 8)); //设置输出PWM的占空比
   651   2                              WritePWMB((u8)&PWMB_CCR8L, (u8)PWMx->PWM8_Duty);
   652   2                      break;
-C251 COMPILER V5.60.0,  STC32G_PWM                                                         07/08/26  17:10:58  PAGE 11  
+C251 COMPILER V5.60.0,  STC32G_PWM                                                         07/08/26  18:36:44  PAGE 11  
 
   653   2              }
   654   1      }

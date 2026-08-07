@@ -1,0 +1,1 @@
+"..\Bsp\ds145_dco2_meter.c" XSMALL INTR2 BROWSE INCDIR(..\App;..\Bsp;..\Driver;..\Library;..\Tool) DEBUG PRINT(.\Listings\ds145_dco2_meter.lst) OBJECT(.\Objects\ds145_dco2_meter.obj)

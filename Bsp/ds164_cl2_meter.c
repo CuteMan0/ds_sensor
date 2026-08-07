@@ -28,7 +28,7 @@ void ds_update(void)
 
 void ds_printf(void)
 {
-    printf("CL2:%.2f\n", dat_for_printf);
+    printf_usb("CL2:%.2fppm\r\n", dat_for_printf);
 }
 
 void ds_calib(void)

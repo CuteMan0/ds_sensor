@@ -26,7 +26,7 @@ void ds_update(void)
 
 void ds_printf(void)
 {
-    printf("BPM:%u\n", (u16)dat_for_printf);
+    printf_usb("ECG:%uBPM\r\n", (u16)dat_for_printf);
 }
 
 void ds_calib(void)

@@ -1,4 +1,4 @@
-C251 COMPILER V5.60.0,  main                                                               07/08/26  21:20:57  PAGE 1   
+C251 COMPILER V5.60.0,  main                                                               07/08/26  22:26:02  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE main
@@ -66,7 +66,7 @@ stmt  level    source
    52           * @note  初始化滑动平均滤波器。
    53           */
    54          void Tools_init(void)
-C251 COMPILER V5.60.0,  main                                                               07/08/26  21:20:57  PAGE 2   
+C251 COMPILER V5.60.0,  main                                                               07/08/26  22:26:02  PAGE 2   
 
    55          {
    56   1          avg_filter_init(&filter, buffer, NUM_BUF_AVG);
@@ -135,7 +135,7 @@ Module Information          Static   Overlayable
   edata size           =        46     ------
   bit size             =    ------     ------
   ebit size            =    ------     ------
-C251 COMPILER V5.60.0,  main                                                               07/08/26  21:20:57  PAGE 3   
+C251 COMPILER V5.60.0,  main                                                               07/08/26  22:26:02  PAGE 3   
 
   bitaddressable size  =    ------     ------
   ebitaddressable size =    ------     ------

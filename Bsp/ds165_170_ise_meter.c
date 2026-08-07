@@ -137,6 +137,7 @@ void ds_update(void)
             dat_for_printf = 0.0f;
         }
     }
+    task_delay_ms(10);
 }
 
 void Led_Task(void)
@@ -362,7 +363,19 @@ static float EEPROM_ReadFloat(u32 addr)
 
 void ds_printf(void)
 {
-    printf("NH4:%.3f\n", dat_for_printf);
+#if (DS_SENSOR == 165)
+    printf_usb("NH4:%.3fppm\r\n", dat_for_printf);
+#elif (DS_SENSOR == 166)
+    printf_usb(":%.3fppm\r\n", dat_for_printf);
+#elif (DS_SENSOR == 16)
+    printf_usb(":%.3fppm\r\n", dat_for_printf);
+#elif (DS_SENSOR == 168)
+    printf_usb(":%.3fppm\r\n", dat_for_printf);
+#elif (DS_SENSOR == 169)
+    printf_usb(":%.3fppm\r\n", dat_for_printf);
+#elif (DS_SENSOR == 170)
+    printf_usb(":%.3fppm\r\n", dat_for_printf);
+#endif
 }
 
 void ds_calib(void)

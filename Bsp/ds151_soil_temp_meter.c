@@ -26,7 +26,7 @@ void ds_update(void)
 
     ret = ds18b20_read_temperature(&temp);
 
-    if(ret == DS18B20_OK)
+    if (ret == DS18B20_OK)
     {
         dat_for_printf = temp;
         avg_filter_update(&filter, dat_for_printf);
@@ -40,7 +40,7 @@ void ds_update(void)
 
 void ds_printf(void)
 {
-    printf_usb("Temp=%.2f\r\n", dat_for_printf);
+    printf_usb("Temp=%.2fC\r\n", dat_for_printf);
 }
 
 void ds_calib(void)

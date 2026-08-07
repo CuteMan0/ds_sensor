@@ -1,4 +1,4 @@
-C251 COMPILER V5.60.0,  ds135_tur_meter                                                    07/08/26  21:20:57  PAGE 1   
+C251 COMPILER V5.60.0,  ds135_tur_meter                                                    07/08/26  22:26:02  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE ds135_tur_meter
@@ -57,7 +57,7 @@ stmt  level    source
                
                void ds_printf(void)
                {
-                   printf("tur:%.6f\n", dat_for_printf);
+                   printf_usb("tur:%.1fntu\r\n", dat_for_printf);
                }
                
                void ds_calib(void)
@@ -66,7 +66,7 @@ stmt  level    source
                }
                
                #endif
-C251 COMPILER V5.60.0,  ds135_tur_meter                                                    07/08/26  21:20:57  PAGE 2   
+C251 COMPILER V5.60.0,  ds135_tur_meter                                                    07/08/26  22:26:02  PAGE 2   
 
 
 

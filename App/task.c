@@ -16,11 +16,11 @@
  * 全局变量定义（由 ds_sensor.h 中的 extern 声明引用）
  * ============================================================ */
 
-volatile float dat_for_printf;   /**< 待打印的传感器数据（由传感器驱动更新） */
+volatile float dat_for_printf; /**< 待打印的传感器数据（由传感器驱动更新） */
 
-char usb_txbuf[64];              /**< USB 发送缓冲区 */
-u8 usb_send_flag = 0;            /**< USB 发送完成标志，1=发送完成 */
-u8 usb_send_len = 0;             /**< USB 发送数据长度（字节数） */
+char usb_txbuf[64];   /**< USB 发送缓冲区 */
+u8 usb_send_flag = 0; /**< USB 发送完成标志，1=发送完成 */
+u8 usb_send_len = 0;  /**< USB 发送数据长度（字节数） */
 
 /* ============================================================
  * 任务函数实现
@@ -33,7 +33,7 @@ u8 usb_send_len = 0;             /**< USB 发送数据长度（字节数） */
 void task_printf(void)
 {
     ds_printf();
-    task_delay_ms(10);
+    task_delay_ms(100);
 }
 
 /**

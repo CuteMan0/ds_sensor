@@ -1,0 +1,1 @@
+"..\Bsp\bsp_mlx90614.c" XSMALL INTR2 BROWSE INCDIR(..\App;..\Bsp;..\Driver;..\Library;..\Tool) DEBUG PRINT(.\Listings\bsp_mlx90614.lst) OBJECT(.\Objects\bsp_mlx90614.obj)

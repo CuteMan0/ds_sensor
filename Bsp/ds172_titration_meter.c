@@ -11,6 +11,9 @@
 
 sbit IR_EN = P2 ^ 0; // 被阻挡发光（Low）
 
+u8 data_unlcoked = 0;
+u32 titra_count = 0;
+
 static void Exti_config(void)
 {
     EXTI_InitTypeDef Exti_InitStructure; // 结构定义
@@ -19,6 +22,7 @@ static void Exti_config(void)
     Ext_Inilize(EXT_INT0, &Exti_InitStructure);       // 初始化
     NVIC_INT0_Init(ENABLE, Priority_3);               // 中断使能, ENABLE/DISABLE; 优先级(低到高) Priority_0,Priority_1,Priority_2,Priority_3
 }
+
 static void Timer_config(void) // 100us进IT
 {
     AUXR &= 0xBF; // Timer clock is 12T mode
@@ -28,6 +32,7 @@ static void Timer_config(void) // 100us进IT
     TF1 = 0;      // Clear TF1 flag
     TR1 = 1;      // Timer1 start run
 }
+
 void ds_init(void)
 {
     IR_EN = 1;
@@ -41,19 +46,49 @@ void ds_init(void)
 
 void ds_update(void)
 {
-    dat_for_printf = titra_count / 4; // 一次滴定会进入两次外部中断
+    dat_for_printf = titra_count / 4; // 一次滴定会进入两次触发外部双边沿中断
     avg_filter_update(&filter, dat_for_printf);
     task_delay_ms(50);
 }
 
 void ds_printf(void)
 {
-    printf("Counter:%.3f\n", dat_for_printf);
+    printf_usb("Counter:%.3f\r\n", dat_for_printf);
 }
 
 void ds_calib(void)
 {
     /* 无校准需求 */
+}
+
+void INT0_ISR_Handler(void) interrupt INT0_VECTOR // 进中断时已经清除标志
+{
+    static u8 entry_flag = 0;
+    static u8 exit_flag = 0;
+    if (entry_flag == 0)
+    {
+        // 进入光电门
+        entry_flag = 1;
+        // 数据读取上锁
+        data_unlcoked = 0;
+        // start timer
+        TR0 = 1;
+    }
+    else
+    {
+        // 退出光电门
+        exit_flag = 1;
+        // stop timer
+        TR0 = 0;
+        // record time
+        titra_count = TH0 << 8 | TL0;
+        // 数据读取解锁
+        data_unlcoked = 1;
+        // clear timer count
+        TH0 = 0;
+        TL0 = 0;
+        entry_flag = 0;
+    }
 }
 
 #endif

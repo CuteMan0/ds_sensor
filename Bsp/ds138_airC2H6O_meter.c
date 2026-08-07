@@ -173,7 +173,7 @@ void Led_Task(void)
 
 void ds_printf(void)
 {
-    printf("airC2H6O:%.1f\n", dat_for_printf);
+    printf_usb("airC2H6O:%.1fppm\r\n", dat_for_printf);
 }
 
 void ds_calib(void)

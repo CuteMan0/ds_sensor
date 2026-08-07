@@ -1,4 +1,4 @@
-C251 COMPILER V5.60.0,  ds136_orp_meter                                                    07/08/26  21:20:57  PAGE 1   
+C251 COMPILER V5.60.0,  ds136_orp_meter                                                    07/08/26  22:26:02  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE ds136_orp_meter
@@ -45,7 +45,7 @@ stmt  level    source
                
                void ds_printf(void)
                {
-                   printf("ORG:%.1f\n", dat_for_printf);
+                   printf_usb("ORG:%.1fmV\r\n", dat_for_printf);
                }
                
                void ds_calib(void)
@@ -67,7 +67,7 @@ Module Information          Static   Overlayable
   xdata-const size     =    ------     ------
   edata size           =    ------     ------
   bit size             =    ------     ------
-C251 COMPILER V5.60.0,  ds136_orp_meter                                                    07/08/26  21:20:57  PAGE 2   
+C251 COMPILER V5.60.0,  ds136_orp_meter                                                    07/08/26  22:26:02  PAGE 2   
 
   ebit size            =    ------     ------
   bitaddressable size  =    ------     ------

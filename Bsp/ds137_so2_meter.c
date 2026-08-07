@@ -27,7 +27,7 @@ void ds_update(void)
 
 void ds_printf(void)
 {
-    printf("SO2:%.2f\n", dat_for_printf);
+    printf_usb("SO2:%.2fppm\r\n", dat_for_printf);
 }
 
 void ds_calib(void)

@@ -50,7 +50,7 @@ void ds_update(void)
 
 void ds_printf(void)
 {
-    printf("CH4:%.2f\n", dat_for_printf);
+    printf_usb("CH4:%.2fppm\r\n", dat_for_printf);
 }
 
 void ds_calib(void)

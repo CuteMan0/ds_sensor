@@ -172,8 +172,8 @@ void ds_update(void)
     EC_Range_Manager();
 
     adc_vol = (adc_get(&adc0) / 5.0f + offset_vol) / 2.0f;
-    q = Q_val[ec_range];                        // 根据量程选择Q值
-    gain = G_val[ec_range];                     // 根据量程选择增益
+    q = Q_val[ec_range];                                  // 根据量程选择Q值
+    gain = G_val[ec_range];                               // 根据量程选择增益
     dat_for_printf = adc_vol * q / (res_fb * VIN * gain); // k = Q/(R*|Vin|)*Vout,Vin = Vp * 2/pi
     avg_filter_update(&filter, dat_for_printf);
     task_delay_ms(50);
@@ -534,7 +534,7 @@ void Range_5(void)
 
 void ds_printf(void)
 {
-    printf("EC:%.4f\n", dat_for_printf);
+    printf_usb("EC:%.6fmS/cm\r\n", dat_for_printf); // mS/cm
 }
 
 void ds_calib(void)

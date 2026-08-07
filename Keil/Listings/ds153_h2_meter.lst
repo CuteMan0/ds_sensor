@@ -1,4 +1,4 @@
-C251 COMPILER V5.60.0,  ds153_h2_meter                                                     07/08/26  21:20:58  PAGE 1   
+C251 COMPILER V5.60.0,  ds153_h2_meter                                                     07/08/26  22:26:02  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE ds153_h2_meter
@@ -39,7 +39,7 @@ stmt  level    source
                
                void ds_printf(void)
                {
-                   printf("H2:%.2f\n", dat_for_printf);
+                   printf_usb("H2:%.2fppm\r\n", dat_for_printf);
                }
                
                void ds_calib(void)
@@ -67,7 +67,7 @@ Module Information          Static   Overlayable
   far data size        =    ------     ------
   huge data size       =    ------     ------
   const size           =    ------     ------
-C251 COMPILER V5.60.0,  ds153_h2_meter                                                     07/08/26  21:20:58  PAGE 2   
+C251 COMPILER V5.60.0,  ds153_h2_meter                                                     07/08/26  22:26:02  PAGE 2   
 
   hconst size          =    ------     ------
 End of Module Information.

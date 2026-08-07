@@ -55,7 +55,7 @@ void ds_update(void)
 }
 void ds_printf(void)
 {
-    printf("NO2:%.2f\n", dat_for_printf);
+    printf_usb("NO2:%.2fppm\r\n", dat_for_printf);
 }
 
 void ds_calib(void)

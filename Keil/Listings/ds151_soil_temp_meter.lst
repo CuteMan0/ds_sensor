@@ -1,4 +1,4 @@
-C251 COMPILER V5.60.0,  ds151_soil_temp_meter                                              07/08/26  21:20:58  PAGE 1   
+C251 COMPILER V5.60.0,  ds151_soil_temp_meter                                              07/08/26  22:26:02  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE ds151_soil_temp_meter
@@ -38,7 +38,7 @@ stmt  level    source
    26   1      
    27   1          ret = ds18b20_read_temperature(&temp);
    28   1      
-   29   1          if(ret == DS18B20_OK)
+   29   1          if (ret == DS18B20_OK)
    30   1          {
    31   2              dat_for_printf = temp;
    32   2              avg_filter_update(&filter, dat_for_printf);
@@ -52,7 +52,7 @@ stmt  level    source
    40          
    41          void ds_printf(void)
    42          {
-   43   1          printf_usb("Temp=%.2f\r\n", dat_for_printf);
+   43   1          printf_usb("Temp=%.2fC\r\n", dat_for_printf);
    44   1      }
    45          
    46          void ds_calib(void)
@@ -67,7 +67,7 @@ Module Information          Static   Overlayable
 ------------------------------------------------
   code size            =        82     ------
   ecode size           =    ------     ------
-C251 COMPILER V5.60.0,  ds151_soil_temp_meter                                              07/08/26  21:20:58  PAGE 2   
+C251 COMPILER V5.60.0,  ds151_soil_temp_meter                                              07/08/26  22:26:02  PAGE 2   
 
   data size            =    ------     ------
   idata size           =    ------     ------
@@ -82,7 +82,7 @@ Module Information          Static   Overlayable
   far data size        =    ------     ------
   huge data size       =    ------     ------
   const size           =    ------     ------
-  hconst size          =        17     ------
+  hconst size          =        18     ------
 End of Module Information.
 
 

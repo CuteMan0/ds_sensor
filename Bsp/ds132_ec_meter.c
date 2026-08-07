@@ -12,7 +12,7 @@
 #include "led_drive.h"
 
 #define VIN 0.19f
-#define G_20MS 0.56f // æ•´æµè½¬å¹³å‡å€¼å¢ç›Šç³»æ•°
+#define G_20MS 0.56f // ÕûÁ÷×ªÆ½¾ùÖµÔöÒæÏµÊı
 
 // sw for range
 sbit _C = P1 ^ 6;
@@ -50,12 +50,12 @@ float offset_val[5] = {
     1.896f,
     2.43f};
 
-static volatile float Q = 1.0f;   // ç”µå¯¼æ± å¸¸æ•°
-volatile float res_fb = 0.82f;    // åé¦ˆç”µé˜» kohm
-volatile float offset_vol = 0.0f; // å‡æ³•å™¨åç§»é‡
+static volatile float Q = 1.0f;   // µçµ¼³Ø³£Êı
+volatile float res_fb = 0.82f;    // ·´À¡µç×è kohm
+volatile float offset_vol = 0.0f; // ¼õ·¨Æ÷Æ«ÒÆÁ¿
 
-static volatile u8 calibration_pending = 0; // æ ¡å‡†å»¶è¿Ÿå¤„ç†å˜é‡
-static volatile u8 led_flash = 0;           // LEDé—ªçƒæ ‡å¿—
+static volatile u8 calibration_pending = 0; // Ğ£×¼ÑÓ³Ù´¦Àí±äÁ¿
+static volatile u8 led_flash = 0;           // LEDÉÁË¸±êÖ¾
 
 ADC_Handle_t adc0;
 ADC_Handle_t adc1;
@@ -70,14 +70,14 @@ void ds_init(void)
     adc_init(&adc0, 0, 3.3f);
     adc_init(&adc1, 1, 3.3f);
 
-    P1_MODE_OUT_PP(GPIO_Pin_6); // P1.6è®¾ç½®ä¸ºæ¨æŒ½è¾“å‡º(åˆ‡æ¢é‡ç¨‹)
-    P2_MODE_OUT_PP(GPIO_Pin_4); // P2.4è®¾ç½®ä¸ºæ¨æŒ½è¾“å‡º(åˆ‡æ¢é‡ç¨‹)
-    P2_MODE_OUT_PP(GPIO_Pin_5); // P2.5è®¾ç½®ä¸ºæ¨æŒ½è¾“å‡º(åˆ‡æ¢é‡ç¨‹)
+    P1_MODE_OUT_PP(GPIO_Pin_6); // P1.6ÉèÖÃÎªÍÆÍìÊä³ö(ÇĞ»»Á¿³Ì)
+    P2_MODE_OUT_PP(GPIO_Pin_4); // P2.4ÉèÖÃÎªÍÆÍìÊä³ö(ÇĞ»»Á¿³Ì)
+    P2_MODE_OUT_PP(GPIO_Pin_5); // P2.5ÉèÖÃÎªÍÆÍìÊä³ö(ÇĞ»»Á¿³Ì)
 
-    P4_MODE_OUT_PP(GPIO_Pin_1); // P4.1è®¾ç½®ä¸ºæ¨æŒ½è¾“å‡º(è®¾ç½®é‡‡æ ·ç”µé˜»)
-    P4_MODE_OUT_PP(GPIO_Pin_0); // P4.0è®¾ç½®ä¸ºæ¨æŒ½è¾“å‡º(è®¾ç½®é‡‡æ ·ç”µé˜»)
+    P4_MODE_OUT_PP(GPIO_Pin_1); // P4.1ÉèÖÃÎªÍÆÍìÊä³ö(ÉèÖÃ²ÉÑùµç×è)
+    P4_MODE_OUT_PP(GPIO_Pin_0); // P4.0ÉèÖÃÎªÍÆÍìÊä³ö(ÉèÖÃ²ÉÑùµç×è)
 
-    REF_R0; // è®¾ç½®åŸºå‡†ä¸ºGND
+    REF_R0; // ÉèÖÃ»ù×¼ÎªGND
 
     EEPROM_read_n(0, tmp, sizeof(tmp));
     if (tmp[0] != 0xff && tmp[1] != 0xff)
@@ -90,16 +90,15 @@ void ds_update(void)
 {
     float adc_vol = 0.0f;
 
-
-    if (2 == flag_key) // é•¿æŒ‰ï¼Œå¼€å§‹EEPROMå¤‡ä»½
+    if (2 == flag_key) // ³¤°´£¬¿ªÊ¼EEPROM±¸·İ
     {
         flag_key = 0;
-        adc_vol = (adc_get(&adc0) / 5.0f + offset_vol) / 2.0f; // ä¿¡å·ç”µå‹
+        adc_vol = (adc_get(&adc0) / 5.0f + offset_vol) / 2.0f; // ĞÅºÅµçÑ¹
         Q = (12.85f * res_fb * VIN * G_20MS) / adc_vol;
         calibration_pending = 1;
     }
 
-    Auto_Switcher(); // è‡ªåŠ¨åˆ‡æ¢é‡ç¨‹
+    Auto_Switcher(); // ×Ô¶¯ÇĞ»»Á¿³Ì
 
     adc_vol = (adc_get(&adc0) / 5.0f + offset_vol) / 2.0f;
     dat_for_printf = adc_vol * Q / (res_fb * VIN * G_20MS); // k = Q/(R*|Vin|)*Vout
@@ -109,7 +108,7 @@ void ds_update(void)
 
 void ds_printf(void)
 {
-    printf("EC:%.4f\n", dat_for_printf); // mS/cm
+    printf_usb("EC:%.6fmS/cm\r\n", dat_for_printf); // mS/cm
 }
 
 void ds_calib(void)

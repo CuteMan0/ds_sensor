@@ -1,4 +1,4 @@
-C251 COMPILER V5.60.0,  task                                                               07/08/26  21:20:57  PAGE 1   
+C251 COMPILER V5.60.0,  task                                                               07/08/26  22:26:02  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE task
@@ -27,11 +27,11 @@ stmt  level    source
    16           * 全局变量定义（由 ds_sensor.h 中的 extern 声明引用）
    17           * ============================================================ */
    18          
-   19          volatile float dat_for_printf;   /**< 待打印的传感器数据（由传感器驱动更新） */
+   19          volatile float dat_for_printf; /**< 待打印的传感器数据（由传感器驱动更新） */
    20          
-   21          char usb_txbuf[64];              /**< USB 发送缓冲区 */
-   22          u8 usb_send_flag = 0;            /**< USB 发送完成标志，1=发送完成 */
-   23          u8 usb_send_len = 0;             /**< USB 发送数据长度（字节数） */
+   21          char usb_txbuf[64];   /**< USB 发送缓冲区 */
+   22          u8 usb_send_flag = 0; /**< USB 发送完成标志，1=发送完成 */
+   23          u8 usb_send_len = 0;  /**< USB 发送数据长度（字节数） */
    24          
    25          /* ============================================================
    26           * 任务函数实现
@@ -44,7 +44,7 @@ stmt  level    source
    33          void task_printf(void)
    34          {
    35   1          ds_printf();
-   36   1          task_delay_ms(10);
+   36   1          task_delay_ms(100);
    37   1      }
    38          
    39          /**
@@ -66,7 +66,7 @@ stmt  level    source
    55   1          Scan_Key();
    56   1          task_delay_ms(20);
    57   1      }
-C251 COMPILER V5.60.0,  task                                                               07/08/26  21:20:57  PAGE 2   
+C251 COMPILER V5.60.0,  task                                                               07/08/26  22:26:02  PAGE 2   
 
    58          
    59          /**

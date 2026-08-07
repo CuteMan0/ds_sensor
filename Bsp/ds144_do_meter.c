@@ -151,7 +151,7 @@ void Led_Task(void)
 
 void ds_printf(void)
 {
-    printf("dO:%.2f\n", dat_for_printf);
+    printf_usb("dO:%.2fmg/L\r\n", dat_for_printf);
 }
 
 void ds_calib(void)

@@ -1,4 +1,4 @@
-C251 COMPILER V5.60.0,  ds132_ec_meter                                                     07/08/26  21:20:57  PAGE 1   
+C251 COMPILER V5.60.0,  ds132_ec_meter                                                     07/08/26  22:26:02  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE ds132_ec_meter
@@ -23,7 +23,7 @@ stmt  level    source
                #include "led_drive.h"
                
                #define VIN 0.19f
-               #define G_20MS 0.56f // æ•´æµè½¬å¹³å‡å€¼å¢žç›Šç³»æ•°
+               #define G_20MS 0.56f // ÕûÁ÷×ªÆ½¾ùÖµÔöÒæÏµÊý
                
                // sw for range
                sbit _C = P1 ^ 6;
@@ -61,14 +61,14 @@ stmt  level    source
                    1.896f,
                    2.43f};
                
-               static volatile float Q = 1.0f;   // ç”µå¯¼æ± å¸¸æ•°
-               volatile float res_fb = 0.82f;    // åé¦ˆç”µé˜» kohm
-               volatile float offset_vol = 0.0f; // å‡æ³•å™¨åç§»é‡
+               static volatile float Q = 1.0f;   // µçµ¼³Ø³£Êý
+               volatile float res_fb = 0.82f;    // ·´À¡µç×è kohm
+               volatile float offset_vol = 0.0f; // ¼õ·¨Æ÷Æ«ÒÆÁ¿
                
-               static volatile u8 calibration_pending = 0; // æ ¡å‡†å»¶è¿Ÿå¤„ç†å˜é‡
-C251 COMPILER V5.60.0,  ds132_ec_meter                                                     07/08/26  21:20:57  PAGE 2   
+               static volatile u8 calibration_pending = 0; // Ð£×¼ÑÓ³Ù´¦Àí±äÁ¿
+C251 COMPILER V5.60.0,  ds132_ec_meter                                                     07/08/26  22:26:02  PAGE 2   
 
-               static volatile u8 led_flash = 0;           // LEDé—ªçƒæ ‡å¿—
+               static volatile u8 led_flash = 0;           // LEDÉÁË¸±êÖ¾
                
                ADC_Handle_t adc0;
                ADC_Handle_t adc1;
@@ -83,14 +83,14 @@ stmt  level    source
                    adc_init(&adc0, 0, 3.3f);
                    adc_init(&adc1, 1, 3.3f);
                
-                   P1_MODE_OUT_PP(GPIO_Pin_6); // P1.6è®¾ç½®ä¸ºæŽ¨æŒ½è¾“å‡º(åˆ‡æ¢é‡ç¨‹)
-                   P2_MODE_OUT_PP(GPIO_Pin_4); // P2.4è®¾ç½®ä¸ºæŽ¨æŒ½è¾“å‡º(åˆ‡æ¢é‡ç¨‹)
-                   P2_MODE_OUT_PP(GPIO_Pin_5); // P2.5è®¾ç½®ä¸ºæŽ¨æŒ½è¾“å‡º(åˆ‡æ¢é‡ç¨‹)
+                   P1_MODE_OUT_PP(GPIO_Pin_6); // P1.6ÉèÖÃÎªÍÆÍìÊä³ö(ÇÐ»»Á¿³Ì)
+                   P2_MODE_OUT_PP(GPIO_Pin_4); // P2.4ÉèÖÃÎªÍÆÍìÊä³ö(ÇÐ»»Á¿³Ì)
+                   P2_MODE_OUT_PP(GPIO_Pin_5); // P2.5ÉèÖÃÎªÍÆÍìÊä³ö(ÇÐ»»Á¿³Ì)
                
-                   P4_MODE_OUT_PP(GPIO_Pin_1); // P4.1è®¾ç½®ä¸ºæŽ¨æŒ½è¾“å‡º(è®¾ç½®é‡‡æ ·ç”µé˜»)
-                   P4_MODE_OUT_PP(GPIO_Pin_0); // P4.0è®¾ç½®ä¸ºæŽ¨æŒ½è¾“å‡º(è®¾ç½®é‡‡æ ·ç”µé˜»)
+                   P4_MODE_OUT_PP(GPIO_Pin_1); // P4.1ÉèÖÃÎªÍÆÍìÊä³ö(ÉèÖÃ²ÉÑùµç×è)
+                   P4_MODE_OUT_PP(GPIO_Pin_0); // P4.0ÉèÖÃÎªÍÆÍìÊä³ö(ÉèÖÃ²ÉÑùµç×è)
                
-                   REF_R0; // è®¾ç½®åŸºå‡†ä¸ºGND
+                   REF_R0; // ÉèÖÃ»ù×¼ÎªGND
                
                    EEPROM_read_n(0, tmp, sizeof(tmp));
                    if (tmp[0] != 0xff && tmp[1] != 0xff)
@@ -103,16 +103,15 @@ stmt  level    source
                {
                    float adc_vol = 0.0f;
                
-               
-                   if (2 == flag_key) // é•¿æŒ‰ï¼Œå¼€å§‹EEPROMå¤‡ä»½
+                   if (2 == flag_key) // ³¤°´£¬¿ªÊ¼EEPROM±¸·Ý
                    {
                        flag_key = 0;
-                       adc_vol = (adc_get(&adc0) / 5.0f + offset_vol) / 2.0f; // ä¿¡å·ç”µåŽ‹
+                       adc_vol = (adc_get(&adc0) / 5.0f + offset_vol) / 2.0f; // ÐÅºÅµçÑ¹
                        Q = (12.85f * res_fb * VIN * G_20MS) / adc_vol;
                        calibration_pending = 1;
                    }
                
-                   Auto_Switcher(); // è‡ªåŠ¨åˆ‡æ¢é‡ç¨‹
+                   Auto_Switcher(); // ×Ô¶¯ÇÐ»»Á¿³Ì
                
                    adc_vol = (adc_get(&adc0) / 5.0f + offset_vol) / 2.0f;
                    dat_for_printf = adc_vol * Q / (res_fb * VIN * G_20MS); // k = Q/(R*|Vin|)*Vout
@@ -122,7 +121,7 @@ stmt  level    source
                
                void ds_printf(void)
                {
-                   printf("EC:%.4f\n", dat_for_printf); // mS/cm
+                   printf_usb("EC:%.6fmS/cm\r\n", dat_for_printf); // mS/cm
                }
                
                void ds_calib(void)
@@ -134,9 +133,9 @@ stmt  level    source
                {
                    u16 tmp = 0xff;
                
-C251 COMPILER V5.60.0,  ds132_ec_meter                                                     07/08/26  21:20:57  PAGE 3   
-
                    if (calibration_pending)
+C251 COMPILER V5.60.0,  ds132_ec_meter                                                     07/08/26  22:26:02  PAGE 3   
+
                    {
                        calibration_pending = 0;
                
@@ -202,9 +201,9 @@ stmt  level    source
                
                static eEvent eCurrentEvent = EVT_NO_EVENT;
                static pfState pfCurrentState = Range_0;
-C251 COMPILER V5.60.0,  ds132_ec_meter                                                     07/08/26  21:20:57  PAGE 4   
-
                
+C251 COMPILER V5.60.0,  ds132_ec_meter                                                     07/08/26  22:26:02  PAGE 4   
+
                // state transition table
                StmRow_t stm[10] = {
                    {Range_0, EVT_OverRange, Range_1},
@@ -270,9 +269,9 @@ stmt  level    source
                    adc_get(&adc1);
                    tmp = adc1.raw;
                
-C251 COMPILER V5.60.0,  ds132_ec_meter                                                     07/08/26  21:20:57  PAGE 5   
-
                    if (tmp > range_change_val[1])
+C251 COMPILER V5.60.0,  ds132_ec_meter                                                     07/08/26  22:26:02  PAGE 5   
+
                    {
                        eCurrentEvent = EVT_OverRange;
                    }
@@ -338,9 +337,9 @@ stmt  level    source
                    REF_R5;
                    offset_vol = offset_val[4];
                    adc_get(&adc1);
-C251 COMPILER V5.60.0,  ds132_ec_meter                                                     07/08/26  21:20:57  PAGE 6   
-
                    tmp = adc1.raw;
+C251 COMPILER V5.60.0,  ds132_ec_meter                                                     07/08/26  22:26:02  PAGE 6   
+
                
                    if (tmp < range_change_val[9])
                    {

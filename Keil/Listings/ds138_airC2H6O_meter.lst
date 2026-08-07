@@ -1,4 +1,4 @@
-C251 COMPILER V5.60.0,  ds138_airC2H6O_meter                                               07/08/26  21:20:58  PAGE 1   
+C251 COMPILER V5.60.0,  ds138_airC2H6O_meter                                               07/08/26  22:26:02  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE ds138_airC2H6O_meter
@@ -66,7 +66,7 @@ stmt  level    source
                    if (2 == flag_key) // 长按，开始校准零点
                    {
                        flag_key = 0;
-C251 COMPILER V5.60.0,  ds138_airC2H6O_meter                                               07/08/26  21:20:58  PAGE 2   
+C251 COMPILER V5.60.0,  ds138_airC2H6O_meter                                               07/08/26  22:26:02  PAGE 2   
 
                
                        // 读取当前电压作为新的零点
@@ -134,7 +134,7 @@ stmt  level    source
                    if (calibration_pending)
                    {
                        calibration_pending = 0;
-C251 COMPILER V5.60.0,  ds138_airC2H6O_meter                                               07/08/26  21:20:58  PAGE 3   
+C251 COMPILER V5.60.0,  ds138_airC2H6O_meter                                               07/08/26  22:26:02  PAGE 3   
 
                
                        // 写入EEPROM（这里过于耗时，在低频任务中执行）
@@ -189,7 +189,7 @@ stmt  level    source
                
                void ds_printf(void)
                {
-                   printf("airC2H6O:%.1f\n", dat_for_printf);
+                   printf_usb("airC2H6O:%.1fppm\r\n", dat_for_printf);
                }
                
                void ds_calib(void)
@@ -203,7 +203,7 @@ stmt  level    source
 Module Information          Static   Overlayable
 ------------------------------------------------
   code size            =    ------     ------
-C251 COMPILER V5.60.0,  ds138_airC2H6O_meter                                               07/08/26  21:20:58  PAGE 4   
+C251 COMPILER V5.60.0,  ds138_airC2H6O_meter                                               07/08/26  22:26:02  PAGE 4   
 
   ecode size           =    ------     ------
   data size            =    ------     ------

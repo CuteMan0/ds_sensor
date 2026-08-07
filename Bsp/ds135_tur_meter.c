@@ -46,7 +46,7 @@ void ds_update(void)
 
 void ds_printf(void)
 {
-    printf("tur:%.6f\n", dat_for_printf);
+    printf_usb("tur:%.1fntu\r\n", dat_for_printf);
 }
 
 void ds_calib(void)

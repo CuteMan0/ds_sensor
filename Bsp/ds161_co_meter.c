@@ -62,13 +62,13 @@ void ds_update(void)
 
         dat_for_printf = (float)co_val;
     }
-    avg_filter_update(&filter, dat_for_printf);
-    task_delay_ms(50);
     else
     {
-        DIS_LED_Just_One_Enable(1); // 加热指示灯
-        dat_for_printf = (float)co_val;       // 加热期间返回上次有效值
+        DIS_LED_Just_One_Enable(1);     // 加热指示灯
+        dat_for_printf = (float)co_val; // 加热期间返回上次有效值
     }
+    avg_filter_update(&filter, dat_for_printf);
+    task_delay_ms(50);
 }
 
 static void CO_HeatingControl(void)
@@ -104,7 +104,7 @@ static void Timer3_Init(void) // 10毫秒@24.000MHz
 
 void ds_printf(void)
 {
-    printf("CO:%.2f\n", dat_for_printf);
+    printf_usb("CO:%.2fppm\r\n", dat_for_printf);
 }
 
 void ds_calib(void)

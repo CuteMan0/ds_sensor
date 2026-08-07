@@ -46,7 +46,7 @@ void ds_update(void)
 
 void ds_printf(void)
 {
-    printf("NH3:%.2f\n", dat_for_printf);
+    printf_usb("NH3:%.2fppm\r\n", dat_for_printf);
 }
 
 void ds_calib(void)

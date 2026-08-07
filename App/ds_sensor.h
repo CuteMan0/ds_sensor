@@ -56,15 +56,15 @@
 /* ============================================================
  * 全局变量声明（定义在 task.c / main.c）
  * ============================================================ */
-extern volatile float dat_for_printf;    /**< 待打印的传感器数据 */
+extern volatile float dat_for_printf; /**< 待打印的传感器数据 */
 
-extern avg_filter_t filter;              /**< 滑动平均滤波器实例 */
-#define NUM_BUF_AVG 8                    /**< 滤波缓冲区大小 */
-extern avgf_data_t buffer[NUM_BUF_AVG];  /**< 滤波数据缓冲区 */
+extern avg_filter_t filter;             /**< 滑动平均滤波器实例 */
+#define NUM_BUF_AVG 8                   /**< 滤波缓冲区大小 */
+extern avgf_data_t buffer[NUM_BUF_AVG]; /**< 滤波数据缓冲区 */
 
-extern char usb_txbuf[64];              /**< USB 发送缓冲区 */
-extern u8 usb_send_flag;                /**< USB 发送完成标志 */
-extern u8 usb_send_len;                 /**< USB 发送数据长度 */
+extern char usb_txbuf[64]; /**< USB 发送缓冲区 */
+extern u8 usb_send_flag;   /**< USB 发送完成标志 */
+extern u8 usb_send_len;    /**< USB 发送数据长度 */
 
 /* ============================================================
  * 传感器统一接口函数

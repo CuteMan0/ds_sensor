@@ -34,7 +34,7 @@ void ds_update(void)
 
 void ds_printf(void)
 {
-    printf("ORG:%.1f\n", dat_for_printf);
+    printf_usb("ORG:%.1fmV\r\n", dat_for_printf);
 }
 
 void ds_calib(void)

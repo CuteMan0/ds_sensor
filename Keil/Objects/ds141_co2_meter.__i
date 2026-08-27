@@ -1,1 +1,1 @@
-"..\Bsp\ds141_co2_meter.c" XSMALL INTR2 BROWSE INCDIR(..\App;..\Bsp;..\Driver;..\Library;..\Tool) DEBUG PRINT(.\Listings\ds141_co2_meter.lst) OBJECT(.\Objects\ds141_co2_meter.obj)
+"..\Driver\ds141_co2_meter.c" XSMALL INTR2 BROWSE INCDIR(..\App;..\Bsp;..\Core;..\Driver;..\Library) DEBUG PRINT(.\Listings\ds141_co2_meter.lst) OBJECT(.\Objects\ds141_co2_meter.obj)

@@ -1,11 +1,10 @@
-C251 COMPILER V5.60.0,  bsp_ntc_10k_b3950                                                  07/08/26  18:36:42  PAGE 1   
+C251 COMPILER V5.60.0,  bsp_ntc_10k_b3950                                                  10/08/26  09:24:44  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE bsp_ntc_10k_b3950
 OBJECT MODULE PLACED IN .\Objects\bsp_ntc_10k_b3950.obj
-COMPILER INVOKED BY: C:\Wongsoft\Keil_v5\C251\BIN\C251.EXE ..\Bsp\bsp_ntc_10k_b3950.c XSMALL INTR2 BROWSE INCDIR(..\App;
-                    -..\Bsp;..\Driver;..\Library;..\Tool) DEBUG PRINT(.\Listings\bsp_ntc_10k_b3950.lst) OBJECT(.\Objects\bsp_ntc_10k_b3950.ob
-                    -j) 
+COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE ..\Bsp\bsp_ntc_10k_b3950.c XSMALL INTR2 BROWSE INCDIR(..\App;..\Bsp;..
+                    -\Driver;..\Library;..\Tool) DEBUG PRINT(.\Listings\bsp_ntc_10k_b3950.lst) OBJECT(.\Objects\bsp_ntc_10k_b3950.obj) 
 
 stmt  level    source
 
@@ -66,9 +65,9 @@ stmt  level    source
    55   2          }
    56   1      
    57   1          for (i = 0; i < TABLE_SIZE - 1; i++)
-C251 COMPILER V5.60.0,  bsp_ntc_10k_b3950                                                  07/08/26  18:36:42  PAGE 2   
-
    58   1          {
+C251 COMPILER V5.60.0,  bsp_ntc_10k_b3950                                                  10/08/26  09:24:44  PAGE 2   
+
    59   2              if (adc_value <= adc_table[i] && adc_value >= adc_table[i + 1])
    60   2              {
    61   3                  break;

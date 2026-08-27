@@ -1,1 +1,1 @@
-"..\Bsp\ds112_fir_meter.c" XSMALL INTR2 BROWSE INCDIR(..\App;..\Bsp;..\Driver;..\Library;..\Tool) DEBUG PRINT(.\Listings\ds112_fir_meter.lst) OBJECT(.\Objects\ds112_fir_meter.obj)
+"..\Driver\ds112_fir_meter.c" XSMALL INTR2 BROWSE INCDIR(..\App;..\Bsp;..\Core;..\Driver;..\Library) DEBUG PRINT(.\Listings\ds112_fir_meter.lst) OBJECT(.\Objects\ds112_fir_meter.obj)

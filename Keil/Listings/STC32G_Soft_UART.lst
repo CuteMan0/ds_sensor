@@ -1,11 +1,10 @@
-C251 COMPILER V5.60.0,  STC32G_Soft_UART                                                   07/08/26  18:36:44  PAGE 1   
+C251 COMPILER V5.60.0,  STC32G_Soft_UART                                                   26/08/26  11:50:19  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE STC32G_Soft_UART
 OBJECT MODULE PLACED IN .\Objects\STC32G_Soft_UART.obj
-COMPILER INVOKED BY: C:\Wongsoft\Keil_v5\C251\BIN\C251.EXE ..\Library\STC32G_Soft_UART.c XSMALL INTR2 BROWSE INCDIR(..\A
-                    -pp;..\Bsp;..\Driver;..\Library;..\Tool) DEBUG PRINT(.\Listings\STC32G_Soft_UART.lst) OBJECT(.\Objects\STC32G_Soft_UART.o
-                    -bj) 
+COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE ..\Library\STC32G_Soft_UART.c XSMALL INTR2 BROWSE INCDIR(..\App;..\Bsp
+                    -;..\Core;..\Driver;..\Library) DEBUG PRINT(.\Listings\STC32G_Soft_UART.lst) OBJECT(.\Objects\STC32G_Soft_UART.obj) 
 
 stmt  level    source
 
@@ -66,9 +65,9 @@ stmt  level    source
    55   2                      BitTime();
    56   2              }
    57   1              P_TXD = 1;
-C251 COMPILER V5.60.0,  STC32G_Soft_UART                                                   07/08/26  18:36:44  PAGE 2   
-
    58   1              EA = 1;
+C251 COMPILER V5.60.0,  STC32G_Soft_UART                                                   26/08/26  11:50:19  PAGE 2   
+
    59   1              BitTime();
    60   1              BitTime();
    61   1      }

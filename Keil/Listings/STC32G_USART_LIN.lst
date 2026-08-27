@@ -1,11 +1,10 @@
-C251 COMPILER V5.60.0,  STC32G_USART_LIN                                                   07/08/26  18:36:45  PAGE 1   
+C251 COMPILER V5.60.0,  STC32G_USART_LIN                                                   26/08/26  11:50:20  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE STC32G_USART_LIN
 OBJECT MODULE PLACED IN .\Objects\STC32G_USART_LIN.obj
-COMPILER INVOKED BY: C:\Wongsoft\Keil_v5\C251\BIN\C251.EXE ..\Library\STC32G_USART_LIN.c XSMALL INTR2 BROWSE INCDIR(..\A
-                    -pp;..\Bsp;..\Driver;..\Library;..\Tool) DEBUG PRINT(.\Listings\STC32G_USART_LIN.lst) OBJECT(.\Objects\STC32G_USART_LIN.o
-                    -bj) 
+COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE ..\Library\STC32G_USART_LIN.c XSMALL INTR2 BROWSE INCDIR(..\App;..\Bsp
+                    -;..\Core;..\Driver;..\Library) DEBUG PRINT(.\Listings\STC32G_USART_LIN.lst) OBJECT(.\Objects\STC32G_USART_LIN.obj) 
 
 stmt  level    source
 
@@ -66,9 +65,9 @@ stmt  level    source
    55   1              {
    56   2                      UsartLinSendByte(USARTx,pdat[i]);
    57   2              }
-C251 COMPILER V5.60.0,  STC32G_USART_LIN                                                   07/08/26  18:36:45  PAGE 2   
-
    58   1      }
+C251 COMPILER V5.60.0,  STC32G_USART_LIN                                                   26/08/26  11:50:20  PAGE 2   
+
    59          
    60          //========================================================================
    61          // º¯Êý: void UsartLinSendChecksum(u8 USARTx, u8 *dat, u8 len)
@@ -134,9 +133,9 @@ stmt  level    source
   121          void UsartLinSendPID(u8 USARTx, u8 id)
   122          {
   123   1              u8 P0 ;
-C251 COMPILER V5.60.0,  STC32G_USART_LIN                                                   07/08/26  18:36:45  PAGE 3   
-
   124   1              u8 P1 ;
+C251 COMPILER V5.60.0,  STC32G_USART_LIN                                                   26/08/26  11:50:20  PAGE 3   
+
   125   1              
   126   1              P0 = (((id)^(id>>1)^(id>>2)^(id>>4))&0x01)<<6 ;
   127   1              P1 = ((~((id>>1)^(id>>3)^(id>>4)^(id>>5)))&0x01)<<7 ;
@@ -202,9 +201,9 @@ stmt  level    source
   187   2                      USARTBRH = (u8)(tmp>>8);
   188   2                      USARTBRL = (u8)tmp;
   189   2              }
-C251 COMPILER V5.60.0,  STC32G_USART_LIN                                                   07/08/26  18:36:45  PAGE 4   
-
   190   1              else if(USARTx == USART2)
+C251 COMPILER V5.60.0,  STC32G_USART_LIN                                                   26/08/26  11:50:20  PAGE 4   
+
   191   1              {
   192   2                      USART2BRH = (u8)(tmp>>8);
   193   2                      USART2BRL = (u8)tmp;
@@ -271,9 +270,9 @@ Module Information          Static   Overlayable
   code size            =       790     ------
   ecode size           =    ------     ------
   data size            =    ------     ------
-C251 COMPILER V5.60.0,  STC32G_USART_LIN                                                   07/08/26  18:36:45  PAGE 5   
-
   idata size           =    ------     ------
+C251 COMPILER V5.60.0,  STC32G_USART_LIN                                                   26/08/26  11:50:20  PAGE 5   
+
   pdata size           =    ------     ------
   xdata size           =    ------     ------
   xdata-const size     =    ------     ------

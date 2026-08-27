@@ -1,80 +1,81 @@
-C251 COMPILER V5.60.0,  ds151_soil_temp_meter                                              07/08/26  22:26:02  PAGE 1   
+C251 COMPILER V5.60.0,  ds151_soil_temp_meter                                              27/08/26  08:41:19  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE ds151_soil_temp_meter
 OBJECT MODULE PLACED IN .\Objects\ds151_soil_temp_meter.obj
-COMPILER INVOKED BY: C:\Wongsoft\Keil_v5\C251\BIN\C251.EXE ..\Bsp\ds151_soil_temp_meter.c XSMALL INTR2 BROWSE INCDIR(..\
-                    -App;..\Bsp;..\Driver;..\Library;..\Tool) DEBUG PRINT(.\Listings\ds151_soil_temp_meter.lst) OBJECT(.\Objects\ds151_soil_t
-                    -emp_meter.obj) 
+COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE ..\Driver\ds151_soil_temp_meter.c XSMALL INTR2 BROWSE INCDIR(..\App;..
+                    -\Bsp;..\Core;..\Driver;..\Library) DEBUG PRINT(.\Listings\ds151_soil_temp_meter.lst) OBJECT(.\Objects\ds151_soil_temp_me
+                    -ter.obj) 
 
 stmt  level    source
 
     1          #include "ds151_soil_temp_meter.h"
-*** WARNING C317 IN LINE 68 OF \Users\Si\Desktop\ds_sensor\Library\type_def.h: attempt to redefine macro 'NULL'
+*** WARNING C317 IN LINE 53 OF \Users\admin\Desktop\WorkSpace\ds_sensor\Library\type_def.h: attempt to redefine macro 'N
+             -ULL'
     2          
     3          #if DS_SENSOR == 151
-    4          
-    5          #include "bsp_ds18b20.h"
-    6          
-    7          static float temp;
-    8          static u8 conv_pending = 0;
-    9          
-   10          void ds_init(void)
-   11          {
-   12   1          ds18b20_init();
-   13   1      }
-   14          
-   15          void ds_update(void)
-   16          {
-   17   1          u8 ret;
-   18   1      
-   19   1          if (!conv_pending)
-   20   1          {
-   21   2              ds18b20_start_conversion(DS18B20_RES_12BIT);
-   22   2              conv_pending = 1;
-   23   2              task_delay_ms(750);
-   24   2              return;
-   25   2          }
-   26   1      
-   27   1          ret = ds18b20_read_temperature(&temp);
-   28   1      
-   29   1          if (ret == DS18B20_OK)
-   30   1          {
-   31   2              dat_for_printf = temp;
-   32   2              avg_filter_update(&filter, dat_for_printf);
-   33   2          }
-   34   1      
-   35   1          /* 马上开始下一次转换 */
-   36   1          ds18b20_start_conversion(DS18B20_RES_12BIT);
-   37   1      
-   38   1          task_delay_ms(750);
-   39   1      }
-   40          
-   41          void ds_printf(void)
-   42          {
-   43   1          printf_usb("Temp=%.2fC\r\n", dat_for_printf);
-   44   1      }
-   45          
-   46          void ds_calib(void)
-   47          {
-   48   1          /* DS151 无校准需求 */
-   49   1      }
-   50          
-   51          #endif
+               
+               #include "drv_ds18b20.h"
+               
+               static float temp;
+               static u8 conv_pending = 0;
+               
+               void ds_init(void)
+               {
+                   ds18b20_init();
+               }
+               
+               void ds_update(void)
+               {
+                   u8 ret;
+               
+                   if (!conv_pending)
+                   {
+                       ds18b20_start_conversion(DS18B20_RES_12BIT);
+                       conv_pending = 1;
+                       task_delay_ms(750);
+                       return;
+                   }
+               
+                   ret = ds18b20_read_temperature(&temp);
+               
+                   if (ret == DS18B20_OK)
+                   {
+                       dat_for_printf = temp;
+                       avg_filter_update(&filter, dat_for_printf);
+                   }
+               
+                   /* 马上开始下一次转换 */
+                   ds18b20_start_conversion(DS18B20_RES_12BIT);
+               
+                   task_delay_ms(750);
+               }
+               
+               void ds_printf(void)
+               {
+                   printf_usb("Temp=%.2fC\r\n", dat_for_printf);
+               }
+               
+               void ds_calib(void)
+               {
+                   /* DS151 无校准需求 */
+               }
+               
+               #endif
 
 
 Module Information          Static   Overlayable
 ------------------------------------------------
-  code size            =        82     ------
-  ecode size           =    ------     ------
-C251 COMPILER V5.60.0,  ds151_soil_temp_meter                                              07/08/26  22:26:02  PAGE 2   
+  code size            =    ------     ------
+C251 COMPILER V5.60.0,  ds151_soil_temp_meter                                              27/08/26  08:41:19  PAGE 2   
 
+  ecode size           =    ------     ------
   data size            =    ------     ------
   idata size           =    ------     ------
   pdata size           =    ------     ------
   xdata size           =    ------     ------
   xdata-const size     =    ------     ------
-  edata size           =         5     ------
+  edata size           =    ------     ------
   bit size             =    ------     ------
   ebit size            =    ------     ------
   bitaddressable size  =    ------     ------
@@ -82,7 +83,7 @@ Module Information          Static   Overlayable
   far data size        =    ------     ------
   huge data size       =    ------     ------
   const size           =    ------     ------
-  hconst size          =        18     ------
+  hconst size          =    ------     ------
 End of Module Information.
 
 

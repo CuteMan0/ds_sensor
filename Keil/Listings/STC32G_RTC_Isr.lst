@@ -1,10 +1,10 @@
-C251 COMPILER V5.60.0,  STC32G_RTC_Isr                                                     07/08/26  18:36:44  PAGE 1   
+C251 COMPILER V5.60.0,  STC32G_RTC_Isr                                                     26/08/26  11:50:18  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE STC32G_RTC_Isr
 OBJECT MODULE PLACED IN .\Objects\STC32G_RTC_Isr.obj
-COMPILER INVOKED BY: C:\Wongsoft\Keil_v5\C251\BIN\C251.EXE ..\Library\STC32G_RTC_Isr.c XSMALL INTR2 BROWSE INCDIR(..\App
-                    -;..\Bsp;..\Driver;..\Library;..\Tool) DEBUG PRINT(.\Listings\STC32G_RTC_Isr.lst) OBJECT(.\Objects\STC32G_RTC_Isr.obj) 
+COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE ..\Library\STC32G_RTC_Isr.c XSMALL INTR2 BROWSE INCDIR(..\App;..\Bsp;.
+                    -.\Core;..\Driver;..\Library) DEBUG PRINT(.\Listings\STC32G_RTC_Isr.lst) OBJECT(.\Objects\STC32G_RTC_Isr.obj) 
 
 stmt  level    source
 

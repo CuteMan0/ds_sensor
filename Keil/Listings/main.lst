@@ -1,10 +1,10 @@
-C251 COMPILER V5.60.0,  main                                                               07/08/26  22:26:02  PAGE 1   
+C251 COMPILER V5.60.0,  main                                                               27/08/26  08:41:16  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE main
 OBJECT MODULE PLACED IN .\Objects\main.obj
-COMPILER INVOKED BY: C:\Wongsoft\Keil_v5\C251\BIN\C251.EXE ..\App\main.c XSMALL INTR2 BROWSE INCDIR(..\App;..\Bsp;..\Dri
-                    -ver;..\Library;..\Tool) DEBUG PRINT(.\Listings\main.lst) OBJECT(.\Objects\main.obj) 
+COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE ..\App\main.c XSMALL INTR2 BROWSE INCDIR(..\App;..\Bsp;..\Core;..\Driv
+                    -er;..\Library) DEBUG PRINT(.\Listings\main.lst) OBJECT(.\Objects\main.obj) 
 
 stmt  level    source
 
@@ -24,7 +24,8 @@ stmt  level    source
    13          
    14          //------------------------------ 任务与传感器 ------------------------------
    15          #include "ds_sensor.h"
-*** WARNING C317 IN LINE 68 OF \Users\Si\Desktop\ds_sensor\Library\type_def.h: attempt to redefine macro 'NULL'
+*** WARNING C317 IN LINE 53 OF \Users\admin\Desktop\WorkSpace\ds_sensor\Library\type_def.h: attempt to redefine macro 'N
+             -ULL'
    16          #include "task.h"
    17          
    18          /* ============================================================
@@ -48,16 +49,16 @@ stmt  level    source
    36           */
    37          void STC_init(void)
    38          {
-   39   1          WTST = 0;    /* 零等待状态 */
-   40   1          EAXFR = 1;   /* 使能扩展 XFR 访问 */
-   41   1          CKCON = 0;   /* 系统时钟不分频 */
+   39   1          WTST = 0;  /* 零等待状态 */
+   40   1          EAXFR = 1; /* 使能扩展 XFR 访问 */
+   41   1          CKCON = 0; /* 系统时钟不分频 */
    42   1      
-   43   1          usb_init();   /* USB CDC 初始化 */
-   44   1          EA = 1;       /* 开启全局中断 */
+   43   1          usb_init(); /* USB CDC 初始化 */
+   44   1          EA = 1;     /* 开启全局中断 */
    45   1      
-   46   1          DIS_LED_init();   /* LED 显示初始化 */
+   46   1          DIS_LED_init();  /* LED 显示初始化 */
 *** WARNING C140 IN LINE 46 OF ..\App\main.c: 'DIS_LED_init' undefined; assuming 'extern int DIS_LED_init()'
-   47   1          KEY_GPIO_init();  /* 按键 GPIO 初始化 */
+   47   1          KEY_GPIO_init(); /* 按键 GPIO 初始化 */
 *** WARNING C140 IN LINE 47 OF ..\App\main.c: 'KEY_GPIO_init' undefined; assuming 'extern int KEY_GPIO_init()'
    48   1      }
    49          
@@ -65,9 +66,9 @@ stmt  level    source
    51           * @brief 工具模块初始化
    52           * @note  初始化滑动平均滤波器。
    53           */
-   54          void Tools_init(void)
-C251 COMPILER V5.60.0,  main                                                               07/08/26  22:26:02  PAGE 2   
+C251 COMPILER V5.60.0,  main                                                               27/08/26  08:41:16  PAGE 2   
 
+   54          void Core_init(void)
    55          {
    56   1          avg_filter_init(&filter, buffer, NUM_BUF_AVG);
    57   1      }
@@ -78,7 +79,7 @@ stmt  level    source
    62          
    63          /**
    64           * @brief 主函数入口
-   65           * @note  初始化顺序：STC_init → ds_init → Tools_init → task_scheduler_init。
+   65           * @note  初始化顺序：STC_init → ds_init → Core_init → task_scheduler_init。
    66           *        注册 5 个周期任务后进入主循环，由 task_scheduler_run() 调度执行。
    67           *
    68           *        任务注册表：
@@ -91,9 +92,9 @@ stmt  level    source
    75          void main(void)
    76          {
    77   1          STC_init();
-   78   1          ds_init();              /* 传感器初始化（由 dsXX 驱动文件实现） */
-   79   1          Tools_init();
-   80   1          task_scheduler_init();  /* 任务调度器初始化 */
+   78   1          ds_init(); /* 传感器初始化（由 dsXX 驱动文件实现） */
+   79   1          Core_init();
+   80   1          task_scheduler_init(); /* 任务调度器初始化 */
    81   1      
    82   1          /* 注册周期任务 */
    83   1          task_register(task_printf, 4);
@@ -134,9 +135,9 @@ Module Information          Static   Overlayable
   xdata-const size     =    ------     ------
   edata size           =        46     ------
   bit size             =    ------     ------
-  ebit size            =    ------     ------
-C251 COMPILER V5.60.0,  main                                                               07/08/26  22:26:02  PAGE 3   
+C251 COMPILER V5.60.0,  main                                                               27/08/26  08:41:16  PAGE 3   
 
+  ebit size            =    ------     ------
   bitaddressable size  =    ------     ------
   ebitaddressable size =    ------     ------
   far data size        =    ------     ------

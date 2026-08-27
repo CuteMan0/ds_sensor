@@ -1,1 +1,1 @@
-"..\Bsp\ds138_airC2H6O_meter.c" XSMALL INTR2 BROWSE INCDIR(..\App;..\Bsp;..\Driver;..\Library;..\Tool) DEBUG PRINT(.\Listings\ds138_airC2H6O_meter.lst) OBJECT(.\Objects\ds138_airC2H6O_meter.obj)
+"..\Driver\ds138_airC2H6O_meter.c" XSMALL INTR2 BROWSE INCDIR(..\App;..\Bsp;..\Core;..\Driver;..\Library) DEBUG PRINT(.\Listings\ds138_airC2H6O_meter.lst) OBJECT(.\Objects\ds138_airC2H6O_meter.obj)

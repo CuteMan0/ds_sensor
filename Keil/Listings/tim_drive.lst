@@ -1,10 +1,10 @@
-C251 COMPILER V5.60.0,  tim_drive                                                          07/08/26  18:36:43  PAGE 1   
+C251 COMPILER V5.60.0,  tim_drive                                                          26/08/26  11:50:05  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE tim_drive
 OBJECT MODULE PLACED IN .\Objects\tim_drive.obj
-COMPILER INVOKED BY: C:\Wongsoft\Keil_v5\C251\BIN\C251.EXE ..\Driver\tim_drive.c XSMALL INTR2 BROWSE INCDIR(..\App;..\Bs
-                    -p;..\Driver;..\Library;..\Tool) DEBUG PRINT(.\Listings\tim_drive.lst) OBJECT(.\Objects\tim_drive.obj) 
+COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE ..\Bsp\tim_drive.c XSMALL INTR2 BROWSE INCDIR(..\App;..\Bsp;..\Core;..
+                    -\Driver;..\Library) DEBUG PRINT(.\Listings\tim_drive.lst) OBJECT(.\Objects\tim_drive.obj) 
 
 stmt  level    source
 
@@ -24,7 +24,7 @@ stmt  level    source
    14   1          TIM_InitStructure.TIM_ClkSource = htim->clk_mode;
    15   1          TIM_InitStructure.TIM_ClkOut = DISABLE;
    16   1          TIM_InitStructure.TIM_Value = (0x10000 - htim->arr); // 0~65535
-*** WARNING C188 IN LINE 16 OF ..\Driver\tim_drive.c: 'constant': value truncated
+*** WARNING C188 IN LINE 16 OF ..\Bsp\tim_drive.c: 'constant': value truncated
    17   1          TIM_InitStructure.TIM_PS = htim->psr;                // 0~255
    18   1          TIM_InitStructure.TIM_Run = DISABLE;
    19   1          Timer_Inilize(htim->id, &TIM_InitStructure);
@@ -66,7 +66,7 @@ stmt  level    source
    55   1          if (!htim)
    56   1              return;
    57   1      
-C251 COMPILER V5.60.0,  tim_drive                                                          07/08/26  18:36:43  PAGE 2   
+C251 COMPILER V5.60.0,  tim_drive                                                          26/08/26  11:50:05  PAGE 2   
 
    58   1          switch (htim->id)
    59   1          {
@@ -134,7 +134,7 @@ stmt  level    source
   121   2              break;
   122   2          case 2:
   123   2              T2H = 0;
-C251 COMPILER V5.60.0,  tim_drive                                                          07/08/26  18:36:43  PAGE 3   
+C251 COMPILER V5.60.0,  tim_drive                                                          26/08/26  11:50:05  PAGE 3   
 
   124   2              T2L = 0;
   125   2              break;

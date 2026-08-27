@@ -22,6 +22,7 @@
 
 #include "task_scheduler.h"
 #include "filter.h"
+#include "iir.h"
 
 /* ============================================================
  * 传感器型号选择
@@ -30,28 +31,30 @@
  *     131 = pH 传感器
  *     132 = 电导率传感器 (0-20mS/cm)
  *     133 = 多量程电导率传感器 (0-20mS/cm, 0-2mS/cm, 0-0.2mS/cm)
- *     134 = 色度传感器 (硬件设计阶段，待实现)
+ *     134 = 色度传感器
  *     135 = 浊度传感器
  *     136 = 氧化还原传感器 (ORP)
  *     137 = 二氧化硫传感器
- *     138 = 酒精气体传感器
+ *     138 = 气态酒精气体传感器
  *     139 = 氧气传感器
  *     141 = 循环式二氧化碳传感器
  *     144 = 溶解氧传感器
  *     145 = 溶解二氧化碳传感器
  *     151 = 土壤温度传感器
+ *     152 = 土壤湿度传感器
  *     153 = 氢气传感器
- *     157 = 盐分传感器 (硬件设计阶段，待实现)
- *     159 = 氨气传感器 (硬件设计阶段，待实现)
+ *     157 = 心率传感器 (硬件设计阶段，待实现)
+ *     158 = 心电图传感器
+ *     159 = 呼吸率传感器 (硬件设计阶段，待实现)
  *     160 = 二氧化氮传感器
  *     161 = 一氧化碳传感器
  *     162 = 甲烷传感器
  *     163 = 氨气传感器
  *     164 = 氯气传感器
- *     165~170 = 离子传感器
+ *     165~170 = 离子传感器(铵根离子、钾离子、硝酸根离子、氯离子、钠离子、钙离子)
  *     172 = 滴定传感器
  * ============================================================ */
-#define DS_SENSOR 151
+#define DS_SENSOR 112
 
 /* ============================================================
  * 全局变量声明（定义在 task.c / main.c）
@@ -107,9 +110,9 @@ void ds_calib(void);
 #include "ds133_multi_ec_meter.h"
 #endif
 
-/* ---- 色度传感器 (DS134, 硬件设计阶段) ---- */
+/* ---- 色度传感器 (DS134, 代码在nas路径) ---- */
 #if DS_SENSOR == 134
-// ..\\ds_sensor\\Hardware\\DS134色度传感器\\产品原理图\\DS134
+// \\gk_nas\gk_nas\Project\Project 2023\JYSXM2023-02A DS数字化实验器材\3 Execution\2器材开发\HD for Digital sensor Equipment\DS_Sensor\DS134色度传感器\Output documents\Program Project
 #endif
 
 /* ---- 浊度传感器 (DS135) ---- */
@@ -157,24 +160,35 @@ void ds_calib(void);
 #include "ds151_soil_temp_meter.h"
 #endif
 
+/* ---- 土壤湿度传感器 (DS152) ---- */
+#if DS_SENSOR == 152
+#include "ds152_soil_humi_meter.h"
+#endif
+
 /* ---- 氢气传感器 (DS153) ---- */
 #if DS_SENSOR == 153
 #include "ds153_h2_meter.h"
 #endif
 
-/* ---- 盐分传感器 (DS157, 硬件设计阶段) ---- */
+/* ---- 心率传感器 (DS157, 代码在nas路径) ---- */
 #if DS_SENSOR == 157
-// ..\\ds_sensor\\Hardware\\DS157盐分传感器\\产品原理图\\DS157
+// \\gk_nas\gk_nas\Project\Project 2023\JYSXM2023-02A DS数字化实验器材\3 Execution\2器材开发\HD for Digital sensor Equipment\DS_Sensor\DS157心率传感器\Output documents\Program Project
 #endif
 
-/* ---- 氨气传感器 (DS159, 硬件设计阶段) ---- */
+/* ---- 心电图传感器 (DS158, 代码在nas路径) ---- */
+#if DS_SENSOR == 158
+#include "ds158_ecg_meter.h"
+#endif
+
+/* ---- 呼吸率传感器 (DS159, 代码在nas路径) ---- */
 #if DS_SENSOR == 159
-// ..\\ds_sensor\\Hardware\\DS159氨气传感器\\产品原理图\\DS159
+// \\gk_nas\gk_nas\Project\Project 2023\JYSXM2023-02A DS数字化实验器材\3 Execution\2器材开发\HD for Digital sensor Equipment\DS_Sensor\DS159呼吸率传感器\Output documents\Program Project
 #endif
 
 /* ---- 二氧化氮传感器 (DS160) ---- */
 #if DS_SENSOR == 160
 #include "ds160_no2_meter.h"
+// \\gk_nas\gk_nas\Project\Project 2023\JYSXM2023-02A DS数字化实验器材\3 Execution\2器材开发\HD for Digital sensor Equipment\DS_Sensor\DS158心电图传感器\Output documents\Program Project
 #endif
 
 /* ---- 一氧化碳传感器 (DS161) ---- */

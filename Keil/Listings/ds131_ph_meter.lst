@@ -1,15 +1,16 @@
-C251 COMPILER V5.60.0,  ds131_ph_meter                                                     07/08/26  22:26:02  PAGE 1   
+C251 COMPILER V5.60.0,  ds131_ph_meter                                                     27/08/26  08:41:17  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE ds131_ph_meter
 OBJECT MODULE PLACED IN .\Objects\ds131_ph_meter.obj
-COMPILER INVOKED BY: C:\Wongsoft\Keil_v5\C251\BIN\C251.EXE ..\Bsp\ds131_ph_meter.c XSMALL INTR2 BROWSE INCDIR(..\App;..\
-                    -Bsp;..\Driver;..\Library;..\Tool) DEBUG PRINT(.\Listings\ds131_ph_meter.lst) OBJECT(.\Objects\ds131_ph_meter.obj) 
+COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE ..\Driver\ds131_ph_meter.c XSMALL INTR2 BROWSE INCDIR(..\App;..\Bsp;..
+                    -\Core;..\Driver;..\Library) DEBUG PRINT(.\Listings\ds131_ph_meter.lst) OBJECT(.\Objects\ds131_ph_meter.obj) 
 
 stmt  level    source
 
     1          #include "ds131_ph_meter.h"
-*** WARNING C317 IN LINE 68 OF \Users\Si\Desktop\ds_sensor\Library\type_def.h: attempt to redefine macro 'NULL'
+*** WARNING C317 IN LINE 53 OF \Users\admin\Desktop\WorkSpace\ds_sensor\Library\type_def.h: attempt to redefine macro 'N
+             -ULL'
     2          
     3          #if DS_SENSOR == 131
                
@@ -65,9 +66,9 @@ stmt  level    source
                 * @brief   pH 数据采集与处理
                 * @note    处理流程：
                 *          1. 通过 ADC 读取 pH 探头电压
-                *          2. 减去零位偏移 V_OFFSET（1.25V），得到相对电压 tmp
-C251 COMPILER V5.60.0,  ds131_ph_meter                                                     07/08/26  22:26:02  PAGE 2   
+C251 COMPILER V5.60.0,  ds131_ph_meter                                                     27/08/26  08:41:17  PAGE 2   
 
+                *          2. 减去零位偏移 V_OFFSET（1.25V），得到相对电压 tmp
                 *          3. 分段线性模型计算 pH：
                 *             - tmp > 0 时：pH = K_1 × (tmp - OFFSET) + B_1
                 *             - tmp ≤ 0 时：pH = K_2 × (tmp - OFFSET) + B_2
@@ -134,9 +135,9 @@ Module Information          Static   Overlayable
   data size            =    ------     ------
   idata size           =    ------     ------
   pdata size           =    ------     ------
-  xdata size           =    ------     ------
-C251 COMPILER V5.60.0,  ds131_ph_meter                                                     07/08/26  22:26:02  PAGE 3   
+C251 COMPILER V5.60.0,  ds131_ph_meter                                                     27/08/26  08:41:17  PAGE 3   
 
+  xdata size           =    ------     ------
   xdata-const size     =    ------     ------
   edata size           =    ------     ------
   bit size             =    ------     ------

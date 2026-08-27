@@ -1,0 +1,364 @@
+C251 COMPILER V5.60.0,  drv_tm1652                                                         26/08/26  11:50:08  PAGE 1   
+
+
+C251 COMPILER V5.60.0, COMPILATION OF MODULE drv_tm1652
+OBJECT MODULE PLACED IN .\Objects\drv_tm1652.obj
+COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE ..\Driver\drv_tm1652.c XSMALL INTR2 BROWSE INCDIR(..\App;..\Bsp;..\Cor
+                    -e;..\Driver;..\Library) DEBUG PRINT(.\Listings\drv_tm1652.lst) OBJECT(.\Objects\drv_tm1652.obj) 
+
+stmt  level    source
+
+    1          #include "drv_tm1652.h"
+    2          
+    3          #include <stdio.h>
+    4          #include <string.h>
+    5          
+    6          static const u8 seg_table[] =
+    7          {
+    8              0x3F,   /* 0 */
+    9              0x06,   /* 1 */
+   10              0x5B,   /* 2 */
+   11              0x4F,   /* 3 */
+   12              0x66,   /* 4 */
+   13              0x6D,   /* 5 */
+   14              0x7D,   /* 6 */
+   15              0x07,   /* 7 */
+   16              0x7F,   /* 8 */
+   17              0x6F,   /* 9 */
+   18              0x77,   /* A */
+   19              0x7C,   /* b */
+   20              0x39,   /* C */
+   21              0x5E,   /* d */
+   22              0x79,   /* E */
+   23              0x71    /* F */
+   24          };
+   25          
+   26          
+   27          /* 奇校验 */
+   28          static u8 tm1652_get_odd_parity(u8 dat)
+   29          {
+   30   1          u8 cnt;
+   31   1          u8 tmp;
+   32   1      
+   33   1          cnt = 0;
+   34   1          tmp = dat;
+   35   1      
+   36   1          while (tmp)
+   37   1          {
+   38   2              cnt ^= (tmp & 0x01);
+   39   2              tmp >>= 1;
+   40   2          }
+   41   1      
+   42   1          return (cnt == 0) ? 1 : 0;
+   43   1      }
+   44          
+   45          
+   46          /*
+   47           * 初始化
+   48           */
+   49          void tm1652_init(tm1652_t *dev, tm1652_write_byte_t write_byte)
+   50          {
+   51   1          if (dev == 0)
+   52   1          {
+   53   2              return;
+   54   2          }
+   55   1      
+   56   1          dev->write_byte = write_byte;
+   57   1      }
+   58          
+C251 COMPILER V5.60.0,  drv_tm1652                                                         26/08/26  11:50:08  PAGE 2   
+
+   59          
+   60          /*
+   61           * 发送一个字节
+   62           */
+   63          static void tm1652_write(tm1652_t *dev, u8 dat)
+   64          {
+   65   1          if (dev == 0)
+   66   1          {
+   67   2              return;
+   68   2          }
+   69   1      
+   70   1          if (dev->write_byte == 0)
+   71   1          {
+   72   2              return;
+   73   2          }
+   74   1      
+   75   1          /*
+   76   1           * TM1652要求发送奇校验
+   77   1           *
+   78   1           * 奇校验位由底层UART硬件发送。
+   79   1           *
+   80   1           * 因此这里不能直接操作S2TB8/S4TB8，
+   81   1           * 而是通过底层write_byte完成。
+   82   1           */
+   83   1          dev->write_byte(dat);
+   84   1      }
+   85          
+   86          
+   87          /*
+   88           * 发送数据
+   89           */
+   90          void tm1652_send(tm1652_t *dev, u8 *buf, u8 len)
+   91          {
+   92   1          u8 i;
+   93   1      
+   94   1          if (dev == 0)
+   95   1          {
+   96   2              return;
+   97   2          }
+   98   1      
+   99   1          if (buf == 0)
+  100   1          {
+  101   2              return;
+  102   2          }
+  103   1      
+  104   1          for (i = 0; i < len; i++)
+  105   1          {
+  106   2              tm1652_write(dev, buf[i]);
+  107   2          }
+  108   1      }
+  109          
+  110          
+  111          /*
+  112           * 关闭显示
+  113           */
+  114          void tm1652_off(tm1652_t *dev)
+  115          {
+  116   1          u8 buf[2];
+  117   1      
+  118   1          buf[0] = TM1652_DIS;
+  119   1          buf[1] = 0x00;
+  120   1      
+  121   1          tm1652_send(dev, buf, 2);
+  122   1      }
+  123          
+  124          
+C251 COMPILER V5.60.0,  drv_tm1652                                                         26/08/26  11:50:08  PAGE 3   
+
+  125          /*
+  126           * 清屏
+  127           */
+  128          void tm1652_clear(tm1652_t *dev)
+  129          {
+  130   1          u8 buf[6];
+  131   1      
+  132   1          buf[0] = TM1652_GR1_ADDR;
+  133   1          buf[1] = TM1652_SEG_BLANK;
+  134   1          buf[2] = TM1652_SEG_BLANK;
+  135   1          buf[3] = TM1652_SEG_BLANK;
+  136   1          buf[4] = TM1652_SEG_BLANK;
+  137   1          buf[5] = TM1652_SEG_BLANK;
+  138   1      
+  139   1          tm1652_send(dev, buf, 6);
+  140   1      }
+  141          
+  142          
+  143          /*
+  144           * 设置一个显示位置
+  145           */
+  146          void tm1652_set_digit(tm1652_t *dev, u8 addr, u8 seg)
+  147          {
+  148   1          u8 buf[2];
+  149   1      
+  150   1          buf[0] = addr;
+  151   1          buf[1] = seg;
+  152   1      
+  153   1          tm1652_send(dev, buf, 2);
+  154   1      }
+  155          
+  156          
+  157          /*
+  158           * 浮点数转换成段码
+  159           *
+  160           * 例如：
+  161           *
+  162           * value = 12.34
+  163           * digit_count = 4
+  164           * max_decimals = 2
+  165           *
+  166           * 得到：
+  167           *
+  168           * 0x06
+  169           * 0x5B
+  170           * 0x4F | DP
+  171           * 0x66
+  172           */
+  173          void tm1652_float_to_segment(float value,
+  174                                       u8 *buf,
+  175                                       u8 digit_count,
+  176                                       u8 max_decimals)
+  177          {
+  178   1          char str[32];
+  179   1          char fmt[8];
+  180   1      
+  181   1          u8 i;
+  182   1          u8 pos;
+  183   1      
+  184   1          if (buf == 0)
+  185   1          {
+  186   2              return;
+  187   2          }
+  188   1      
+  189   1          /*
+  190   1           * 先清空
+C251 COMPILER V5.60.0,  drv_tm1652                                                         26/08/26  11:50:08  PAGE 4   
+
+  191   1           */
+  192   1          for (i = 0; i < digit_count; i++)
+  193   1          {
+  194   2              buf[i] = TM1652_SEG_BLANK;
+  195   2          }
+  196   1      
+  197   1          /*
+  198   1           * 生成格式字符串
+  199   1           *
+  200   1           * 例如：
+  201   1           * max_decimals = 2
+  202   1           *
+  203   1           * fmt = "%.2f"
+  204   1           */
+  205   1          sprintf(fmt, "%%.%df", max_decimals);
+  206   1      
+  207   1          sprintf(str, fmt, value);
+  208   1      
+  209   1          i = 0;
+  210   1          pos = 0;
+  211   1      
+  212   1          while ((str[pos] != '\0') && (i < digit_count))
+  213   1          {
+  214   2              if (str[pos] == '-')
+  215   2              {
+  216   3                  buf[i] = TM1652_SEG_MINUS;
+  217   3                  i++;
+  218   3              }
+  219   2              else if (str[pos] == '.')
+  220   2              {
+  221   3                  if (i > 0)
+  222   3                  {
+  223   4                      buf[i - 1] |= 0x80;
+  224   4                  }
+  225   3              }
+  226   2              else if ((str[pos] >= '0') && (str[pos] <= '9'))
+  227   2              {
+  228   3                  buf[i] = seg_table[str[pos] - '0'];
+  229   3                  i++;
+  230   3              }
+  231   2      
+  232   2              pos++;
+  233   2          }
+  234   1      }
+  235          
+  236          
+  237          /*
+  238           * 显示浮点数
+  239           */
+  240          void tm1652_show_float(tm1652_t *dev,
+  241                                 float value,
+  242                                 u8 digit_count,
+  243                                 u8 max_decimals)
+  244          {
+  245   1          u8 buf[8];
+  246   1          u8 i;
+  247   1      
+  248   1          if (digit_count > 8)
+  249   1          {
+  250   2              digit_count = 8;
+  251   2          }
+  252   1      
+  253   1          tm1652_float_to_segment(value,
+  254   1                                  buf,
+  255   1                                  digit_count,
+  256   1                                  max_decimals);
+C251 COMPILER V5.60.0,  drv_tm1652                                                         26/08/26  11:50:08  PAGE 5   
+
+  257   1      
+  258   1          /*
+  259   1           * GR1开始连续写
+  260   1           */
+  261   1          tm1652_write(dev, TM1652_GR1_ADDR);
+  262   1      
+  263   1          for (i = 0; i < digit_count; i++)
+  264   1          {
+  265   2              tm1652_write(dev, buf[i]);
+  266   2          }
+  267   1      }
+  268          
+  269          
+  270          /*
+  271           * 显示整数
+  272           */
+  273          void tm1652_show_int(tm1652_t *dev, int value)
+  274          {
+  275   1          char str[12];
+  276   1          u8 buf[8];
+  277   1          u8 i;
+  278   1          u8 pos;
+  279   1          u8 len;
+  280   1      
+  281   1          sprintf(str, "%d", value);
+  282   1      
+  283   1          for (i = 0; i < 8; i++)
+  284   1          {
+  285   2              buf[i] = TM1652_SEG_BLANK;
+  286   2          }
+  287   1      
+  288   1          len = strlen(str);
+  289   1      
+  290   1          if (len > 8)
+  291   1          {
+  292   2              len = 8;
+  293   2          }
+  294   1      
+  295   1          i = 0;
+  296   1          pos = 0;
+  297   1      
+  298   1          while ((str[pos] != '\0') && (i < len))
+  299   1          {
+  300   2              if (str[pos] == '-')
+  301   2              {
+  302   3                  buf[i] = TM1652_SEG_MINUS;
+  303   3              }
+  304   2              else if ((str[pos] >= '0') && (str[pos] <= '9'))
+  305   2              {
+  306   3                  buf[i] = seg_table[str[pos] - '0'];
+  307   3              }
+  308   2      
+  309   2              i++;
+  310   2              pos++;
+  311   2          }
+  312   1      
+  313   1          tm1652_write(dev, TM1652_GR1_ADDR);
+  314   1      
+  315   1          for (i = 0; i < len; i++)
+  316   1          {
+  317   2              tm1652_write(dev, buf[i]);
+  318   2          }
+  319   1      }
+*** WARNING C174 IN LINE 28 OF ..\Driver\drv_tm1652.c: 'tm1652_get_odd_parity': unreferenced 'static' function
+
+
+C251 COMPILER V5.60.0,  drv_tm1652                                                         26/08/26  11:50:08  PAGE 6   
+
+Module Information          Static   Overlayable
+------------------------------------------------
+  code size            =       717     ------
+  ecode size           =    ------     ------
+  data size            =    ------     ------
+  idata size           =    ------     ------
+  pdata size           =    ------     ------
+  xdata size           =    ------     ------
+  xdata-const size     =    ------     ------
+  edata size           =    ------         95
+  bit size             =    ------     ------
+  ebit size            =    ------     ------
+  bitaddressable size  =    ------     ------
+  ebitaddressable size =    ------     ------
+  far data size        =    ------     ------
+  huge data size       =    ------     ------
+  const size           =    ------     ------
+  hconst size          =        26     ------
+End of Module Information.
+
+
+C251 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)

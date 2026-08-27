@@ -1,10 +1,10 @@
-C251 COMPILER V5.60.0,  STC32G_SPI                                                         07/08/26  18:36:44  PAGE 1   
+C251 COMPILER V5.60.0,  STC32G_SPI                                                         26/08/26  11:50:19  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE STC32G_SPI
 OBJECT MODULE PLACED IN .\Objects\STC32G_SPI.obj
-COMPILER INVOKED BY: C:\Wongsoft\Keil_v5\C251\BIN\C251.EXE ..\Library\STC32G_SPI.c XSMALL INTR2 BROWSE INCDIR(..\App;..\
-                    -Bsp;..\Driver;..\Library;..\Tool) DEBUG PRINT(.\Listings\STC32G_SPI.lst) OBJECT(.\Objects\STC32G_SPI.obj) 
+COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE ..\Library\STC32G_SPI.c XSMALL INTR2 BROWSE INCDIR(..\App;..\Bsp;..\Co
+                    -re;..\Driver;..\Library) DEBUG PRINT(.\Listings\STC32G_SPI.lst) OBJECT(.\Objects\STC32G_SPI.obj) 
 
 stmt  level    source
 
@@ -66,7 +66,7 @@ stmt  level    source
    56          // 函数: void SPI_WriteByte(u8 dat)
    57          // 描述: SPI发送一个字节数据.
    58          // 参数: dat: 要发送的数据.
-C251 COMPILER V5.60.0,  STC32G_SPI                                                         07/08/26  18:36:44  PAGE 2   
+C251 COMPILER V5.60.0,  STC32G_SPI                                                         26/08/26  11:50:19  PAGE 2   
 
    59          // 返回: none.
    60          // 版本: V1.0, 2020-09-14

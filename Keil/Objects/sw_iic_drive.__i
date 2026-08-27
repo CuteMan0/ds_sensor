@@ -1,0 +1,1 @@
+"..\Bsp\sw_iic_drive.c" XSMALL INTR2 BROWSE INCDIR(..\App;..\Bsp;..\Core;..\Driver;..\Library) DEBUG PRINT(.\Listings\sw_iic_drive.lst) OBJECT(.\Objects\sw_iic_drive.obj)

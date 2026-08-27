@@ -272,7 +272,7 @@
               <MiscControls></MiscControls>
               <Define></Define>
               <Undefine></Undefine>
-              <IncludePath>..\App;..\Bsp;..\Driver;..\Library;..\Tool</IncludePath>
+              <IncludePath>..\App;..\Bsp;..\Core;..\Driver;..\Library</IncludePath>
             </VariousControls>
           </C251>
           <Ax51>
@@ -340,144 +340,59 @@
           <GroupName>Bsp</GroupName>
           <Files>
             <File>
-              <FileName>bsp_ds18b20.c</FileName>
+              <FileName>adc_drive.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Bsp\bsp_ds18b20.c</FilePath>
+              <FilePath>..\Bsp\adc_drive.c</FilePath>
             </File>
             <File>
-              <FileName>bsp_max30102.c</FileName>
+              <FileName>key_drive.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Bsp\bsp_max30102.c</FilePath>
+              <FilePath>..\Bsp\key_drive.c</FilePath>
             </File>
             <File>
-              <FileName>bsp_mlx90614.c</FileName>
+              <FileName>led_drive.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Bsp\bsp_mlx90614.c</FilePath>
+              <FilePath>..\Bsp\led_drive.c</FilePath>
             </File>
             <File>
-              <FileName>bsp_ntc_10k_b3950.c</FileName>
+              <FileName>sw_iic_drive.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Bsp\bsp_ntc_10k_b3950.c</FilePath>
+              <FilePath>..\Bsp\sw_iic_drive.c</FilePath>
             </File>
             <File>
-              <FileName>bsp_sht40.c</FileName>
+              <FileName>tim_drive.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Bsp\bsp_sht40.c</FilePath>
+              <FilePath>..\Bsp\tim_drive.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Core</GroupName>
+          <Files>
+            <File>
+              <FileName>fft.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\fft.c</FilePath>
             </File>
             <File>
-              <FileName>bsp_tcs3400.c</FileName>
+              <FileName>filter.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Bsp\bsp_tcs3400.c</FilePath>
+              <FilePath>..\Core\filter.c</FilePath>
             </File>
             <File>
-              <FileName>ds112_fir_meter.c</FileName>
+              <FileName>iir.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Bsp\ds112_fir_meter.c</FilePath>
+              <FilePath>..\Core\iir.c</FilePath>
             </File>
             <File>
-              <FileName>ds131_ph_meter.c</FileName>
+              <FileName>lut.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Bsp\ds131_ph_meter.c</FilePath>
+              <FilePath>..\Core\lut.c</FilePath>
             </File>
             <File>
-              <FileName>ds132_ec_meter.c</FileName>
+              <FileName>task_scheduler.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Bsp\ds132_ec_meter.c</FilePath>
-            </File>
-            <File>
-              <FileName>ds133_multi_ec_meter.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Bsp\ds133_multi_ec_meter.c</FilePath>
-            </File>
-            <File>
-              <FileName>ds135_tur_meter.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Bsp\ds135_tur_meter.c</FilePath>
-            </File>
-            <File>
-              <FileName>ds136_orp_meter.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Bsp\ds136_orp_meter.c</FilePath>
-            </File>
-            <File>
-              <FileName>ds137_so2_meter.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Bsp\ds137_so2_meter.c</FilePath>
-            </File>
-            <File>
-              <FileName>ds138_airC2H6O_meter.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Bsp\ds138_airC2H6O_meter.c</FilePath>
-            </File>
-            <File>
-              <FileName>ds139_o2_meter.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Bsp\ds139_o2_meter.c</FilePath>
-            </File>
-            <File>
-              <FileName>ds141_co2_meter.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Bsp\ds141_co2_meter.c</FilePath>
-            </File>
-            <File>
-              <FileName>ds144_do_meter.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Bsp\ds144_do_meter.c</FilePath>
-            </File>
-            <File>
-              <FileName>ds145_dco2_meter.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Bsp\ds145_dco2_meter.c</FilePath>
-            </File>
-            <File>
-              <FileName>ds151_soil_temp_meter.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Bsp\ds151_soil_temp_meter.c</FilePath>
-            </File>
-            <File>
-              <FileName>ds153_h2_meter.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Bsp\ds153_h2_meter.c</FilePath>
-            </File>
-            <File>
-              <FileName>ds158_ecg_meter.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Bsp\ds158_ecg_meter.c</FilePath>
-            </File>
-            <File>
-              <FileName>ds160_no2_meter.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Bsp\ds160_no2_meter.c</FilePath>
-            </File>
-            <File>
-              <FileName>ds161_co_meter.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Bsp\ds161_co_meter.c</FilePath>
-            </File>
-            <File>
-              <FileName>ds162_ch4_meter.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Bsp\ds162_ch4_meter.c</FilePath>
-            </File>
-            <File>
-              <FileName>ds163_nh3_meter.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Bsp\ds163_nh3_meter.c</FilePath>
-            </File>
-            <File>
-              <FileName>ds164_cl2_meter.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Bsp\ds164_cl2_meter.c</FilePath>
-            </File>
-            <File>
-              <FileName>ds165_170_ise_meter.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Bsp\ds165_170_ise_meter.c</FilePath>
-            </File>
-            <File>
-              <FileName>ds172_titration_meter.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Bsp\ds172_titration_meter.c</FilePath>
+              <FilePath>..\Core\task_scheduler.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -485,29 +400,159 @@
           <GroupName>Driver</GroupName>
           <Files>
             <File>
-              <FileName>adc_drive.c</FileName>
+              <FileName>drv_ds18b20.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Driver\adc_drive.c</FilePath>
+              <FilePath>..\Driver\drv_ds18b20.c</FilePath>
             </File>
             <File>
-              <FileName>key_drive.c</FileName>
+              <FileName>drv_force_sensor.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Driver\key_drive.c</FilePath>
+              <FilePath>..\Driver\drv_force_sensor.c</FilePath>
             </File>
             <File>
-              <FileName>led_drive.c</FileName>
+              <FileName>drv_max30102.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Driver\led_drive.c</FilePath>
+              <FilePath>..\Driver\drv_max30102.c</FilePath>
             </File>
             <File>
-              <FileName>sw_iic_drive.c</FileName>
+              <FileName>drv_mlx90614.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Driver\sw_iic_drive.c</FilePath>
+              <FilePath>..\Driver\drv_mlx90614.c</FilePath>
             </File>
             <File>
-              <FileName>tim_drive.c</FileName>
+              <FileName>drv_ntc_10k_b3950.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Driver\tim_drive.c</FilePath>
+              <FilePath>..\Driver\drv_ntc_10k_b3950.c</FilePath>
+            </File>
+            <File>
+              <FileName>drv_sht40.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Driver\drv_sht40.c</FilePath>
+            </File>
+            <File>
+              <FileName>drv_tcs3400.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Driver\drv_tcs3400.c</FilePath>
+            </File>
+            <File>
+              <FileName>drv_tm1652.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Driver\drv_tm1652.c</FilePath>
+            </File>
+            <File>
+              <FileName>ds112_fir_meter.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Driver\ds112_fir_meter.c</FilePath>
+            </File>
+            <File>
+              <FileName>ds131_ph_meter.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Driver\ds131_ph_meter.c</FilePath>
+            </File>
+            <File>
+              <FileName>ds132_ec_meter.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Driver\ds132_ec_meter.c</FilePath>
+            </File>
+            <File>
+              <FileName>ds133_multi_ec_meter.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Driver\ds133_multi_ec_meter.c</FilePath>
+            </File>
+            <File>
+              <FileName>ds135_tur_meter.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Driver\ds135_tur_meter.c</FilePath>
+            </File>
+            <File>
+              <FileName>ds136_orp_meter.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Driver\ds136_orp_meter.c</FilePath>
+            </File>
+            <File>
+              <FileName>ds137_so2_meter.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Driver\ds137_so2_meter.c</FilePath>
+            </File>
+            <File>
+              <FileName>ds138_airC2H6O_meter.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Driver\ds138_airC2H6O_meter.c</FilePath>
+            </File>
+            <File>
+              <FileName>ds139_o2_meter.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Driver\ds139_o2_meter.c</FilePath>
+            </File>
+            <File>
+              <FileName>ds141_co2_meter.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Driver\ds141_co2_meter.c</FilePath>
+            </File>
+            <File>
+              <FileName>ds144_do_meter.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Driver\ds144_do_meter.c</FilePath>
+            </File>
+            <File>
+              <FileName>ds145_dco2_meter.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Driver\ds145_dco2_meter.c</FilePath>
+            </File>
+            <File>
+              <FileName>ds151_soil_temp_meter.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Driver\ds151_soil_temp_meter.c</FilePath>
+            </File>
+            <File>
+              <FileName>ds152_soil_humi_meter.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Driver\ds152_soil_humi_meter.c</FilePath>
+            </File>
+            <File>
+              <FileName>ds153_h2_meter.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Driver\ds153_h2_meter.c</FilePath>
+            </File>
+            <File>
+              <FileName>ds158_ecg_meter.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Driver\ds158_ecg_meter.c</FilePath>
+            </File>
+            <File>
+              <FileName>ds160_no2_meter.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Driver\ds160_no2_meter.c</FilePath>
+            </File>
+            <File>
+              <FileName>ds161_co_meter.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Driver\ds161_co_meter.c</FilePath>
+            </File>
+            <File>
+              <FileName>ds162_ch4_meter.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Driver\ds162_ch4_meter.c</FilePath>
+            </File>
+            <File>
+              <FileName>ds163_nh3_meter.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Driver\ds163_nh3_meter.c</FilePath>
+            </File>
+            <File>
+              <FileName>ds164_cl2_meter.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Driver\ds164_cl2_meter.c</FilePath>
+            </File>
+            <File>
+              <FileName>ds165_170_ise_meter.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Driver\ds165_170_ise_meter.c</FilePath>
+            </File>
+            <File>
+              <FileName>ds172_titration_meter.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Driver\ds172_titration_meter.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -698,31 +743,6 @@
               <FileName>stc_usb_cdc_32g.LIB</FileName>
               <FileType>4</FileType>
               <FilePath>..\Library\stc_usb_cdc_32g.LIB</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>Tool</GroupName>
-          <Files>
-            <File>
-              <FileName>filter.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Tool\filter.c</FilePath>
-            </File>
-            <File>
-              <FileName>task_scheduler.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Tool\task_scheduler.c</FilePath>
-            </File>
-            <File>
-              <FileName>fft.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Tool\fft.c</FilePath>
-            </File>
-            <File>
-              <FileName>lut.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Tool\lut.c</FilePath>
             </File>
           </Files>
         </Group>

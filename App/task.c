@@ -33,7 +33,11 @@ u8 usb_send_len = 0;  /**< USB 发送数据长度（字节数） */
 void task_printf(void)
 {
     ds_printf();
+#if DS_SENSOR == 158 //ecg 需要高采样输出
+    task_delay_ms(1);
+#else
     task_delay_ms(100);
+#endif
 }
 
 /**

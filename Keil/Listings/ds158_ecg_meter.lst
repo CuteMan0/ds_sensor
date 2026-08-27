@@ -1,43 +1,82 @@
-C251 COMPILER V5.60.0,  ds158_ecg_meter                                                    07/08/26  22:26:02  PAGE 1   
+C251 COMPILER V5.60.0,  ds158_ecg_meter                                                    27/08/26  08:41:20  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE ds158_ecg_meter
 OBJECT MODULE PLACED IN .\Objects\ds158_ecg_meter.obj
-COMPILER INVOKED BY: C:\Wongsoft\Keil_v5\C251\BIN\C251.EXE ..\Bsp\ds158_ecg_meter.c XSMALL INTR2 BROWSE INCDIR(..\App;..
-                    -\Bsp;..\Driver;..\Library;..\Tool) DEBUG PRINT(.\Listings\ds158_ecg_meter.lst) OBJECT(.\Objects\ds158_ecg_meter.obj) 
+COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE ..\Driver\ds158_ecg_meter.c XSMALL INTR2 BROWSE INCDIR(..\App;..\Bsp;.
+                    -.\Core;..\Driver;..\Library) DEBUG PRINT(.\Listings\ds158_ecg_meter.lst) OBJECT(.\Objects\ds158_ecg_meter.obj) 
 
 stmt  level    source
 
     1          #include "ds158_ecg_meter.h"
-*** WARNING C317 IN LINE 68 OF \Users\Si\Desktop\ds_sensor\Library\type_def.h: attempt to redefine macro 'NULL'
+*** WARNING C317 IN LINE 53 OF \Users\admin\Desktop\WorkSpace\ds_sensor\Library\type_def.h: attempt to redefine macro 'N
+             -ULL'
     2          
     3          #if DS_SENSOR == 158
                
                #include "adc_drive.h"
                
-               #define DC_REF 0.0f
+               /* 采样与陷波参数 */
+               #define ECG_FS 1000.0f /* 采样频率 1kHz */
+               #define ECG_F0 50.0f   /* 50Hz 工频陷波 */
+               #define ECG_R 0.9f     /* 极半径 */
                
-               ADC_Handle_t adc0;
+               static ADC_Handle_t adc0;
                
-               const float x[2] = {0.88f, 2.85f}; // 10NTU 和 200NTU 对应的电压值
+               /* 三级 50Hz 陷波器，增强工频抑制 */
+               static NotchFilterFixed filter1;
+               static NotchFilterFixed filter2;
+               static NotchFilterFixed filter3;
                
+               /* 归一化后的输出 */
+               static volatile float g_ecg_normalized;
+               static volatile float g_ecg_mv;
                void ds_init(void)
                {
                    adc_init(&adc0, 0, 3.3f);
+               
+                   notch_fixed_init(&filter1, ECG_FS, ECG_F0, ECG_R);
+                   notch_fixed_init(&filter2, ECG_FS, ECG_F0, ECG_R);
+                   notch_fixed_init(&filter3, ECG_FS, ECG_F0, ECG_R);
                }
                
                void ds_update(void)
                {
-                   float ecg = 0.0f;
-                   ecg = adc_get(&adc0);
-                   dat_for_printf = ecg - DC_REF;
-                   avg_filter_update(&filter, dat_for_printf);
-                   task_delay_ms(50);
+                   q15_t input;
+                   q15_t output;
+               
+                   adc_get(&adc0);
+               
+                   input = adc_to_q15(adc0.raw);
+               
+                   output = notch_fixed_process(&filter1, input);
+                   output = notch_fixed_process(&filter2, output);
+                   output = notch_fixed_process(&filter3, output);
+               
+                   /*
+                    * 归一化ECG
+                    */
+                   g_ecg_normalized = (float)output / 32768.0f;
+               
+                   /*
+                    * 换算为人体ECG电压
+                    *
+                    * ADC满量程：3.3V
+                    * ADC中点：约1.65V
+                    * AD8232总增益：约1100
+                    */
+                   g_ecg_mv = g_ecg_normalized * 1.5f;
+C251 COMPILER V5.60.0,  ds158_ecg_meter                                                    27/08/26  08:41:20  PAGE 2   
+
+               
+                   dat_for_printf = g_ecg_mv;
+               
+                   task_delay_ms(1);
                }
                
                void ds_printf(void)
                {
-                   printf_usb("ECG:%uBPM\r\n", (u16)dat_for_printf);
+                   printf_usb("%.4f\r\n", g_ecg_mv); // mV
                }
                
                void ds_calib(void)
@@ -67,8 +106,6 @@ Module Information          Static   Overlayable
   const size           =    ------     ------
   hconst size          =    ------     ------
 End of Module Information.
-
-C251 COMPILER V5.60.0,  ds158_ecg_meter                                                    07/08/26  22:26:02  PAGE 2   
 
 
 C251 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)

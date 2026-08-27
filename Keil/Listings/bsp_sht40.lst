@@ -1,197 +1,160 @@
-C251 COMPILER V5.60.0,  bsp_sht40                                                          07/08/26  18:36:42  PAGE 1   
+C251 COMPILER V5.60.0,  bsp_sht40                                                          10/08/26  11:00:17  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE bsp_sht40
 OBJECT MODULE PLACED IN .\Objects\bsp_sht40.obj
-COMPILER INVOKED BY: C:\Wongsoft\Keil_v5\C251\BIN\C251.EXE ..\Bsp\bsp_sht40.c XSMALL INTR2 BROWSE INCDIR(..\App;..\Bsp;.
-                    -.\Driver;..\Library;..\Tool) DEBUG PRINT(.\Listings\bsp_sht40.lst) OBJECT(.\Objects\bsp_sht40.obj) 
+COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE ..\Bsp\bsp_sht40.c XSMALL INTR2 BROWSE INCDIR(..\App;..\Bsp;..\Driver;
+                    -..\Library;..\Tool) DEBUG PRINT(.\Listings\bsp_sht40.lst) OBJECT(.\Objects\bsp_sht40.obj) 
 
 stmt  level    source
 
-    1          /*===========================================================================
-    2           * @file        bsp_sht40.c
-    3           * @brief       SHT40 温湿度传感器 BSP 驱动
-    4           * @attention   基于 I2C 通信，适用于 SHT40 系列传感器
-    5           *===========================================================================*/
-    6          
-    7          #include "bsp_sht40.h"
-    8          #include "sw_iic_drive.h"
-    9          #include "STC32G_Delay.h"
-   10          
-   11          /*===========================================================================
-   12           * 内部类型定义
-   13           *===========================================================================*/
+    1          #include "bsp_sht40.h"
+    2          #include "sw_iic_drive.h"
+    3          #include "STC32G_Delay.h"
+    4          
+    5          /*===========================================================================
+    6           * 内部类型定义
+    7           *===========================================================================*/
+    8          
+    9          typedef struct
+   10          {
+   11              float humidity;
+   12              float temperature;
+   13          } SHT20_data_t;
    14          
-   15          typedef struct
-   16          {
-   17              float humidity;    /* 湿度 (%RH) */
-   18              float temperature; /* 温度 (°C)   */
-   19          } bsp_sht40_data_t;
+   15          /*===========================================================================
+   16           * 静态变量
+   17           *===========================================================================*/
+   18          
+   19          static SHT20_data_t g_sht40_data = {0.0f, 0.0f};
    20          
    21          /*===========================================================================
-   22           * 静态变量
+   22           * 内部函数声明
    23           *===========================================================================*/
    24          
-   25          static bsp_sht40_data_t g_sht40_data = {0.0f, 0.0f};
-   26          
-   27          /*===========================================================================
-   28           * 内部函数声明
-   29           *===========================================================================*/
-   30          
-   31          static void bsp_sht40_send_cmd(u8 cmd);
-   32          static void bsp_sht40_read_data(u8 *buf, u8 len);
-   33          static u8 bsp_sht40_crc8(const u8 *dat, u8 len);
-   34          static void bsp_sht40_update(void);
-   35          
-   36          /*===========================================================================
-   37           * 公开接口实现
-   38           *===========================================================================*/
-   39          
-   40          /**
-   41           * @brief  SHT40 传感器初始化
-   42           */
-   43          void bsp_sht40_init(void)
-   44          {
-   45   1          soft_i2c_init();
-   46   1          bsp_sht40_send_cmd(BSP_SHT40_CMD_SOFT_RESET);
-   47   1          delay_ms(50);
-   48   1      }
-   49          
-   50          /**
-   51           * @brief  读取土壤湿度
-   52           * @return 湿度百分比 (%RH)
-   53           */
-   54          float bsp_sht40_read_humidity(void)
-   55          {
-   56   1          bsp_sht40_update();
-   57   1          return g_sht40_data.humidity;
-   58   1      }
-C251 COMPILER V5.60.0,  bsp_sht40                                                          07/08/26  18:36:42  PAGE 2   
+   25          static u8 sht40_crc8(const u8 *dat, u8 len);
+   26          static void sht40_update(SHT20_data_t *h);
+   27          
+   28          /*===========================================================================
+   29           * 公开接口实现
+   30           *===========================================================================*/
+   31          
+   32          /**
+   33           * @brief  SHT40 传感器初始化（含 I2C 初始化与传感器软复位）
+   34           */
+   35          void SHT40_init(void)
+   36          {
+   37   1          soft_i2c_init();
+   38   1          soft_i2c_start();
+   39   1          soft_i2c_write_byte(SHT40_I2C_ADDR << 1);
+   40   1          soft_i2c_write_byte(SHT40_CMD_SOFT_RESET);
+   41   1          soft_i2c_stop();
+   42   1          delay_ms(50);
+   43   1      }
+   44          
+   45          /**
+   46           * @brief  读取土壤湿度值
+   47           * @return 湿度百分比 (float, %RH)
+   48           */
+   49          float SHT40_read_humidity(void)
+   50          {
+   51   1          sht40_update(&g_sht40_data);
+   52   1          return g_sht40_data.humidity;
+   53   1      }
+   54          
+   55          /**
+   56           * @brief  读取温度值
+   57           * @return 温度值 (float, 单位: °C)
+   58           */
+C251 COMPILER V5.60.0,  bsp_sht40                                                          10/08/26  11:00:17  PAGE 2   
 
-   59          
-   60          /**
-   61           * @brief  读取温度
-   62           * @return 温度值 (°C)
-   63           */
-   64          float bsp_sht40_read_temperature(void)
-   65          {
-   66   1          bsp_sht40_update();
-   67   1          return g_sht40_data.temperature;
-   68   1      }
-   69          
-   70          /*===========================================================================
-   71           * 内部函数实现
-   72           *===========================================================================*/
-   73          
-   74          /**
-   75           * @brief  向 SHT40 发送单字节命令
-   76           * @param  cmd  命令字节
-   77           */
-   78          static void bsp_sht40_send_cmd(u8 cmd)
-   79          {
-   80   1          soft_i2c_start();
-   81   1          soft_i2c_write_byte(BSP_SHT40_I2C_ADDR << 1);
-   82   1          soft_i2c_write_byte(cmd);
-   83   1          soft_i2c_stop();
-   84   1      }
-   85          
-   86          /**
-   87           * @brief  从 SHT40 读取指定长度数据
-   88           * @param  buf  数据缓冲区
-   89           * @param  len  读取长度
-   90           */
-   91          static void bsp_sht40_read_data(u8 *buf, u8 len)
-   92          {
-   93   1          u8 i;
-   94   1      
-   95   1          soft_i2c_start();
-   96   1          soft_i2c_write_byte((BSP_SHT40_I2C_ADDR << 1) | 0x01);
-   97   1      
-   98   1          for (i = 0; i < len - 1; i++)
-   99   1          {
-  100   2              buf[i] = soft_i2c_read_byte(1); /* 发送 ACK  */
-  101   2          }
-  102   1          buf[i] = soft_i2c_read_byte(0); /* 发送 NACK */
-  103   1      
-  104   1          soft_i2c_stop();
-  105   1      }
-  106          
-  107          /**
-  108           * @brief  SHT40 CRC-8 校验
-  109           * @param  dat  数据指针
-  110           * @param  len  数据长度
-  111           * @return CRC 校验值
-  112           */
-  113          static u8 bsp_sht40_crc8(const u8 *dat, u8 len)
-  114          {
-  115   1          u8 crc = BSP_SHT40_CRC_INIT;
-  116   1          u8 i, j;
-  117   1      
-  118   1          for (i = 0; i < len; i++)
-  119   1          {
-  120   2              crc ^= dat[i];
-  121   2              for (j = 0; j < 8; j++)
-  122   2              {
-  123   3                  if (crc & 0x80)
-  124   3                  {
-C251 COMPILER V5.60.0,  bsp_sht40                                                          07/08/26  18:36:42  PAGE 3   
+   59          float SHT40_read_temperature(void)
+   60          {
+   61   1          sht40_update(&g_sht40_data);
+   62   1          return g_sht40_data.temperature;
+   63   1      }
+   64          
+   65          /*===========================================================================
+   66           * 内部函数实现
+   67           *===========================================================================*/
+   68          
+   69          /**
+   70           * @brief  SHT40 CRC-8 校验
+   71           * @param  dat  数据指针
+   72           * @param  len  数据长度
+   73           * @return CRC 校验值
+   74           */
+   75          static u8 sht40_crc8(const u8 *dat, u8 len)
+   76          {
+   77   1          u8 crc = SHT40_CRC_INIT;
+   78   1          u8 i, j;
+   79   1      
+   80   1          for (i = 0; i < len; i++)
+   81   1          {
+   82   2              crc ^= dat[i];
+   83   2              for (j = 0; j < 8; j++)
+   84   2              {
+   85   3                  if (crc & 0x80)
+   86   3                      crc = (crc << 1) ^ SHT40_CRC_POLY;
+   87   3                  else
+   88   3                      crc <<= 1;
+   89   3              }
+   90   2          }
+   91   1          return crc;
+   92   1      }
+   93          
+   94          /**
+   95           * @brief  更新 SHT40 温湿度数据
+   96           * @note   执行测量并读取结果，CRC 校验失败则丢弃
+   97           * @param  h  数据存放指针
+   98           */
+   99          static void sht40_update(SHT20_data_t *h)
+  100          {
+  101   1          static u8 buf[6];
+  102   1          u16 rawT, rawRH;
+  103   1          u8 i = 0;
+  104   1      
+  105   1          // 发送测量命令
+  106   1          soft_i2c_start();
+  107   1          soft_i2c_write_byte(SHT40_I2C_ADDR << 1);
+  108   1          soft_i2c_write_byte(SHT40_CMD_MEASURE_HIGH_PRECISION);
+  109   1      
+  110   1          // 等待测量完成
+  111   1          delay_ms(10);
+  112   1      
+  113   1          // 读取6字节
+  114   1          soft_i2c_start();
+  115   1          soft_i2c_write_byte((SHT40_I2C_ADDR << 1) | 0x01);
+  116   1          for (i = 0; i < 5; i++)
+  117   1              buf[i] = soft_i2c_read_byte(1);
+  118   1          buf[i] = soft_i2c_read_byte(0);
+  119   1          soft_i2c_stop();
+  120   1      
+  121   1          // 校验 CRC
+  122   1          if (sht40_crc8(buf, 2) != buf[2]) return;
+  123   1          if (sht40_crc8(buf + 3, 2) != buf[5]) return;
+  124   1      
+C251 COMPILER V5.60.0,  bsp_sht40                                                          10/08/26  11:00:17  PAGE 3   
 
-  125   4                      crc = (crc << 1) ^ BSP_SHT40_CRC_POLY;
-  126   4                  }
-  127   3                  else
-  128   3                  {
-  129   4                      crc <<= 1;
-  130   4                  }
-  131   3              }
-  132   2          }
-  133   1      
-  134   1          return crc;
-  135   1      }
-  136          
-  137          /**
-  138           * @brief  更新 SHT40 温湿度数据
-  139           * @note   执行测量并读取结果，CRC 校验失败则丢弃
-  140           */
-  141          static void bsp_sht40_update(void)
-  142          {
-  143   1          u8 buf[6];
-  144   1          u16 raw_temp;
-  145   1          u16 raw_humi;
-  146   1      
-  147   1          /* 1. 发送高精度测量命令 */
-  148   1          bsp_sht40_send_cmd(BSP_SHT40_CMD_MEASURE_HIGH_PRECISION);
-  149   1      
-  150   1          /* 2. 等待测量完成（典型值 8.3ms，取 10ms 留余量） */
-  151   1          delay_ms(10);
-  152   1      
-  153   1          /* 3. 读取 6 字节数据（温湿度各 2 字节 + 各 1 字节 CRC） */
-  154   1          bsp_sht40_read_data(buf, 6);
-  155   1      
-  156   1          /* 4. CRC 校验 */
-  157   1          if (bsp_sht40_crc8(buf, 2) != buf[2])
-  158   1              return; /* 温度 CRC 错误 */
-  159   1          if (bsp_sht40_crc8(buf + 3, 2) != buf[5])
-  160   1              return; /* 湿度 CRC 错误 */
-  161   1      
-  162   1          /* 5. 数据转换 */
-  163   1          raw_temp = ((u16)buf[0] << 8) | buf[1];
-  164   1          raw_humi = ((u16)buf[3] << 8) | buf[4];
-  165   1      
-  166   1          g_sht40_data.temperature = -45.0f + 175.0f * ((float)raw_temp / 65535.0f);
-  167   1          g_sht40_data.humidity = -6.0f + 125.0f * ((float)raw_humi / 65535.0f);
-  168   1      }
+  125   1          // 转换
+  126   1          rawT  = ((u16)buf[0] << 8) | buf[1];
+  127   1          rawRH = ((u16)buf[3] << 8) | buf[4];
+  128   1      
+  129   1          h->temperature = -45.0f + 175.0f * ((float)rawT / 65535.0f);
+  130   1          h->humidity    = -6.0f  + 125.0f * ((float)rawRH / 65535.0f);
+  131   1      }
 
 
 Module Information          Static   Overlayable
 ------------------------------------------------
-  code size            =       343     ------
+  code size            =       323     ------
   ecode size           =    ------     ------
   data size            =    ------     ------
   idata size           =    ------     ------
   pdata size           =    ------     ------
   xdata size           =    ------     ------
   xdata-const size     =    ------     ------
-  edata size           =         8          8
+  edata size           =        14          1
   bit size             =    ------     ------
   ebit size            =    ------     ------
   bitaddressable size  =    ------     ------

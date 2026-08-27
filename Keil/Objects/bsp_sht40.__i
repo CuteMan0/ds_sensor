@@ -1,0 +1,1 @@
+"..\Bsp\bsp_sht40.c" XSMALL INTR2 BROWSE INCDIR(..\App;..\Bsp;..\Driver;..\Library;..\Tool) DEBUG PRINT(.\Listings\bsp_sht40.lst) OBJECT(.\Objects\bsp_sht40.obj)

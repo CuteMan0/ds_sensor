@@ -1,0 +1,124 @@
+C251 COMPILER V5.60.0,  ds134_color_meter                                                  27/08/26  08:30:43  PAGE 1   
+
+
+C251 COMPILER V5.60.0, COMPILATION OF MODULE ds134_color_meter
+OBJECT MODULE PLACED IN .\Objects\ds134_color_meter.obj
+COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE ..\Driver\ds134_color_meter.c XSMALL INTR2 BROWSE INCDIR(..\App;..\Bsp
+                    -;..\Core;..\Driver;..\Library) DEBUG PRINT(.\Listings\ds134_color_meter.lst) OBJECT(.\Objects\ds134_color_meter.obj) 
+
+stmt  level    source
+
+    1          #include "ds134_color_meter.h"
+*** WARNING C317 IN LINE 53 OF \Users\admin\Desktop\WorkSpace\ds_sensor\Library\type_def.h: attempt to redefine macro 'N
+             -ULL'
+    2          
+    3          #if DS_SENSOR == 134
+    4          
+    5          #include "stc32g.h"
+    6          #include "STC32G_GPIO.h"
+    7          
+    8          #include "led_drive.h"
+    9          #include "sw_iic_drive.h"
+   10          #include "drv_tcs3400.h"
+   11          
+   12          /* 每个 RGB LED 的持续点亮时间：
+   13           *   RED  点亮 333ms → 读取红色分量
+   14           *   GREEN 点亮 333ms → 读取绿色分量
+   15           *   BLUE 点亮 333ms → 读取蓝色分量
+   16           */
+   17          #define COLOR_STABLE_MS 333u
+   18          
+   19          /* 色度采集状态机：R → G → B 轮流点亮、保持、读取 */
+   20          typedef enum
+   21          {
+   22              COLOR_STATE_RED_WAIT = 0, // 红色 LED 点亮保持中
+   23              COLOR_STATE_GREEN_WAIT,   // 绿色 LED 点亮保持中
+   24              COLOR_STATE_BLUE_WAIT     // 蓝色 LED 点亮保持中
+   25          } ColorState_t;
+   26          
+   27          static tcs3400_data_t color_sensor;
+   28          static float rgb_data[3] = {0.0f, 0.0f, 0.0f};
+   29          
+   30          /**
+   31           * @brief  色度传感器初始化
+   32           * @note   LED、P1.1(INT) 高阻输入、软件 I2C、TCS3400 依次初始化
+   33           */
+   34          void ds_init(void)
+   35          {
+   36   1          DIS_LED_GPIO_config();
+   37   1          DIS_LED_ALL_off();
+   38   1          //    P1_MODE_IN_HIZ(GPIO_Pin_1); // P1.1 设置为高阻输入（传感器 INT 端口）
+   39   1          soft_i2c_init();
+   40   1          tcs3400_init();
+   41   1      }
+   42          
+   43          /**
+   44           * @brief  色度数据采集（非阻塞状态机）
+   45           * @note   由 task_sensor 周期调用，完成一轮采集的时序：
+   46           *           1. 点亮红色 LED，保持 COLOR_STABLE_MS(333ms) 后读取红色分量
+   47           *           2. 点亮绿色 LED，保持 COLOR_STABLE_MS(333ms) 后读取绿色分量
+   48           *           3. 点亮蓝色 LED，保持 COLOR_STABLE_MS(333ms) 后读取蓝色分量
+   49           *           4. 回到步骤 1 循环采集
+   50           *         使用 task_timeout 非阻塞等待，避免阻塞任务调度器。
+   51           */
+   52          void ds_update(void)
+   53          {
+   54   1      #define cycle 333
+   55   1          DIS_LED_Just_One_Enable(1); // 红色
+   56   1          task_delay_ms(cycle);
+C251 COMPILER V5.60.0,  ds134_color_meter                                                  27/08/26  08:30:43  PAGE 2   
+
+   57   1          tcs3400_read_color(&color_sensor);
+   58   1          rgb_data[0] = color_sensor.red;
+   59   1          DIS_LED_Just_One_Enable(2); // 绿色
+   60   1          task_delay_ms(cycle);
+   61   1          tcs3400_read_color(&color_sensor);
+   62   1          rgb_data[1] = color_sensor.green;
+   63   1          DIS_LED_Just_One_Enable(3); // 蓝色
+   64   1          task_delay_ms(cycle);
+   65   1          tcs3400_read_color(&color_sensor);
+   66   1          rgb_data[2] = color_sensor.blue;
+   67   1          task_delay_ms(1000);
+   68   1      }
+   69          
+   70          /**
+   71           * @brief  打印 R/G/B 三通道色度数据
+   72           */
+   73          void ds_printf(void)
+   74          {
+   75   1          printf_usb("RGB:%.1f,%.1f,%.1f\r\n", rgb_data[0], rgb_data[1], rgb_data[2]);
+   76   1      }
+   77          
+   78          /**
+   79           * @brief  校准（无校准需求）
+   80           */
+   81          void ds_calib(void)
+   82          {
+   83   1          /* 无校准需求 */
+   84   1      }
+   85          
+   86          #endif
+
+
+Module Information          Static   Overlayable
+------------------------------------------------
+  code size            =       136     ------
+  ecode size           =    ------     ------
+  data size            =    ------     ------
+  idata size           =    ------     ------
+  pdata size           =    ------     ------
+  xdata size           =    ------     ------
+  xdata-const size     =    ------     ------
+  edata size           =        24     ------
+  bit size             =    ------     ------
+  ebit size            =    ------     ------
+  bitaddressable size  =    ------     ------
+  ebitaddressable size =    ------     ------
+  far data size        =    ------     ------
+  huge data size       =    ------     ------
+  const size           =    ------     ------
+  hconst size          =        37     ------
+End of Module Information.
+
+
+C251 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)

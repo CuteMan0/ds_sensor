@@ -1,16 +1,17 @@
-C251 COMPILER V5.60.0,  ds133_multi_ec_meter                                               07/08/26  22:26:02  PAGE 1   
+C251 COMPILER V5.60.0,  ds133_multi_ec_meter                                               27/08/26  08:41:17  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE ds133_multi_ec_meter
 OBJECT MODULE PLACED IN .\Objects\ds133_multi_ec_meter.obj
-COMPILER INVOKED BY: C:\Wongsoft\Keil_v5\C251\BIN\C251.EXE ..\Bsp\ds133_multi_ec_meter.c XSMALL INTR2 BROWSE INCDIR(..\A
-                    -pp;..\Bsp;..\Driver;..\Library;..\Tool) DEBUG PRINT(.\Listings\ds133_multi_ec_meter.lst) OBJECT(.\Objects\ds133_multi_ec
-                    -_meter.obj) 
+COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE ..\Driver\ds133_multi_ec_meter.c XSMALL INTR2 BROWSE INCDIR(..\App;..\
+                    -Bsp;..\Core;..\Driver;..\Library) DEBUG PRINT(.\Listings\ds133_multi_ec_meter.lst) OBJECT(.\Objects\ds133_multi_ec_meter
+                    -.obj) 
 
 stmt  level    source
 
     1          #include "ds133_multi_ec_meter.h"
-*** WARNING C317 IN LINE 68 OF \Users\Si\Desktop\ds_sensor\Library\type_def.h: attempt to redefine macro 'NULL'
+*** WARNING C317 IN LINE 53 OF \Users\admin\Desktop\WorkSpace\ds_sensor\Library\type_def.h: attempt to redefine macro 'N
+             -ULL'
     2          
     3          #if DS_SENSOR == 133
                
@@ -65,9 +66,9 @@ stmt  level    source
                typedef struct
                {
                    u16 q20;
-                   u16 q2;
-C251 COMPILER V5.60.0,  ds133_multi_ec_meter                                               07/08/26  22:26:02  PAGE 2   
+C251 COMPILER V5.60.0,  ds133_multi_ec_meter                                               27/08/26  08:41:17  PAGE 2   
 
+                   u16 q2;
                    u16 q02;
                } EC_Cal_t;
                
@@ -133,9 +134,9 @@ stmt  level    source
                    P4_MODE_OUT_PP(GPIO_Pin_0); // P4.0设置为推挽输出(设置采样电阻)
                
                    REF_R0; // 设置基准为GND
-                   Set_EC_Range(EC_RANGE_20MS);
-C251 COMPILER V5.60.0,  ds133_multi_ec_meter                                               07/08/26  22:26:02  PAGE 3   
+C251 COMPILER V5.60.0,  ds133_multi_ec_meter                                               27/08/26  08:41:17  PAGE 3   
 
+                   Set_EC_Range(EC_RANGE_20MS);
                    EEPROM_read_n(0, (u8 *)&cal, sizeof(cal));
                    if (cal.q20 != 0xFFFF)
                        Q_20MS = cal.q20 / 1000.0f;
@@ -201,9 +202,9 @@ stmt  level    source
                
                    if (calibration_pending)
                    {
-                       calibration_pending = 0;
-C251 COMPILER V5.60.0,  ds133_multi_ec_meter                                               07/08/26  22:26:02  PAGE 4   
+C251 COMPILER V5.60.0,  ds133_multi_ec_meter                                               27/08/26  08:41:17  PAGE 4   
 
+                       calibration_pending = 0;
                
                        cal.q20 = (u16)(Q_20MS * 1000);
                        cal.q2 = (u16)(Q_2MS * 1000);
@@ -269,9 +270,9 @@ stmt  level    source
                            switch (ec_range)
                            {
                            case EC_RANGE_20MS:
-                               DIS_LED_Just_One_Enable(1);
-C251 COMPILER V5.60.0,  ds133_multi_ec_meter                                               07/08/26  22:26:02  PAGE 5   
+C251 COMPILER V5.60.0,  ds133_multi_ec_meter                                               27/08/26  08:41:17  PAGE 5   
 
+                               DIS_LED_Just_One_Enable(1);
                                break;
                
                            case EC_RANGE_2MS:
@@ -337,9 +338,9 @@ stmt  level    source
                        break;
                
                    case EC_RANGE_0P2MS:
-               
-C251 COMPILER V5.60.0,  ds133_multi_ec_meter                                               07/08/26  22:26:02  PAGE 6   
+C251 COMPILER V5.60.0,  ds133_multi_ec_meter                                               27/08/26  08:41:17  PAGE 6   
 
+               
                        COM_NO0;
                        res_fb = 82.0f;
                        DIS_LED_Just_One_Enable(3);
@@ -405,9 +406,9 @@ stmt  level    source
                        }
                
                        break;
-               
-C251 COMPILER V5.60.0,  ds133_multi_ec_meter                                               07/08/26  22:26:02  PAGE 7   
+C251 COMPILER V5.60.0,  ds133_multi_ec_meter                                               27/08/26  08:41:17  PAGE 7   
 
+               
                    case EC_RANGE_2MS:
                
                        if (pfCurrentState == Range_0)
@@ -473,9 +474,9 @@ stmt  level    source
                    {
                        eCurrentEvent = EVT_OverRange;
                    }
-               }
-C251 COMPILER V5.60.0,  ds133_multi_ec_meter                                               07/08/26  22:26:02  PAGE 8   
+C251 COMPILER V5.60.0,  ds133_multi_ec_meter                                               27/08/26  08:41:17  PAGE 8   
 
+               }
                void Range_1(void)
                {
                    u16 tmp;
@@ -541,9 +542,9 @@ stmt  level    source
                    }
                    if (tmp < range_change_val[8])
                    {
-                       eCurrentEvent = EVT_UnderRange;
-C251 COMPILER V5.60.0,  ds133_multi_ec_meter                                               07/08/26  22:26:02  PAGE 9   
+C251 COMPILER V5.60.0,  ds133_multi_ec_meter                                               27/08/26  08:41:17  PAGE 9   
 
+                       eCurrentEvent = EVT_UnderRange;
                    }
                }
                void Range_5(void)

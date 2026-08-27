@@ -1,0 +1,1 @@
+"..\Driver\ds152_soil_humi_meter.c" XSMALL INTR2 BROWSE INCDIR(..\App;..\Bsp;..\Core;..\Driver;..\Library) DEBUG PRINT(.\Listings\ds152_soil_humi_meter.lst) OBJECT(.\Objects\ds152_soil_humi_meter.obj)

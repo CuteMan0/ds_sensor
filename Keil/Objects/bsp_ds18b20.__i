@@ -1,1 +1,0 @@
-"..\Bsp\bsp_ds18b20.c" XSMALL INTR2 BROWSE INCDIR(..\App;..\Bsp;..\Driver;..\Library;..\Tool) DEBUG PRINT(.\Listings\bsp_ds18b20.lst) OBJECT(.\Objects\bsp_ds18b20.obj)

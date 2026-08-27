@@ -36,22 +36,22 @@ avgf_data_t buffer[NUM_BUF_AVG];
  */
 void STC_init(void)
 {
-    WTST = 0;    /* 零等待状态 */
-    EAXFR = 1;   /* 使能扩展 XFR 访问 */
-    CKCON = 0;   /* 系统时钟不分频 */
+    WTST = 0;  /* 零等待状态 */
+    EAXFR = 1; /* 使能扩展 XFR 访问 */
+    CKCON = 0; /* 系统时钟不分频 */
 
-    usb_init();   /* USB CDC 初始化 */
-    EA = 1;       /* 开启全局中断 */
+    usb_init(); /* USB CDC 初始化 */
+    EA = 1;     /* 开启全局中断 */
 
-    DIS_LED_init();   /* LED 显示初始化 */
-    KEY_GPIO_init();  /* 按键 GPIO 初始化 */
+    DIS_LED_init();  /* LED 显示初始化 */
+    KEY_GPIO_init(); /* 按键 GPIO 初始化 */
 }
 
 /**
  * @brief 工具模块初始化
  * @note  初始化滑动平均滤波器。
  */
-void Tools_init(void)
+void Core_init(void)
 {
     avg_filter_init(&filter, buffer, NUM_BUF_AVG);
 }
@@ -62,7 +62,7 @@ void Tools_init(void)
 
 /**
  * @brief 主函数入口
- * @note  初始化顺序：STC_init → ds_init → Tools_init → task_scheduler_init。
+ * @note  初始化顺序：STC_init → ds_init → Core_init → task_scheduler_init。
  *        注册 5 个周期任务后进入主循环，由 task_scheduler_run() 调度执行。
  *
  *        任务注册表：
@@ -75,9 +75,9 @@ void Tools_init(void)
 void main(void)
 {
     STC_init();
-    ds_init();              /* 传感器初始化（由 dsXX 驱动文件实现） */
-    Tools_init();
-    task_scheduler_init();  /* 任务调度器初始化 */
+    ds_init(); /* 传感器初始化（由 dsXX 驱动文件实现） */
+    Core_init();
+    task_scheduler_init(); /* 任务调度器初始化 */
 
     /* 注册周期任务 */
     task_register(task_printf, 4);

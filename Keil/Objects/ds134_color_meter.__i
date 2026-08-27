@@ -1,0 +1,1 @@
+"..\Driver\ds134_color_meter.c" XSMALL INTR2 BROWSE INCDIR(..\App;..\Bsp;..\Core;..\Driver;..\Library) DEBUG PRINT(.\Listings\ds134_color_meter.lst) OBJECT(.\Objects\ds134_color_meter.obj)

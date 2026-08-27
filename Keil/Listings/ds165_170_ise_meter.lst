@@ -1,16 +1,17 @@
-C251 COMPILER V5.60.0,  ds165_170_ise_meter                                                07/08/26  22:26:03  PAGE 1   
+C251 COMPILER V5.60.0,  ds165_170_ise_meter                                                27/08/26  08:41:21  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE ds165_170_ise_meter
 OBJECT MODULE PLACED IN .\Objects\ds165_170_ise_meter.obj
-COMPILER INVOKED BY: C:\Wongsoft\Keil_v5\C251\BIN\C251.EXE ..\Bsp\ds165_170_ise_meter.c XSMALL INTR2 BROWSE INCDIR(..\Ap
-                    -p;..\Bsp;..\Driver;..\Library;..\Tool) DEBUG PRINT(.\Listings\ds165_170_ise_meter.lst) OBJECT(.\Objects\ds165_170_ise_me
-                    -ter.obj) 
+COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE ..\Driver\ds165_170_ise_meter.c XSMALL INTR2 BROWSE INCDIR(..\App;..\B
+                    -sp;..\Core;..\Driver;..\Library) DEBUG PRINT(.\Listings\ds165_170_ise_meter.lst) OBJECT(.\Objects\ds165_170_ise_meter.ob
+                    -j) 
 
 stmt  level    source
 
     1          #include "ds165_170_ise_meter.h"
-*** WARNING C317 IN LINE 68 OF \Users\Si\Desktop\ds_sensor\Library\type_def.h: attempt to redefine macro 'NULL'
+*** WARNING C317 IN LINE 53 OF \Users\admin\Desktop\WorkSpace\ds_sensor\Library\type_def.h: attempt to redefine macro 'N
+             -ULL'
     2          
     3          #if (DS_SENSOR == 165 || DS_SENSOR == 166 || DS_SENSOR == 167 || DS_SENSOR == 168 || DS_SENSOR == 169 || 
              -DS_SENSOR == 170)
@@ -65,9 +66,9 @@ stmt  level    source
                    CAL_WAIT_1000PPM,
                    CAL_SAMPLING_1000PPM,
                    CAL_COMPUTE,
-                   CAL_DONE
-C251 COMPILER V5.60.0,  ds165_170_ise_meter                                                07/08/26  22:26:03  PAGE 2   
+C251 COMPILER V5.60.0,  ds165_170_ise_meter                                                27/08/26  08:41:21  PAGE 2   
 
+                   CAL_DONE
                } CalState_t;
                
                // 全局变量
@@ -133,9 +134,9 @@ stmt  level    source
                    {
                        flag_key = 0;
                        Key_ShortPress_Handler();
-                   }
-C251 COMPILER V5.60.0,  ds165_170_ise_meter                                                07/08/26  22:26:03  PAGE 3   
+C251 COMPILER V5.60.0,  ds165_170_ise_meter                                                27/08/26  08:41:21  PAGE 3   
 
+                   }
                
                    // 根据状态返回不同数据
                    if (CAL_IDLE != cal_state)
@@ -201,9 +202,9 @@ stmt  level    source
                
                            // 校准等待状态持续闪烁，不计数
                            if (CAL_WAIT_100PPM == cal_state || CAL_WAIT_1000PPM == cal_state)
-                           {
-C251 COMPILER V5.60.0,  ds165_170_ise_meter                                                07/08/26  22:26:03  PAGE 4   
+C251 COMPILER V5.60.0,  ds165_170_ise_meter                                                27/08/26  08:41:21  PAGE 4   
 
+                           {
                                // 等待状态：不限制闪烁次数，重置计数器
                                flash_cnt = 0;
                            }
@@ -269,9 +270,9 @@ stmt  level    source
                            cal_sample_cnt++;
                        }
                
-                       // 采样完成
-C251 COMPILER V5.60.0,  ds165_170_ise_meter                                                07/08/26  22:26:03  PAGE 5   
+C251 COMPILER V5.60.0,  ds165_170_ise_meter                                                27/08/26  08:41:21  PAGE 5   
 
+                       // 采样完成
                        if (cal_sample_cnt >= 20)
                        {
                            cal_vol_100ppm = cal_vol_sum / 20.0f;
@@ -337,9 +338,9 @@ stmt  level    source
                        cal_sample_cnt = 0;
                        cal_vol_sum = 0.0f;
                
-                       led_flash = 0;              // 停止闪烁
-C251 COMPILER V5.60.0,  ds165_170_ise_meter                                                07/08/26  22:26:03  PAGE 6   
+C251 COMPILER V5.60.0,  ds165_170_ise_meter                                                27/08/26  08:41:21  PAGE 6   
 
+                       led_flash = 0;              // 停止闪烁
                        DIS_LED_Just_One_Enable(2); // 2号灯常亮表示采样中
                    }
                    else if (CAL_WAIT_1000PPM == cal_state)
@@ -405,9 +406,9 @@ stmt  level    source
                void ds_calib(void)
                {
                    /* 无校准需求 */
-               }
-C251 COMPILER V5.60.0,  ds165_170_ise_meter                                                07/08/26  22:26:03  PAGE 7   
+C251 COMPILER V5.60.0,  ds165_170_ise_meter                                                27/08/26  08:41:21  PAGE 7   
 
+               }
                
                #endif
 

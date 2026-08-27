@@ -1,0 +1,65 @@
+C251 COMPILER V5.60.0,  ds152_soil_humi_meter                                              27/08/26  08:41:19  PAGE 1   
+
+
+C251 COMPILER V5.60.0, COMPILATION OF MODULE ds152_soil_humi_meter
+OBJECT MODULE PLACED IN .\Objects\ds152_soil_humi_meter.obj
+COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE ..\Driver\ds152_soil_humi_meter.c XSMALL INTR2 BROWSE INCDIR(..\App;..
+                    -\Bsp;..\Core;..\Driver;..\Library) DEBUG PRINT(.\Listings\ds152_soil_humi_meter.lst) OBJECT(.\Objects\ds152_soil_humi_me
+                    -ter.obj) 
+
+stmt  level    source
+
+    1          #include "ds152_soil_humi_meter.h"
+*** WARNING C317 IN LINE 53 OF \Users\admin\Desktop\WorkSpace\ds_sensor\Library\type_def.h: attempt to redefine macro 'N
+             -ULL'
+    2          
+    3          #if DS_SENSOR == 152
+               
+               #include "drv_sht40.h"
+               
+               void ds_init(void)
+               {
+                   SHT40_init();
+               }
+               
+               void ds_update(void)
+               {
+                   dat_for_printf = SHT40_read_humidity();
+                   avg_filter_update(&filter, dat_for_printf);
+               }
+               
+               void ds_printf(void)
+               {
+                   printf_usb("Humi=%.2f%%\r\n", dat_for_printf);
+               }
+               
+               void ds_calib(void)
+               {
+                   /* DS152 无校准需求 */
+               }
+               
+               #endif
+
+
+Module Information          Static   Overlayable
+------------------------------------------------
+  code size            =    ------     ------
+  ecode size           =    ------     ------
+  data size            =    ------     ------
+  idata size           =    ------     ------
+  pdata size           =    ------     ------
+  xdata size           =    ------     ------
+  xdata-const size     =    ------     ------
+  edata size           =    ------     ------
+  bit size             =    ------     ------
+  ebit size            =    ------     ------
+  bitaddressable size  =    ------     ------
+  ebitaddressable size =    ------     ------
+  far data size        =    ------     ------
+  huge data size       =    ------     ------
+  const size           =    ------     ------
+  hconst size          =    ------     ------
+End of Module Information.
+
+
+C251 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)

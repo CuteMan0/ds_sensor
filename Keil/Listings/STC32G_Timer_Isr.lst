@@ -1,11 +1,10 @@
-C251 COMPILER V5.60.0,  STC32G_Timer_Isr                                                   07/08/26  18:36:44  PAGE 1   
+C251 COMPILER V5.60.0,  STC32G_Timer_Isr                                                   26/08/26  11:50:19  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE STC32G_Timer_Isr
 OBJECT MODULE PLACED IN .\Objects\STC32G_Timer_Isr.obj
-COMPILER INVOKED BY: C:\Wongsoft\Keil_v5\C251\BIN\C251.EXE ..\Library\STC32G_Timer_Isr.c XSMALL INTR2 BROWSE INCDIR(..\A
-                    -pp;..\Bsp;..\Driver;..\Library;..\Tool) DEBUG PRINT(.\Listings\STC32G_Timer_Isr.lst) OBJECT(.\Objects\STC32G_Timer_Isr.o
-                    -bj) 
+COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE ..\Library\STC32G_Timer_Isr.c XSMALL INTR2 BROWSE INCDIR(..\App;..\Bsp
+                    -;..\Core;..\Driver;..\Library) DEBUG PRINT(.\Listings\STC32G_Timer_Isr.lst) OBJECT(.\Objects\STC32G_Timer_Isr.obj) 
 
 stmt  level    source
 
@@ -66,9 +65,9 @@ stmt  level    source
    55                  P64 = ~P64;
    56          }
    57          
-C251 COMPILER V5.60.0,  STC32G_Timer_Isr                                                   07/08/26  18:36:44  PAGE 2   
-
    58          //========================================================================
+C251 COMPILER V5.60.0,  STC32G_Timer_Isr                                                   26/08/26  11:50:19  PAGE 2   
+
    59          // 函数: Timer4_ISR_Handler
    60          // 描述: Timer4中断函数.
    61          // 参数: none.

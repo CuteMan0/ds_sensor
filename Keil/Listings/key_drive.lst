@@ -1,10 +1,10 @@
-C251 COMPILER V5.60.0,  key_drive                                                          07/08/26  18:36:43  PAGE 1   
+C251 COMPILER V5.60.0,  key_drive                                                          26/08/26  11:50:05  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE key_drive
 OBJECT MODULE PLACED IN .\Objects\key_drive.obj
-COMPILER INVOKED BY: C:\Wongsoft\Keil_v5\C251\BIN\C251.EXE ..\Driver\key_drive.c XSMALL INTR2 BROWSE INCDIR(..\App;..\Bs
-                    -p;..\Driver;..\Library;..\Tool) DEBUG PRINT(.\Listings\key_drive.lst) OBJECT(.\Objects\key_drive.obj) 
+COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE ..\Bsp\key_drive.c XSMALL INTR2 BROWSE INCDIR(..\App;..\Bsp;..\Core;..
+                    -\Driver;..\Library) DEBUG PRINT(.\Listings\key_drive.lst) OBJECT(.\Objects\key_drive.obj) 
 
 stmt  level    source
 
@@ -66,7 +66,7 @@ stmt  level    source
    56   3                  key_press_time++;
    57   3      
    58   3                  // 长按检测（例如 1000ms）
-C251 COMPILER V5.60.0,  key_drive                                                          07/08/26  18:36:43  PAGE 2   
+C251 COMPILER V5.60.0,  key_drive                                                          26/08/26  11:50:05  PAGE 2   
 
    59   3                  if (!long_press_triggered && key_press_time >= 50) // 50 * 20ms = 1000ms
    60   3                  {
